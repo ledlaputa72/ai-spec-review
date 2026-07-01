@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:#eceef0; }
+  ::selection{ background:#941A31; color:#fff; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  @keyframes pop{ from{ opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+  .scroll::-webkit-scrollbar{ width:10px; height:10px; }
+  .scroll::-webkit-scrollbar-thumb{ background:#c2cad6; border-radius:6px; border:2px solid #eceef0; }
+  input,select,textarea{ font-family:inherit; }
+  .reports-panel > *{ flex:0 0 auto !important; }
+  @media print {
+    .app-root > *:not(.reports-overlay){ display:none !important; }
+    .reports-overlay{ position:static !important; display:block !important; height:auto !important; }
+    .reports-overlay .rep-backdrop{ display:none !important; }
+    .reports-panel{ position:static !important; width:auto !important; max-width:none !important; max-height:none !important; height:auto !important; overflow:visible !important; box-shadow:none !important; border-radius:0 !important; }
+    .reports-toolbar{ display:none !important; }
+    .report-page{ box-shadow:none !important; margin:0 auto !important; page-break-after:always; break-after:page; }
+    .report-page:last-child{ page-break-after:auto; }
+    @page{ size:letter; margin:0; }
+    html,body{ background:#fff !important; }
+  }
+</style>
+</helmet>
+
+<div class="app-root" style="font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif; height:100vh; display:flex; flex-direction:column; color:#1c2330; background:#eceef0; overflow:hidden;">
+
+  <!-- ============ HEADER ============ -->
+  <div style="flex-shrink:0; background:#941A31; color:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 22px; height:60px; box-shadow:0 2px 12px rgba(20,30,50,.18); z-index:30;">
+    <div style="display:flex; align-items:center; gap:14px;">
+      <div style="display:flex; align-items:baseline; gap:3px;">
+        <span style="font-family:'Pretendard',sans-serif; font-weight:800; font-size:18px; letter-spacing:2px;">AVYCON</span>
+        <span style="width:5px; height:5px; border-radius:50%; background:#e23b52; display:inline-block;"></span>
+      </div>
+      <div style="width:1px; height:24px; background:rgba(255,255,255,.2);"></div>
+      <span style="font-size:14px; font-weight:600; letter-spacing:.3px; color:#d6c9cc;">Spec Sheet Studio</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div style="display:flex; align-items:center; gap:7px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); border-radius:8px; padding:5px 10px;">
+        <span style="font-size:10px; color:#cdb6bb; text-transform:uppercase; letter-spacing:.6px;">Product Scope</span>
+        <select value="{{ scope }}" onChange="{{ onScope }}" style="background:transparent; color:#fff; border:none; font-size:13px; font-weight:600; outline:none; cursor:pointer;">
+          <sc-for list="{{ scopeOptions }}" as="o" hint-placeholder-count="5">
+            <option value="{{ o.value }}" style="color:#1c2330;">{{ o.label }}</option>
+          </sc-for>
+        </select>
+      </div>
+      <sc-if value="{{ canShare }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ onSave }}" style="display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); color:#fff; border-radius:8px; padding:7px 13px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:rgba(255,255,255,.22);">💾 저장</button>
+      </sc-if>
+      <sc-if value="{{ canShare }}" hint-placeholder-val="{{ true }}">
+      <div style="position:relative;">
+        <button onClick="{{ onToggleExport }}" style="display:flex; align-items:center; gap:7px; background:#fff; border:none; color:#941A31; border-radius:8px; padding:7px 14px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:#f3e7ea;">⤓ 공유 · 내보내기</button>
+        <sc-if value="{{ showExport }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute; right:0; top:42px; width:268px; background:#fff; border:1px solid #e0e3e7; border-radius:11px; box-shadow:0 12px 34px rgba(20,30,50,.22); padding:8px; z-index:60;">
+            <div style="font-size:10.5px; font-weight:800; color:#8b9099; letter-spacing:.5px; padding:6px 9px 8px;">전체 단계 문서 내보내기</div>
+            <button onClick="{{ onExportPdf }}" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; background:transparent; border:none; border-radius:8px; padding:9px 9px; font-size:13px; font-weight:600; color:#1c2330; cursor:pointer;" style-hover="background:#f5f6f8;"><span style="font-size:15px;">🅿</span> PDF로 저장 <span style="margin-left:auto; font-size:10px; color:#9aa0aa;">인쇄</span></button>
+            <button onClick="{{ onExportDocx }}" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; background:transparent; border:none; border-radius:8px; padding:9px 9px; font-size:13px; font-weight:600; color:#1c2330; cursor:pointer;" style-hover="background:#f5f6f8;"><span style="font-size:15px;">📄</span> Word 문서 (.doc)</button>
+            <button onClick="{{ onExportPptx }}" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; background:transparent; border:none; border-radius:8px; padding:9px 9px; font-size:13px; font-weight:600; color:#1c2330; cursor:pointer;" style-hover="background:#f5f6f8;"><span style="font-size:15px;">📊</span> PowerPoint (.pptx)</button>
+            <div style="height:1px; background:#eceef1; margin:6px 4px;"></div>
+            <button onClick="{{ onExportXlsx }}" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; background:#f6edef; border:none; border-radius:8px; padding:9px 9px; font-size:13px; font-weight:700; color:#941A31; cursor:pointer;" style-hover="background:#efdfe2;"><span style="font-size:15px;">▦</span> AI 검수 엑셀 (.xlsx)</button>
+            <sc-if value="{{ hasExportMsg }}" hint-placeholder-val="{{ true }}"><div style="font-size:11px; color:#5e636b; padding:8px 9px 4px;">{{ exportMsg }}</div></sc-if>
+          </div>
+        </sc-if>
+      </div>
+      </sc-if>
+      <button onClick="{{ onToggleSettings }}" style="display:flex; align-items:center; gap:7px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); color:#e3e9f2; border-radius:8px; padding:7px 13px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:rgba(255,255,255,.16);">⚙ 설정</button>
+    </div>
+  </div>
+
+  <!-- ============ STEPPER ============ -->
+  <div style="flex-shrink:0; background:#fff; border-bottom:1px solid #dde0e5; display:flex; align-items:stretch; padding:0 16px; height:64px; z-index:20;">
+    <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+      <button onClick="{{ s.onClick }}" style="appearance:none; background:transparent; border:none; cursor:pointer; display:flex; align-items:center; gap:11px; padding:0 22px; position:relative; opacity:{{ s.opacity }};" style-hover="background:#f5f6f8;">
+        <span style="width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0; background:{{ s.dotBg }}; color:{{ s.dotColor }}; border:2px solid {{ s.dotBorder }};">{{ s.badge }}</span>
+        <span style="text-align:left;">
+          <span style="display:block; font-size:13.5px; font-weight:700; color:{{ s.labelColor }};">{{ s.label }}</span>
+          <span style="display:block; font-size:10.5px; color:#8b9099; margin-top:1px;">{{ s.sub }}</span>
+        </span>
+        <span style="position:absolute; bottom:0; left:0; right:0; height:3px; background:{{ s.underline }};"></span>
+      </button>
+    </sc-for>
+  </div>
+
+  <!-- ============ CONTENT ============ -->
+  <div class="scroll" style="flex:1; overflow:auto; position:relative;">
+
+    <!-- loading -->
+    <sc-if value="{{ notReady }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; color:#5e636b;">
+        <div style="width:34px; height:34px; border:3px solid #d9dce1; border-top-color:#941A31; border-radius:50%; animation:spin .8s linear infinite;"></div>
+        <span style="font-size:13px;">CMS 매핑·샘플 데이터 불러오는 중…</span>
+      </div>
+    </sc-if>
+
+    <!-- ===== STEP 1 : IMPORT & MAP ===== -->
+    <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:26px 28px; max-width:1280px; margin:0 auto; animation:pop .25s ease;">
+
+        <!-- not loaded: import -->
+        <sc-if value="{{ notLoaded }}" hint-placeholder-val="{{ true }}">
+          <div style="text-align:center; padding:18px 0 26px;">
+            <div style="font-size:22px; font-weight:800; color:#941A31; letter-spacing:-.2px;">중국 데이터 가져오기</div>
+            <div style="font-size:13.5px; color:#5e636b; margin-top:7px; max-width:560px; margin-left:auto; margin-right:auto; line-height:1.5;">제조사 엑셀(.xlsx)을 업로드하면 CMS의 카테고리·표시 순서에 맞춰 자동 정렬됩니다. 아래 샘플로 바로 체험할 수도 있습니다.</div>
+          </div>
+          <div onClick="{{ onPickFile }}" onDragOver="{{ onDragOver }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDropFile }}" style="border:2px dashed {{ dropBorder }}; border-radius:14px; background:{{ dropBg }}; padding:34px; display:flex; flex-direction:column; align-items:center; gap:6px; max-width:680px; margin:0 auto; cursor:pointer; transition:.15s;">
+            <div style="font-size:34px;">{{ dropIcon }}</div>
+            <div style="font-size:14px; font-weight:700; color:#44474e;">{{ dropTitle }}</div>
+            <div style="font-size:12px; color:#979ca4;">.xlsx · 제조사 데이터시트 양식 · 끌어다 놓거나 클릭</div>
+            <sc-if value="{{ hasImportError }}" hint-placeholder-val="{{ true }}"><div style="font-size:11.5px; color:#c0564f; font-weight:600; margin-top:4px;">{{ importError }}</div></sc-if>
+          </div>
+          <sc-if value="{{ hasSession }}" hint-placeholder-val="{{ true }}">
+            <div style="max-width:680px; margin:14px auto 0; display:flex; justify-content:center;">
+              <button onClick="{{ onContinue }}" style="background:#941A31; color:#fff; border:none; border-radius:9px; padding:10px 20px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:#a8243a;">↻ 저장된 작업 이어서 하기</button>
+            </div>
+          </sc-if>
+          <div style="display:flex; align-items:center; gap:12px; margin:26px auto 14px; max-width:680px;">
+            <div style="flex:1; height:1px; background:#d9dce1;"></div>
+            <span style="font-size:11px; color:#979ca4; letter-spacing:1px;">샘플 데이터로 시작</span>
+            <div style="flex:1; height:1px; background:#d9dce1;"></div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:680px; margin:0 auto;">
+            <sc-for list="{{ sampleCards }}" as="c" hint-placeholder-count="2">
+              <button onClick="{{ c.onLoad }}" style="text-align:left; background:#fff; border:1.5px solid #dde0e5; border-radius:12px; padding:18px; cursor:pointer; transition:.15s;" style-hover="border-color:#941A31; box-shadow:0 6px 18px rgba(31,45,68,.1);">
+                <div style="font-size:11px; font-weight:700; color:#e23b52; letter-spacing:.5px;">SAMPLE</div>
+                <div style="font-size:17px; font-weight:800; color:#941A31; margin-top:5px;">{{ c.model }}</div>
+                <div style="font-size:12px; color:#5e636b; margin-top:4px; line-height:1.4;">{{ c.title }}</div>
+                <div style="font-size:11px; color:#979ca4; margin-top:10px;">{{ c.count }}개 스펙 필드 →</div>
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- loaded: mapping result -->
+        <sc-if value="{{ loaded }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:18px; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:13px;">
+              <button onClick="{{ onResetImport }}" style="display:flex; align-items:center; gap:7px; background:#fff; border:1px solid #d9dce1; color:#1c2330; border-radius:9px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap;" style-hover="border-color:#941A31; color:#941A31;">← 처음으로</button>
+              <div>
+                <div style="font-size:19px; font-weight:800; color:#941A31;">{{ rawModel }} <span style="font-size:13px; font-weight:600; color:#8b9099;">· 정렬·매핑</span></div>
+                <div style="font-size:12.5px; color:#5e636b; margin-top:3px;">CMS 표시 순서 기준으로 {{ scope }} 스펙을 재배열했습니다.</div>
+              </div>
+            </div>
+            <div style="display:flex; gap:9px; align-items:center;">
+              <span style="font-size:12px; font-weight:700; color:#941A31; background:#f6edef; border:1px solid #e3c9cf; border-radius:20px; padding:6px 13px;">✓ {{ mapMatched }}개 매핑됨</span>
+              <sc-if value="{{ hasUnmapped }}" hint-placeholder-val="{{ true }}"><button onClick="{{ onToggleUnmapped }}" style="font-size:12px; font-weight:700; color:#941A31; background:#f6edef; border:1px solid #e3c9cf; border-radius:20px; padding:6px 13px; cursor:pointer; display:flex; align-items:center; gap:6px;" style-hover="background:#efdfe2;">⚠ {{ mapUnmappedCount }}개 미매핑 · 연결하기</button></sc-if>
+              <button onClick="{{ onReportMapping }}" style="background:#fff; border:1px solid #d9dce1; color:#941A31; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="border-color:#941A31;">📄 리포트 보기</button>
+              <button onClick="{{ onResetImport }}" style="background:#fff; border:1px solid #d9dce1; color:#5e636b; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:600; cursor:pointer;">다른 파일</button>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:0.92fr 1.08fr; gap:18px; align-items:stretch;">
+            <!-- raw -->
+            <div style="background:#fff; border:1px solid #e0e3e7; border-radius:12px; overflow:hidden; display:flex; flex-direction:column;">
+              <div style="background:#f5f6f8; padding:11px 15px; border-bottom:1px solid #e6e8ec; display:flex; align-items:center; gap:8px;">
+                <span style="font-size:12px; font-weight:800; color:#8b9099; letter-spacing:.5px;">원본 · 제조사 데이터</span>
+              </div>
+              <div class="scroll" style="height:620px; overflow:auto;">
+                <sc-for list="{{ rawSections }}" as="sec" hint-placeholder-count="6">
+                  <div>
+                    <div style="background:#eceef1; padding:6px 15px; font-size:11px; font-weight:700; color:#5b6068; letter-spacing:.4px; position:sticky; top:0;">{{ sec.section }}</div>
+                    <sc-for list="{{ sec.fields }}" as="f" hint-placeholder-count="3">
+                      <div style="padding:7px 15px; border-bottom:1px solid #eef0f2; display:grid; grid-template-columns:42% 58%; gap:8px;">
+                        <span style="font-size:11px; color:#5b6068; font-weight:600;">{{ f.name }}</span>
+                        <span style="font-size:11px; color:#979ca4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ f.value }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- mapped -->
+            <div style="background:#fff; border:1px solid #e0e3e7; border-radius:12px; overflow:hidden; display:flex; flex-direction:column;">
+              <div style="background:#941A31; padding:11px 15px; display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:12px; font-weight:800; color:#fff; letter-spacing:.5px;">정렬·매핑 결과 · CMS 순서</span>
+                <span style="font-size:11px; color:#cdb6bb;">{{ mapMatched }} / {{ mapTotal }} 필드</span>
+              </div>
+              <div class="scroll" style="height:620px; overflow:auto;">
+                <sc-for list="{{ mappedCats }}" as="cat" hint-placeholder-count="6">
+                  <div>
+                    <div style="background:#eceef1; padding:6px 15px; font-size:11px; font-weight:800; color:#941A31; letter-spacing:.5px; position:sticky; top:0; border-bottom:1px solid #e6e8ec;">{{ cat.category }}</div>
+                    <sc-for list="{{ cat.fields }}" as="f" hint-placeholder-count="3">
+                      <div style="padding:8px 15px; border-bottom:1px solid #eef0f2; display:grid; grid-template-columns:38% 62%; gap:10px; align-items:start;">
+                        <div>
+                          <div style="font-size:11.5px; color:#941A31; font-weight:700;">{{ f.name }}</div>
+                          <sc-if value="{{ f.renamed }}" hint-placeholder-val="{{ true }}"><div style="font-size:9.5px; color:#a9b2c1; margin-top:1px;">← {{ f.source }}</div></sc-if>
+                        </div>
+                        <span style="font-size:11.5px; color:#44474e; line-height:1.4; text-wrap:pretty;">{{ f.value }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; margin-top:16px;">
+            <button onClick="{{ onToStep2 }}" style="background:#941A31; color:#fff; border:none; border-radius:9px; padding:11px 22px; font-size:13.5px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:8px;" style-hover="background:#a8243a;">AI 검수로 진행 →</button>
+          </div>
+
+          <!-- unmapped drawer -->
+          <sc-if value="{{ showUnmapped }}" hint-placeholder-val="{{ true }}">
+            <div style="position:fixed; inset:0; z-index:45; display:flex; justify-content:flex-end;">
+              <div onClick="{{ onCloseUnmapped }}" style="position:absolute; inset:0; background:rgba(20,30,50,.35);"></div>
+              <div class="scroll" style="position:relative; width:440px; max-width:92vw; background:#fff; height:100%; overflow:auto; box-shadow:-8px 0 30px rgba(20,30,50,.2); animation:pop .2s ease;">
+                <div style="padding:18px 20px; border-bottom:1px solid #eceef1; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:#fff; z-index:5;">
+                  <div>
+                    <div style="font-size:15px; font-weight:800; color:#941A31;">미매핑 필드 · {{ mapUnmappedCount }}건</div>
+                    <div style="font-size:11px; color:#8b9099; margin-top:2px;">CMS 항목에 연결하거나 사용 안 함으로 처리하세요</div>
+                  </div>
+                  <button onClick="{{ onCloseUnmapped }}" style="width:30px; height:30px; border:1px solid #e6e8ec; background:#f5f6f8; border-radius:8px; cursor:pointer; font-size:16px; color:#5e636b;">×</button>
+                </div>
+                <div style="padding:16px 18px; display:flex; flex-direction:column; gap:10px;">
+                  <sc-for list="{{ unmappedList }}" as="u" hint-placeholder-count="5">
+                    <div style="background:#fbf4f5; border:1px solid #ecd8dc; border-radius:9px; padding:11px 13px;">
+                      <div style="font-size:12.5px; font-weight:700; color:#44474e;">{{ u.source }}</div>
+                      <div style="font-size:10.5px; color:#979ca4; margin:3px 0 9px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ u.value }}</div>
+                      <select value="{{ u.current }}" onChange="{{ u.onAssign }}" style="width:100%; font-size:11.5px; border:1px solid #d9dce1; border-radius:7px; padding:7px 9px; color:#44474e; background:#fff; cursor:pointer;">
+                        <sc-for list="{{ u.options }}" as="o" hint-placeholder-count="4">
+                          <option value="{{ o.value }}">{{ o.label }}</option>
+                        </sc-for>
+                      </select>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- ===== STEP 2 : AI REVIEW ===== -->
+    <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:26px 28px; max-width:1080px; margin:0 auto; animation:pop .25s ease;">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:16px;">
+          <div>
+            <div style="font-size:19px; font-weight:800; color:#941A31;">AI 검수 · 미국/UL 표기 정규화</div>
+            <div style="font-size:12.5px; color:#5e636b; margin-top:3px; max-width:620px; line-height:1.5;">단위·기호, UL 전압 표기, CCTV 표준 용어(microSD·PoE·IEC 62676-4 DORI), 오타·문법을 검출했습니다. 각 항목을 켜고 끄며 반영 여부를 결정하세요.</div>
+          </div>
+        </div>
+
+        <!-- stat chips -->
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+          <button onClick="{{ onFilterAll }}" style="text-align:left; cursor:pointer; background:#941A31; color:#fff; border:2px solid {{ totalCardBorder }}; border-radius:10px; padding:10px 16px; min-width:96px;">
+            <div style="font-size:23px; font-weight:800; line-height:1;">{{ totalIssues }}</div>
+            <div style="font-size:10.5px; color:#cdb6bb; margin-top:3px;">총 검출 항목</div>
+          </button>
+          <sc-for list="{{ reviewStats }}" as="st" hint-placeholder-count="5">
+            <button onClick="{{ st.onClick }}" style="text-align:left; cursor:pointer; background:{{ st.bg }}; border:1px solid {{ st.border }}; border-radius:10px; padding:11px 16px; min-width:84px;">
+              <div style="font-size:21px; font-weight:800; line-height:1; color:{{ st.fg }};">{{ st.count }}</div>
+              <div style="font-size:10.5px; color:{{ st.sub }}; margin-top:4px;">{{ st.cat }}</div>
+            </button>
+          </sc-for>
+          <div style="flex:1;"></div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <button onClick="{{ onReportReview }}" style="background:#fff; color:#941A31; border:1px solid #d9dce1; border-radius:8px; padding:9px 14px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="border-color:#941A31;">📄 리포트 보기</button>
+            <button onClick="{{ onAcceptAll }}" style="background:#f6edef; color:#941A31; border:1px solid #e3c9cf; border-radius:8px; padding:9px 14px; font-size:12px; font-weight:700; cursor:pointer;">전체 승인</button>
+            <button onClick="{{ onRejectAll }}" style="background:#fff; color:#5e636b; border:1px solid #d9dce1; border-radius:8px; padding:9px 14px; font-size:12px; font-weight:700; cursor:pointer;">전체 해제</button>
+          </div>
+        </div>
+
+        <!-- AI deep review -->
+        <div style="background:#f7f1f2; border:1px solid #e6dcde; border-radius:11px; padding:13px 15px; margin-bottom:16px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <div style="font-size:12.5px; color:#44474e;"><b style="color:#941A31;">실시간 AI 심화 검수</b> — 규칙으로 못 잡은 항목을 Claude가 추가로 제안합니다.</div>
+            <button onClick="{{ onAIReview }}" style="background:#941A31; color:#fff; border:none; border-radius:8px; padding:9px 15px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; opacity:{{ aiBtnOpacity }};">{{ aiBtnLabel }}</button>
+          </div>
+          <sc-if value="{{ hasAiNote }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top:11px; background:#fff; border:1px solid #e6dcde; border-radius:8px; padding:11px 13px; font-size:12px; color:#44474e; line-height:1.55; white-space:pre-wrap;">{{ aiNote }}</div>
+          </sc-if>
+        </div>
+
+        <!-- review list -->
+        <div style="display:flex; flex-direction:column; gap:9px;">
+          <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="8">
+            <div style="background:#fff; border:1px solid {{ r.borderColor }}; border-radius:11px; padding:13px 15px; display:grid; grid-template-columns:1fr auto; gap:14px; align-items:center; opacity:{{ r.rowOpacity }};">
+              <div style="min-width:0; cursor:pointer;" onClick="{{ r.onExpand }}">
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:7px;">
+                  <span style="font-size:12.5px; font-weight:800; color:#941A31;">{{ r.field }}</span>
+                  <span style="font-size:10px; color:#979ca4;">· {{ r.category }}</span>
+                  <sc-for list="{{ r.tags }}" as="t" hint-placeholder-count="2">
+                    <span style="font-size:9.5px; font-weight:700; color:#fff; background:{{ t.color }}; border-radius:4px; padding:2px 6px;">{{ t.label }}</span>
+                  </sc-for>
+                  <span style="margin-left:auto; font-size:10px; font-weight:700; color:#2f6fb0;">{{ r.expandLabel }}</span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:5px;">
+                  <div style="font-size:11.5px; background:#fcf4f4; border-radius:5px; padding:4px 9px; white-space:{{ r.ws }}; overflow:{{ r.ov }}; word-break:{{ r.wb }}; line-height:1.5;"><sc-for list="{{ r.beforeSegs }}" as="s" hint-placeholder-count="3"><sc-if value="{{ s.hit }}" hint-placeholder-val="{{ true }}"><span style="color:#d11a1a; text-decoration:line-through; font-weight:700;">{{ s.t }}</span></sc-if><sc-if value="{{ s.miss }}" hint-placeholder-val="{{ true }}"><span style="color:#5a5f68;">{{ s.t }}</span></sc-if></sc-for></div>
+                  <div style="display:flex; align-items:flex-start; gap:7px;"><span style="font-size:10px; color:#1f8a5b; font-weight:700; flex-shrink:0; padding-top:3px;">→ 수정 후</span><div style="font-size:11.5px; background:#f0f7f3; border-radius:5px; padding:4px 9px; flex:1; min-width:0; white-space:{{ r.ws }}; overflow:{{ r.ov }}; word-break:{{ r.wb }}; line-height:1.5;"><sc-for list="{{ r.afterSegs }}" as="s" hint-placeholder-count="3"><sc-if value="{{ s.hit }}" hint-placeholder-val="{{ true }}"><span style="color:#1f8a5b; font-weight:700;">{{ s.t }}</span></sc-if><sc-if value="{{ s.miss }}" hint-placeholder-val="{{ true }}"><span style="color:#1a1a1a;">{{ s.t }}</span></sc-if></sc-for></div></div>
+                </div>
+                <div style="font-size:10.5px; color:#979ca4; margin-top:6px;">{{ r.noteText }}</div>
+              </div>
+              <button onClick="{{ r.onToggle }}" style="flex-shrink:0; border:none; cursor:pointer; border-radius:20px; width:54px; height:28px; position:relative; background:{{ r.toggleBg }}; transition:.15s;">
+                <span style="position:absolute; top:3px; left:{{ r.knobLeft }}; width:22px; height:22px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.25); transition:.15s;"></span>
+              </button>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+          <button onClick="{{ onBackTo1 }}" style="background:#fff; border:1px solid #d9dce1; color:#5e636b; border-radius:9px; padding:11px 18px; font-size:13px; font-weight:600; cursor:pointer;">← 정렬로</button>
+          <button onClick="{{ onToStep3 }}" style="background:#941A31; color:#fff; border:none; border-radius:9px; padding:11px 22px; font-size:13.5px; font-weight:700; cursor:pointer;">레이아웃 배치 → ({{ appliedCount }}건 반영)</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ===== STEP 3 : LAYOUT ===== -->
+    <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex; flex-direction:column; height:100%;">
+        <div style="flex-shrink:0; background:#fff; border-bottom:1px solid #dde0e5; padding:11px 24px; display:flex; align-items:center; justify-content:space-between; gap:14px;">
+          <div style="font-size:14px; font-weight:800; color:#941A31;">스펙시트 레이아웃 <span style="font-size:12px; font-weight:500; color:#8b9099;">· US Letter 세로 · 2페이지</span></div>
+          <div style="display:flex; align-items:center; gap:14px;">
+            <div style="display:flex; background:#eceef1; border-radius:8px; padding:3px;">
+              <sc-for list="{{ pageTabs }}" as="p" hint-placeholder-count="3">
+                <button onClick="{{ p.onClick }}" style="border:none; cursor:pointer; font-size:12px; font-weight:700; padding:6px 12px; border-radius:6px; background:{{ p.bg }}; color:{{ p.color }};">{{ p.label }}</button>
+              </sc-for>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <button onClick="{{ onZoomOut }}" style="width:30px; height:30px; border:1px solid #d9dce1; background:#fff; border-radius:7px; cursor:pointer; font-size:16px; color:#44474e;">−</button>
+              <span style="font-size:12px; color:#5e636b; min-width:42px; text-align:center;">{{ zoomPct }}%</span>
+              <button onClick="{{ onZoomIn }}" style="width:30px; height:30px; border:1px solid #d9dce1; background:#fff; border-radius:7px; cursor:pointer; font-size:16px; color:#44474e;">+</button>
+            </div>
+            <button onClick="{{ onReportSheet }}" style="background:#fff; color:#941A31; border:1px solid #d9dce1; border-radius:8px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="border-color:#941A31;">📄 리포트</button>
+            <button onClick="{{ onToStep4 }}" style="background:#941A31; color:#fff; border:none; border-radius:8px; padding:9px 18px; font-size:13px; font-weight:700; cursor:pointer;">사진·정보 편집 →</button>
+          </div>
+        </div>
+        <div class="scroll" style="flex:1; overflow:auto; padding:30px; display:flex; justify-content:center;">
+          <div style="zoom:{{ zoom }};">
+            <dc-import name="SpecSheet" sheet="{{ sheet }}" show-p1="{{ showP1 }}" show-p2="{{ showP2 }}" hint-size="816px,1100px"></dc-import>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ===== STEP 4 : EDITOR ===== -->
+    <sc-if value="{{ isStep4 }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex; height:100%;">
+        <!-- live preview -->
+        <div class="scroll" style="flex:1; overflow:auto; padding:26px; display:flex; justify-content:center; background:#e6e8ea;">
+          <div style="zoom:{{ zoom4 }};">
+            <dc-import name="SpecSheet" sheet="{{ sheet }}" show-p1="{{ true }}" show-p2="{{ true }}" hint-size="816px,1100px"></dc-import>
+          </div>
+        </div>
+
+        <!-- editor panel -->
+        <div class="scroll" style="width:390px; flex-shrink:0; background:#fff; border-left:1px solid #dde0e5; overflow:auto; padding:0;">
+          <div style="padding:16px 18px; border-bottom:1px solid #eceef1; position:sticky; top:0; background:#fff; z-index:5;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+              <div>
+                <div style="font-size:15px; font-weight:800; color:#941A31;">편집기</div>
+                <div style="font-size:11px; color:#8b9099; margin-top:2px;">엑셀 데이터에서 가져온 값 · 모두 수정 가능</div>
+              </div>
+              <button onClick="{{ onReportSheet }}" style="background:#fff; color:#941A31; border:1px solid #d9dce1; border-radius:8px; padding:7px 11px; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap;" style-hover="border-color:#941A31;">📄 리포트</button>
+            </div>
+          </div>
+
+          <!-- 기본 정보 -->
+          <div style="padding:16px 18px; border-bottom:1px solid #eceef1;">
+            <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:11px;">기본 정보</div>
+            <label style="display:block; font-size:11px; color:#5e636b; margin-bottom:4px; font-weight:600;">모델명</label>
+            <input value="{{ metaModel }}" onInput="{{ onMetaModel }}" style="width:100%; border:1px solid #d9dce1; border-radius:7px; padding:8px 10px; font-size:13px; color:#941A31; margin-bottom:10px;" />
+            <label style="display:block; font-size:11px; color:#5e636b; margin-bottom:4px; font-weight:600;">서브 타이틀 (1행)</label>
+            <input value="{{ metaSubtitle }}" onInput="{{ onMetaSub }}" style="width:100%; border:1px solid #d9dce1; border-radius:7px; padding:8px 10px; font-size:13px; color:#1a1a1a; margin-bottom:10px;" />
+            <label style="display:block; font-size:11px; color:#5e636b; margin-bottom:4px; font-weight:600;">서브 타이틀 (2행)</label>
+            <input value="{{ metaSubtitle2 }}" onInput="{{ onMetaSub2 }}" style="width:100%; border:1px solid #d9dce1; border-radius:7px; padding:8px 10px; font-size:13px; color:#1a1a1a;" />
+          </div>
+
+          <!-- Overview 불릿 -->
+          <div style="padding:16px 18px; border-bottom:1px solid #eceef1;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:11px;">
+              <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px;">OVERVIEW 불릿</div>
+              <button onClick="{{ onAddBullet }}" style="font-size:11px; font-weight:700; color:#941A31; background:#f6edef; border:none; border-radius:6px; padding:4px 9px; cursor:pointer;">+ 추가</button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <sc-for list="{{ bulletsVM }}" as="b" hint-placeholder-count="5">
+                <div style="display:grid; grid-template-columns:1fr auto; gap:6px; align-items:center;">
+                  <input value="{{ b.text }}" onInput="{{ b.onInput }}" style="width:100%; border:1px solid #e6e8ec; border-radius:6px; padding:6px 9px; font-size:11.5px; color:#44474e;" />
+                  <button onClick="{{ b.onRemove }}" style="width:26px; height:26px; border:1px solid #f0d6d6; background:#fdf3f3; color:#c0564f; border-radius:6px; cursor:pointer; font-size:14px; line-height:1;">×</button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- 제품 사진 -->
+          <div style="padding:16px 18px; border-bottom:1px solid #eceef1;">
+            <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:9px;">제품 사진 · 치수 도면</div>
+            <div style="font-size:11.5px; color:#5e636b; line-height:1.5; background:#f5f6f8; border-radius:8px; padding:10px 12px;">왼쪽 미리보기의 <b style="color:#941A31;">제품 사진</b>·<b style="color:#941A31;">치수 도면</b> 영역에 이미지를 직접 끌어다 놓으세요. 드롭한 이미지는 자동 저장됩니다.</div>
+          </div>
+
+          <!-- 치수 값 -->
+          <div style="padding:16px 18px; border-bottom:1px solid #eceef1;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:11px;">
+              <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px;">치수 수치</div>
+              <button onClick="{{ onAddDim }}" style="font-size:11px; font-weight:700; color:#941A31; background:#f6edef; border:none; border-radius:6px; padding:4px 9px; cursor:pointer;">+ 추가</button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <sc-for list="{{ dimsVM }}" as="d" hint-placeholder-count="3">
+                <div style="display:grid; grid-template-columns:34% 1fr auto; gap:6px; align-items:center;">
+                  <input value="{{ d.label }}" onInput="{{ d.onLabel }}" style="border:1px solid #e6e8ec; border-radius:6px; padding:6px 8px; font-size:11px; color:#5b6068; font-weight:600;" />
+                  <input value="{{ d.value }}" onInput="{{ d.onValue }}" style="border:1px solid #e6e8ec; border-radius:6px; padding:6px 8px; font-size:11px; color:#44474e;" />
+                  <button onClick="{{ d.onRemove }}" style="width:26px; height:26px; border:1px solid #f0d6d6; background:#fdf3f3; color:#c0564f; border-radius:6px; cursor:pointer; font-size:14px; line-height:1;">×</button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- OPTIONAL ACCESSORIES -->
+          <div style="padding:16px 18px; border-bottom:1px solid #eceef1;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:11px;">
+              <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px;">OPTIONAL ACCESSORIES</div>
+              <button onClick="{{ onAddAcc }}" style="font-size:11px; font-weight:700; color:#941A31; background:#f6edef; border:none; border-radius:6px; padding:4px 9px; cursor:pointer;">+ 추가</button>
+            </div>
+            <div style="font-size:10.5px; color:#8b9099; line-height:1.45; margin-bottom:10px;">사진은 왼쪽 미리보기의 액세서리 칸에 직접 드롭하세요.</div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <sc-for list="{{ accessoriesVM }}" as="a" hint-placeholder-count="8">
+                <div style="display:grid; grid-template-columns:1fr auto; gap:6px; align-items:center;">
+                  <div style="display:flex; flex-direction:column; gap:4px;">
+                    <input value="{{ a.code }}" onInput="{{ a.onCode }}" placeholder="모델 코드" style="border:1px solid #e6e8ec; border-radius:6px; padding:5px 8px; font-size:11px; color:#1a1a1a; font-weight:700;" />
+                    <input value="{{ a.desc }}" onInput="{{ a.onDesc }}" placeholder="설명" style="border:1px solid #e6e8ec; border-radius:6px; padding:5px 8px; font-size:10.5px; color:#5e636b;" />
+                  </div>
+                  <button onClick="{{ a.onRemove }}" style="width:26px; height:26px; border:1px solid #f0d6d6; background:#fdf3f3; color:#c0564f; border-radius:6px; cursor:pointer; font-size:14px; line-height:1;">×</button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- 인증 아이콘 -->
+          <div style="padding:16px 18px; border-bottom:1px solid #eceef1;">
+            <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:11px;">인증 아이콘 <span style="font-weight:500; color:#b7bbc1;">· 등록 후 선택</span></div>
+            <div style="display:flex; flex-wrap:wrap; gap:7px;">
+              <sc-for list="{{ certsVM }}" as="c" hint-placeholder-count="8">
+                <button onClick="{{ c.onToggle }}" style="font-size:11px; font-weight:700; border-radius:6px; padding:6px 11px; cursor:pointer; border:1.4px solid {{ c.border }}; background:{{ c.bg }}; color:{{ c.color }};">{{ c.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- 스펙 값 인라인 수정 -->
+          <div style="padding:16px 18px;">
+            <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:10px;">스펙 값 인라인 수정</div>
+            <input value="{{ overrideSearch }}" onInput="{{ onSearch }}" placeholder="필드 검색…" style="width:100%; border:1px solid #d9dce1; border-radius:7px; padding:8px 10px; font-size:12px; margin-bottom:11px;" />
+            <div style="display:flex; flex-direction:column; gap:9px;">
+              <sc-for list="{{ overrideList }}" as="o" hint-placeholder-count="6">
+                <div>
+                  <div style="font-size:10.5px; color:#5b6068; font-weight:700; margin-bottom:3px;">{{ o.name }} <span style="color:#b7bbc1; font-weight:500;">· {{ o.category }}</span></div>
+                  <input value="{{ o.value }}" onInput="{{ o.onInput }}" style="width:100%; border:1px solid #e6e8ec; border-radius:6px; padding:6px 9px; font-size:11.5px; color:#44474e;" />
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <!-- ============ SETTINGS DRAWER ============ -->
+  <sc-if value="{{ showSettings }}" hint-placeholder-val="{{ true }}">
+    <div style="position:fixed; inset:0; z-index:50; display:flex; justify-content:flex-end;">
+      <div onClick="{{ onCloseSettings }}" style="position:absolute; inset:0; background:rgba(20,30,50,.4);"></div>
+      <div class="scroll" style="position:relative; width:460px; max-width:92vw; background:#fff; height:100%; overflow:auto; box-shadow:-8px 0 30px rgba(20,30,50,.2); animation:pop .2s ease;">
+        <div style="padding:18px 20px; border-bottom:1px solid #eceef1; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:#fff; z-index:5;">
+          <div style="font-size:16px; font-weight:800; color:#941A31;">설정</div>
+          <button onClick="{{ onCloseSettings }}" style="width:30px; height:30px; border:1px solid #e6e8ec; background:#f5f6f8; border-radius:8px; cursor:pointer; font-size:16px; color:#5e636b;">×</button>
+        </div>
+        <div style="display:flex; gap:6px; padding:14px 20px 0;">
+          <sc-for list="{{ settingsTabs }}" as="t" hint-placeholder-count="2">
+            <button onClick="{{ t.onClick }}" style="border:none; cursor:pointer; font-size:12.5px; font-weight:700; padding:8px 14px; border-radius:8px 8px 0 0; background:{{ t.bg }}; color:{{ t.color }};">{{ t.label }}</button>
+          </sc-for>
+        </div>
+        <div style="height:1px; background:#e6e8ec;"></div>
+
+        <!-- order tab -->
+        <sc-if value="{{ settingsOrder }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:18px 20px;">
+            <div style="font-size:12.5px; color:#5e636b; line-height:1.5; margin-bottom:14px;"><b style="color:#941A31;">{{ scope }}</b> 스펙시트의 카테고리 표시 순서입니다. 위/아래로 옮기면 레이아웃에 즉시 반영됩니다. (CMS Order number 기준이 기본값)</div>
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <sc-for list="{{ orderCats }}" as="c" hint-placeholder-count="8">
+                <div style="display:grid; grid-template-columns:auto 1fr auto auto; gap:9px; align-items:center; background:#f6f7f9; border:1px solid #e6e8ec; border-radius:8px; padding:9px 12px;">
+                  <span style="font-size:11px; font-weight:800; color:#b7bbc1; width:18px;">{{ c.num }}</span>
+                  <span style="font-size:12.5px; font-weight:700; color:#941A31;">{{ c.name }}</span>
+                  <button onClick="{{ c.onUp }}" style="width:26px; height:26px; border:1px solid #d9dce1; background:#fff; border-radius:6px; cursor:pointer; color:#5b6068;">↑</button>
+                  <button onClick="{{ c.onDown }}" style="width:26px; height:26px; border:1px solid #d9dce1; background:#fff; border-radius:6px; cursor:pointer; color:#5b6068;">↓</button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- rules tab -->
+        <sc-if value="{{ settingsRules }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:18px 20px;">
+            <div style="font-size:12.5px; color:#5e636b; line-height:1.5; margin-bottom:14px;">AI 검수 규칙입니다. 끄면 해당 유형의 수정 제안이 검수 결과에서 제외됩니다.</div>
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <sc-for list="{{ ruleCatalog }}" as="r" hint-placeholder-count="10">
+                <div style="display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:center; background:#f6f7f9; border:1px solid #e6e8ec; border-radius:8px; padding:9px 12px;">
+                  <span style="font-size:9.5px; font-weight:700; color:#fff; background:{{ r.color }}; border-radius:4px; padding:2px 6px; white-space:nowrap;">{{ r.cat }}</span>
+                  <span style="font-size:12px; color:#44474e;">{{ r.note }}</span>
+                  <button onClick="{{ r.onToggle }}" style="border:none; cursor:pointer; border-radius:16px; width:42px; height:23px; position:relative; background:{{ r.toggleBg }};">
+                    <span style="position:absolute; top:2.5px; left:{{ r.knobLeft }}; width:18px; height:18px; border-radius:50%; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.25);"></span>
+                  </button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ true }}">
+    <div style="position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:80; background:#1f2433; color:#fff; padding:11px 20px; border-radius:10px; font-size:13px; font-weight:600; box-shadow:0 8px 26px rgba(0,0,0,.3);">{{ savedToast }}</div>
+  </sc-if>
+
+  <!-- ============ REPORTS OVERLAY ============ -->
+  <sc-if value="{{ showReports }}" hint-placeholder-val="{{ true }}">
+    <div class="reports-overlay" style="position:fixed; inset:0; z-index:55; display:flex; flex-direction:column;">
+      <div class="rep-backdrop" onClick="{{ onCloseReports }}" style="position:absolute; inset:0; background:rgba(20,28,44,.55);"></div>
+      <!-- toolbar -->
+      <div class="reports-toolbar" style="position:relative; z-index:2; background:#1f2433; color:#fff; display:flex; align-items:center; justify-content:space-between; padding:11px 20px; box-shadow:0 2px 10px rgba(0,0,0,.25);">
+        <div style="font-size:14px; font-weight:700;">문서 리포트 미리보기 <span style="font-size:12px; color:#aab2c4; font-weight:500;">· 전체 단계 · US Letter</span></div>
+        <div style="display:flex; align-items:center; gap:9px;">
+          <button onClick="{{ onPrintReport }}" style="background:#fff; color:#1f2433; border:none; border-radius:8px; padding:8px 16px; font-size:12.5px; font-weight:700; cursor:pointer;">🖨 인쇄 · PDF로 저장</button>
+          <button onClick="{{ onCloseReports }}" style="background:rgba(255,255,255,.12); color:#fff; border:none; border-radius:8px; width:34px; height:34px; font-size:17px; cursor:pointer;">×</button>
+        </div>
+      </div>
+      <!-- scrollable pages -->
+      <div class="scroll reports-panel" style="position:relative; z-index:2; flex:1; overflow:auto; background:#52586a; padding:28px; display:flex; flex-direction:column; align-items:center; gap:24px;">
+
+        <!-- REPORT 1 — MAPPING (paginated) -->
+        <sc-for list="{{ repMapPages }}" as="p" hint-placeholder-count="1">
+        <div class="report-page" style="width:816px; height:1056px; overflow:hidden; background:#fff; box-shadow:0 8px 34px rgba(0,0,0,.3); padding:42px 50px 56px; box-sizing:border-box; position:relative; font-family:'Pretendard',sans-serif; color:#1a1a1a;">
+          <sc-if value="{{ p.first }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #941A31; padding-bottom:10px;">
+            <div>
+              <div style="font-size:11px; font-weight:800; color:#941A31; letter-spacing:1px;">STEP 1 · IMPORT &amp; MAP</div>
+              <div style="font-size:22px; font-weight:800; margin-top:3px;">정렬·매핑 리포트</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:15px; font-weight:800; color:#941A31;">{{ repModel }}</div>
+              <div style="font-size:10.5px; color:#7a7a7a;">{{ repScope }} · {{ repDate }}</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; margin:14px 0 12px;">
+            <div style="flex:1; background:#f6edef; border:1px solid #e3c9cf; border-radius:9px; padding:10px 14px;"><div style="font-size:21px; font-weight:800; color:#941A31;">{{ repMapMatched }} / {{ repMapTotal }}</div><div style="font-size:10.5px; color:#7a7a7a; margin-top:2px;">CMS 매핑 필드 (유사 매칭 포함)</div></div>
+            <div style="flex:1; background:#f7f7f8; border:1px solid #e4e4e6; border-radius:9px; padding:10px 14px;"><div style="font-size:21px; font-weight:800; color:#444;">{{ repMapUnmappedN }}</div><div style="font-size:10.5px; color:#7a7a7a; margin-top:2px;">확인 필요 (추정·미매핑)</div></div>
+          </div>
+          </sc-if>
+          <sc-if value="{{ p.cont }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; border-bottom:1.5px solid #941A31; padding-bottom:7px; margin-bottom:10px;">
+            <div style="font-size:14px; font-weight:800; color:#1a1a1a;">정렬·매핑 리포트 <span style="font-size:11px; font-weight:500; color:#9aa0aa;">(계속)</span></div>
+            <div style="font-size:11px; font-weight:700; color:#941A31;">{{ repModel }}</div>
+          </div>
+          </sc-if>
+          <table style="width:100%; border-collapse:collapse; font-size:9.5px; table-layout:fixed;">
+            <thead><tr><th style="text-align:left; background:#6e6e6e; color:#fff; padding:4px 8px; font-weight:700; width:21%;">Category</th><th style="text-align:left; background:#6e6e6e; color:#fff; padding:4px 8px; font-weight:700; width:29%;">Field (CMS)</th><th style="text-align:left; background:#6e6e6e; color:#fff; padding:4px 8px; font-weight:700;">Value</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ p.rows }}" as="r" hint-placeholder-count="20">
+                <tr style="border-bottom:1px solid #ececec;">
+                  <td style="padding:3px 8px; color:#888; vertical-align:top; word-break:break-word;">{{ r.category }}</td>
+                  <td style="padding:3px 8px; font-weight:600; vertical-align:top; word-break:break-word;">{{ r.name }} <sc-if value="{{ r.guess }}" hint-placeholder-val="{{ true }}"><span style="font-size:7.5px; font-weight:700; color:#c2700a; background:#fdf2e3; border-radius:3px; padding:0 4px;">추정</span></sc-if></td>
+                  <td style="padding:3px 8px; vertical-align:top; word-break:break-word;">{{ r.value }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+          <div style="position:absolute; left:50px; right:50px; bottom:22px; border-top:1px solid #ddd; padding-top:7px; display:flex; justify-content:space-between; font-size:9px; color:#9aa0aa;"><span style="color:#941A31; font-weight:700;">AVYCON Spec Sheet Studio</span><span>정렬·매핑 · {{ p.no }} / {{ p.total }}</span></div>
+        </div>
+        </sc-for>
+
+        <!-- UNMAPPED BOX (paginated) -->
+        <sc-if value="{{ repHasUnmapped }}" hint-placeholder-val="{{ true }}">
+        <sc-for list="{{ repUnmapPages }}" as="p" hint-placeholder-count="1">
+        <div class="report-page" style="width:816px; height:1056px; overflow:hidden; background:#fff; box-shadow:0 8px 34px rgba(0,0,0,.3); padding:42px 50px 56px; box-sizing:border-box; position:relative; font-family:'Pretendard',sans-serif; color:#1a1a1a;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; border-bottom:2px solid #c2700a; padding-bottom:9px;">
+            <div style="font-size:18px; font-weight:800; color:#1a1a1a;">⚠ 확인 필요 항목 <span style="font-size:11px; font-weight:500; color:#9aa0aa;">· 추정 매핑 / 미매핑</span></div>
+            <div style="font-size:11px; font-weight:700; color:#941A31;">{{ repModel }}</div>
+          </div>
+          <div style="font-size:10.5px; color:#7a7a7a; margin:10px 0 12px;">완전 일치가 아니라 유사 항목으로 자동 추정한 필드와, 대응 항목을 찾지 못한 필드입니다. 편집기에서 확인·수정하세요.</div>
+          <div style="display:flex; flex-direction:column; gap:7px;">
+            <sc-for list="{{ p.rows }}" as="u" hint-placeholder-count="12">
+              <div style="border:1px solid #ededed; border-radius:8px; padding:8px 11px; display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center;">
+                <div style="min-width:0;">
+                  <div style="font-size:10.5px; font-weight:700; color:#1a1a1a;">{{ u.name }} <span style="font-size:9px; color:#9aa0aa; font-weight:500;">→ {{ u.target }}</span></div>
+                  <div style="font-size:9px; color:#9aa0aa; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ u.value }}</div>
+                </div>
+                <span style="font-size:8.5px; font-weight:700; color:{{ u.statusColor }}; background:{{ u.statusBg }}; border-radius:5px; padding:3px 8px; white-space:nowrap;">{{ u.status }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="position:absolute; left:50px; right:50px; bottom:22px; border-top:1px solid #ddd; padding-top:7px; display:flex; justify-content:space-between; font-size:9px; color:#9aa0aa;"><span style="color:#941A31; font-weight:700;">AVYCON Spec Sheet Studio</span><span>확인 필요 · {{ p.no }} / {{ p.total }}</span></div>
+        </div>
+        </sc-for>
+        </sc-if>
+
+        <!-- REPORT 2A — AI REVIEW · 검출 내역 (paginated) -->
+        <sc-for list="{{ repIssuePages }}" as="p" hint-placeholder-count="1">
+        <div class="report-page" style="width:816px; height:1056px; overflow:hidden; background:#fff; box-shadow:0 8px 34px rgba(0,0,0,.3); padding:42px 50px 56px; box-sizing:border-box; position:relative; font-family:'Pretendard',sans-serif; color:#1a1a1a;">
+          <sc-if value="{{ p.first }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #941A31; padding-bottom:10px;">
+            <div>
+              <div style="font-size:11px; font-weight:800; color:#941A31; letter-spacing:1px;">STEP 2 · AI REVIEW</div>
+              <div style="font-size:22px; font-weight:800; margin-top:3px;">AI 검수 · 검출 내역</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:15px; font-weight:800; color:#941A31;">{{ repModel }}</div>
+              <div style="font-size:10.5px; color:#7a7a7a;">US/UL 표기 정규화 · {{ repDate }}</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 12px;">
+            <div style="background:#1a1a1a; color:#fff; border-radius:8px; padding:8px 14px;"><span style="font-size:18px; font-weight:800;">{{ repReviewTotal }}</span> <span style="font-size:10px; color:#bbb;">검출</span></div>
+            <div style="background:#f6edef; color:#941A31; border-radius:8px; padding:8px 14px;"><span style="font-size:18px; font-weight:800;">{{ repReviewApplied }}</span> <span style="font-size:10px;">반영</span></div>
+            <sc-for list="{{ repReviewStats }}" as="st" hint-placeholder-count="5">
+              <div style="background:#f4f4f5; border-radius:8px; padding:8px 12px;"><span style="font-size:16px; font-weight:800; color:#444;">{{ st.count }}</span> <span style="font-size:10px; color:#7a7a7a;">{{ st.cat }}</span></div>
+            </sc-for>
+          </div>
+          </sc-if>
+          <sc-if value="{{ p.cont }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; border-bottom:1.5px solid #941A31; padding-bottom:7px; margin-bottom:10px;">
+            <div style="font-size:14px; font-weight:800; color:#1a1a1a;">AI 검수 · 검출 내역 <span style="font-size:11px; font-weight:500; color:#9aa0aa;">(계속)</span></div>
+            <div style="font-size:11px; font-weight:700; color:#941A31;">{{ repModel }}</div>
+          </div>
+          </sc-if>
+          <table style="width:100%; border-collapse:collapse; font-size:9px; table-layout:fixed;">
+            <thead><tr><th style="text-align:left; background:#6e6e6e; color:#fff; padding:4px 7px; width:17%;">Field</th><th style="text-align:left; background:#6e6e6e; color:#fff; padding:4px 7px; width:9%;">유형</th><th style="text-align:left; background:#6e6e6e; color:#fff; padding:4px 7px; width:30%;">수정 내용</th><th style="text-align:left; background:#6e6e6e; color:#fff; padding:4px 7px;">변경 (전 → 후)</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ p.rows }}" as="r" hint-placeholder-count="16">
+                <tr style="border-bottom:1px solid #ececec;">
+                  <td style="padding:3px 7px; font-weight:600; vertical-align:top; word-break:break-word;">{{ r.field }}</td>
+                  <td style="padding:3px 7px; vertical-align:top;"><span style="font-size:8px; font-weight:700; color:#fff; background:{{ r.catColor }}; border-radius:3px; padding:1px 5px;">{{ r.cat }}</span></td>
+                  <td style="padding:3px 7px; vertical-align:top; color:#555; word-break:break-word;">{{ r.note }}</td>
+                  <td style="padding:3px 7px; vertical-align:top; word-break:break-word;"><span style="color:#d11a1a; text-decoration:line-through;">{{ r.before }}</span> <span style="color:#bbb;">→</span> <span style="color:#1f8a5b; font-weight:600;">{{ r.after }}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+          <div style="position:absolute; left:50px; right:50px; bottom:22px; border-top:1px solid #ddd; padding-top:7px; display:flex; justify-content:space-between; font-size:9px; color:#9aa0aa;"><span style="color:#941A31; font-weight:700;">AVYCON Spec Sheet Studio</span><span>AI 검수 검출 내역 · {{ p.no }} / {{ p.total }}</span></div>
+        </div>
+        </sc-for>
+
+        <!-- REPORT 2 — REVIEW (paginated) -->
+        <sc-for list="{{ repReviewPages }}" as="p" hint-placeholder-count="1">
+        <div class="report-page" style="width:816px; height:1056px; overflow:hidden; background:#fff; box-shadow:0 8px 34px rgba(0,0,0,.3); padding:42px 50px 56px; box-sizing:border-box; position:relative; font-family:'Pretendard',sans-serif; color:#1a1a1a;">
+          <sc-if value="{{ p.first }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #941A31; padding-bottom:10px;">
+            <div>
+              <div style="font-size:11px; font-weight:800; color:#941A31; letter-spacing:1px;">STEP 2 · AI REVIEW</div>
+              <div style="font-size:22px; font-weight:800; margin-top:3px;">반영 결과 · 최종 값</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:15px; font-weight:800; color:#941A31;">{{ repModel }}</div>
+              <div style="font-size:10.5px; color:#7a7a7a;">US/UL 표기 정규화 · {{ repDate }}</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 12px;">
+            <div style="background:#1a1a1a; color:#fff; border-radius:8px; padding:8px 14px;"><span style="font-size:18px; font-weight:800;">{{ repReviewTotal }}</span> <span style="font-size:10px; color:#bbb;">검출</span></div>
+            <div style="background:#f6edef; color:#941A31; border-radius:8px; padding:8px 14px;"><span style="font-size:18px; font-weight:800;">{{ repReviewApplied }}</span> <span style="font-size:10px;">반영</span></div>
+            <sc-for list="{{ repReviewStats }}" as="st" hint-placeholder-count="5">
+              <div style="background:#f4f4f5; border-radius:8px; padding:8px 12px;"><span style="font-size:16px; font-weight:800; color:#444;">{{ st.count }}</span> <span style="font-size:10px; color:#7a7a7a;">{{ st.cat }}</span></div>
+            </sc-for>
+          </div>
+          </sc-if>
+          <sc-if value="{{ p.cont }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; border-bottom:1.5px solid #941A31; padding-bottom:7px; margin-bottom:10px;">
+            <div style="font-size:14px; font-weight:800; color:#1a1a1a;">반영 결과 · 최종 값 <span style="font-size:11px; font-weight:500; color:#9aa0aa;">(계속)</span></div>
+            <div style="font-size:11px; font-weight:700; color:#941A31;">{{ repModel }}</div>
+          </div>
+          </sc-if>
+          <table style="width:100%; border-collapse:collapse; font-size:9px; table-layout:fixed;">
+            <thead><tr><th style="text-align:left; background:#6e6e6e; color:#fff; padding:4px 7px; width:19%;">Field</th><th style="text-align:left; background:#6e6e6e; color:#fff; padding:4px 7px; width:34%;">수정 전</th><th style="text-align:left; background:#6e6e6e; color:#fff; padding:4px 7px; width:34%;">수정 후</th><th style="text-align:left; background:#6e6e6e; color:#fff; padding:4px 7px;">반영</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ p.rows }}" as="r" hint-placeholder-count="14">
+                <tr style="border-bottom:1px solid #ececec;">
+                  <td style="padding:3px 7px; font-weight:600; vertical-align:top; word-break:break-word;">{{ r.field }}</td>
+                  <td style="padding:3px 7px; color:#b14a4a; vertical-align:top; text-decoration:line-through; word-break:break-word;">{{ r.before }}</td>
+                  <td style="padding:3px 7px; color:#1f8a5b; vertical-align:top; word-break:break-word;">{{ r.after }}</td>
+                  <td style="padding:3px 7px; vertical-align:top; font-weight:700; color:{{ r.appliedColor }};">{{ r.appliedLabel }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+          <div style="position:absolute; left:50px; right:50px; bottom:22px; border-top:1px solid #ddd; padding-top:7px; display:flex; justify-content:space-between; font-size:9px; color:#9aa0aa;"><span style="color:#941A31; font-weight:700;">AVYCON Spec Sheet Studio</span><span>AI 검수 · {{ p.no }} / {{ p.total }}</span></div>
+        </div>
+        </sc-for>
+
+        <!-- REPORT 3 — SPEC SHEET -->
+        <div style="display:flex; flex-direction:column; gap:24px;">
+          <dc-import name="SpecSheet" sheet="{{ sheet }}" show-p1="{{ true }}" show-p2="{{ true }}" hint-size="816px,1100px"></dc-import>
+        </div>
+
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:800}}">
+class Component extends DCLogic {
+  state = {
+    ready:false, loaded:false, step:1, scope:'Camera', activeSample:null,
+    raw:null, assignments:{}, reviewAccept:{}, overrides:{},
+    meta:{model:'', subtitle:''}, bullets:[], dims:[], certs:{}, accessories:[],
+    pageView:'both', zoom:0.66, zoom4:0.5, showSettings:false, settingsTab:'order',
+    customOrder:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false,
+    importing:false, importError:'', dragOver:false, importNote:'',
+    showReports:false, reportFocus:'mapping', showExport:false, exportMsg:'', savedToast:'', hasSession:false,
+    reviewFilter:null, expandedReviews:{},
+    cms:null, samples:null, qc:null
+  };
+
+  CERTS = [
+    {id:'ul',label:'UL'},{id:'fcc',label:'FCC'},{id:'ce',label:'CE'},{id:'rohs',label:'RoHS'},
+    {id:'ndaa',label:'NDAA'},{id:'taa',label:'TAA'},{id:'ip66',label:'IP66'},{id:'ip67',label:'IP67'},
+    {id:'ik10',label:'IK10'},{id:'onvif',label:'ONVIF'},{id:'weee',label:'WEEE'},{id:'reach',label:'REACH'}
+  ];
+  ALIAS = {
+    imagesensor:'imaging_device', electronicshutterspeed:'electric_shutter_speed',
+    imagemode:'day__night', audio:'audio_input', alarm:'alarm_input',
+    irled:'light_type', operatingcondition:'operating_temperature',
+    dori:'detect_25ppm_8ppf', environment:'emc'
+  };
+  CAT_COLOR = {'단위':'#5b6068','표기':'#777c85','오타':'#c8102e','표준':'#5b6068','문법':'#8b9099','기본 정보':'#5b6068'};
+
+  async componentDidMount(){
+    try{
+      const [cms, samples] = await Promise.all([
+        fetch('./data/cms_order.json').then(r=>r.json()),
+        fetch('./data/sample_input.json').then(r=>r.json())
+      ]);
+      const src = await fetch('./data/qc_engine.js').then(r=>r.text());
+      const url = URL.createObjectURL(new Blob([src],{type:'text/javascript'}));
+      const qc = await import(url);
+      let hasSession=false; try{ hasSession=!!localStorage.getItem('specstudio:session'); }catch(e){}
+      this.setState({cms, samples, qc, ready:true, hasSession});
+    }catch(e){ console.error('load error', e); this.setState({ready:true}); }
+  }
+
+  norm(s){ return String(s||'').toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]/g,''); }
+
+  scopeCats(){
+    const sc=(this.state.cms&&this.state.cms.byScope[this.state.scope])||[];
+    let cats=sc.filter(c=>c.specSheet);
+    const co=this.state.customOrder[this.state.scope];
+    if(co) cats=[...cats].sort((a,b)=>{const ia=co.indexOf(a.category),ib=co.indexOf(b.category);return (ia<0?999:ia)-(ib<0?999:ib);});
+    return cats;
+  }
+
+  buildMapping(){
+    const raw=this.state.raw; if(!raw||!this.state.cms) return {orderedCats:[],unmapped:[],allFields:[],matched:0,total:0};
+    const cats=this.scopeCats();
+    const allFields=[]; cats.forEach(c=>c.fields.forEach(f=>allFields.push({field:f.field,name:f.name,category:c.category})));
+    const byNorm={}, byKey={};
+    allFields.forEach(f=>{ byNorm[this.norm(f.name)]=f; byKey[f.field]=f; });
+    const valueByField={}; const customRows=[]; const used=new Set();
+    const A=this.state.assignments; const pendingSrc=[];
+    // pass 1 — explicit assignment + exact/alias match
+    raw.specs.forEach(sp=>{
+      const asn=A[sp.name];
+      if(asn==='__skip__') return;
+      if(asn==='__custom__'){ customRows.push({name:sp.name,value:sp.value,category:sp.section}); return; }
+      let key=null;
+      if(asn && byKey[asn]) key=asn;
+      else if(!asn){ const h=byNorm[this.norm(sp.name)]||byKey[this.ALIAS[this.norm(sp.name)]||'']; if(h) key=h.field; }
+      if(key && byKey[key] && !used.has(key)){ valueByField[key]={value:sp.value, source:sp.name}; used.add(key); }
+      else pendingSrc.push(sp);
+    });
+    // pass 2 — fuzzy / similarity match for the rest
+    const AUTO=0.58, SUGGEST=0.34; const pend=[]; const unmapped=[];
+    pendingSrc.forEach(sp=>{
+      const asn=A[sp.name];
+      if(asn && byKey[asn]){ valueByField[asn]={value:sp.value,source:sp.name}; used.add(asn); return; }
+      if(asn===''){ unmapped.push({name:sp.name,value:sp.value,section:sp.section,current:'',suggestionField:null,suggestionLabel:null,score:0,guess:false}); return; }
+      const best=this._bestMatch(sp.name, allFields, used);
+      if(best && best.score>=AUTO){
+        valueByField[best.field]={value:sp.value,source:sp.name,guess:true,score:best.score}; used.add(best.field);
+        pend.push({name:sp.name,value:sp.value,section:sp.section,current:best.field,suggestionField:best.field,suggestionLabel:best.name,score:best.score,guess:true});
+      } else {
+        const s=(best&&best.score>=SUGGEST)?best:null;
+        unmapped.push({name:sp.name,value:sp.value,section:sp.section,current:'',suggestionField:s?s.field:null,suggestionLabel:s?s.name:null,score:s?s.score:0,guess:false});
+      }
+    });
+    const orderedCats=cats.map(c=>{
+      const fields=c.fields.map(f=>{const v=valueByField[f.field]; if(!v) return null; return {field:f.field,name:f.name,value:v.value,source:v.source,guess:!!v.guess};}).filter(Boolean);
+      customRows.filter(cr=>cr.category===c.category).forEach(cr=>fields.push({field:'__custom_'+cr.name,name:cr.name,value:cr.value,source:cr.name}));
+      return {category:c.category, fields};
+    }).filter(c=>c.fields.length);
+    const usedCats=new Set(cats.map(c=>c.category));
+    const orphans=customRows.filter(cr=>!usedCats.has(cr.category));
+    if(orphans.length) orderedCats.push({category:'Custom', fields:orphans.map(cr=>({field:'__custom_'+cr.name,name:cr.name,value:cr.value,source:cr.name}))});
+    const matched=orderedCats.reduce((n,c)=>n+c.fields.length,0);
+    const review=[...pend, ...unmapped];
+    return {orderedCats, unmapped:review, pending:pend, unmappedTrue:unmapped, guessCount:pend.length, allFields, matched, total:raw.specs.length, reviewCount:review.length};
+  }
+
+  // ── fuzzy field-name matching ────────────────────────────────────────
+  _tokens(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().split(' ').filter(w=>w.length>1); }
+  _lev(a,b){ const m=a.length,n=b.length; if(!m)return n; if(!n)return m; let prev=Array.from({length:n+1},(_,i)=>i),cur=new Array(n+1);
+    for(let i=1;i<=m;i++){ cur[0]=i; for(let j=1;j<=n;j++){ const c=a[i-1]===b[j-1]?0:1; cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+c); } const t=prev;prev=cur;cur=t; } return prev[n]; }
+  _sim(a,b){ const na=this.norm(a),nb=this.norm(b); if(!na||!nb) return 0; if(na===nb) return 1;
+    const lev=1-this._lev(na,nb)/Math.max(na.length,nb.length);
+    const sa=new Set(this._tokens(a)), sb=new Set(this._tokens(b)); let inter=0; sa.forEach(t=>{ if(sb.has(t)) inter++; });
+    const jac=(sa.size&&sb.size)? inter/(sa.size+sb.size-inter):0;
+    const contain=(na.length>=4&&nb.length>=4&&(na.includes(nb)||nb.includes(na)))?0.86:0;
+    return Math.max(lev*0.95, jac, contain); }
+  _bestMatch(name, fields, used){ let best=null; for(const f of fields){ if(used.has(f.field)) continue; const sc=this._sim(name,f.name); if(!best||sc>best.score) best={field:f.field,name:f.name,category:f.category,score:sc}; } return best; }
+
+  buildReviews(){
+    const raw=this.state.raw; if(!raw||!this.state.qc) return [];
+    const disabled=Object.keys(this.state.disabledRules).filter(k=>this.state.disabledRules[k]);
+    const rows=[];
+    const add=(key,field,section,original)=>{
+      const {result,issues}=this.state.qc.runQC(original, field, disabled);
+      if(issues.length) rows.push({key,field,section,original,corrected:result,issues});
+    };
+    if(raw.subtitle) add('__title','Sub Title','기본 정보',raw.subtitle);
+    if(raw.overview) add('__overview','Overview','기본 정보',raw.overview);
+    raw.specs.forEach((sp,i)=>add('f'+i, sp.name, sp.section, sp.value));
+    return rows;
+  }
+  accepted(key){ return this.state.reviewAccept[key]!==false; }
+
+  computeSheet(){
+    const raw=this.state.raw; if(!raw) return null;
+    const disabled=Object.keys(this.state.disabledRules).filter(k=>this.state.disabledRules[k]);
+    const ov=this.state.overrides;
+    const resolve=(key, original, fieldName)=>{
+      if(ov[key]!=null) return ov[key];
+      const {result,issues}=this.state.qc.runQC(original, fieldName, disabled);
+      return (issues.length && this.accepted(key))?result:original;
+    };
+    const secOrder=[]; const secMap={};
+    raw.specs.forEach((sp,i)=>{ const sec=sp.section||'—'; if(!secMap[sec]){secMap[sec]=[];secOrder.push(sec);} secMap[sec].push({name:sp.name, value:resolve('f'+i, sp.value, sp.name), key:'f'+i}); });
+    const specCats=secOrder.map(sec=>({label:sec.toUpperCase(), fields:secMap[sec]}));
+    const title=resolve('__title', raw.subtitle, 'Sub Title');
+    const subtitle2=(ov.__subtitle2!=null)?ov.__subtitle2:(raw.subtitle2||'');
+    const model=this.state.meta.model||raw.model;
+    const CL={ndaa:'NDAA COMPLIANT',taa:'TAA',ce:'CE',fcc:'FCC',ul:'UL',rohs:'RoHS',ip66:'IP66',ip67:'IP67',ik10:'IK10',onvif:'ONVIF',weee:'WEEE',reach:'REACH'};
+    const CORDER=['ndaa','ce','fcc','ul','rohs','taa','ip66','ip67','ik10','onvif','weee','reach'];
+    const certs=this.CERTS.filter(c=>this.state.certs[c.id]).map(c=>({id:c.id,label:CL[c.id]||c.label})).sort((a,b)=>CORDER.indexOf(a.id)-CORDER.indexOf(b.id));
+    return {model, title, subtitle2, certs, bullets:this.state.bullets, dims:this.state.dims, accessories:this.state.accessories, specCats};
+  }
+
+  // actions
+  loadSample(id){
+    const s=this.state.samples.find(x=>x.id===id); if(!s) return;
+    this._loadProduct(s, id);
+  }
+  _loadProduct(s, id){
+    const qc=this.state.qc;
+    const bullets=(s.overview||'').split(/\n+/).map(l=>l.replace(/^[•\-\u2022\u00b7]\s*/,'').trim()).filter(Boolean).map(l=>qc.runQC(l,'Overview',[]).result);
+    const dimSpec=s.specs.find(x=>/dimension/i.test(x.name));
+    const wSpec=s.specs.find(x=>/weight/i.test(x.name));
+    const dims=[];
+    if(dimSpec) dims.push({label:'Dimensions', value:qc.runQC(dimSpec.value,'Product Dimensions',[]).result});
+    if(wSpec) dims.push({label:'Weight', value:qc.runQC(wSpec.value,'Weight',[]).result});
+    if(!dims.length) dims.push({label:'Dimensions', value:''});
+    const certs={ndaa:true,ce:true,fcc:true};
+    const ACC=[['AVM-MMS-CVR-M1','TOP COVER'],['AVM-DUAL-WMT-L1','WALL MOUNT'],['AVM-PT-CMT-PM-L1','CEILING MOUNT'],['AVM-CRM-A1','CORNER MOUNT'],['AVM-P-POM-A2','POLE MOUNT'],['AVM-JB-WMT-A1','JUNCTION BOX FOR WALL MOUNT'],['AVM-P-PWMT','PARAPET MOUNT'],['AVM-PT-TMT-T25','THREADED TOP FOR PARAPET MOUNT']];
+    const accessories=ACC.map((a,i)=>({imgId:'acc'+i, code:a[0], desc:a[1]}));
+    this.setState({raw:s, activeSample:id||s.id, loaded:true, step:1, assignments:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories});
+  }
+  // ── Excel (.xlsx) import ──────────────────────────────────────────────
+  _structifySheet(ws, name, XLSX){
+    const rows=XLSX.utils.sheet_to_json(ws, {header:1, defval:'', blankrows:false});
+    const o={id:name||'IMPORT', model:'', subtitle:'', subtitle2:'', series:'DIVERSITY', overview:'', specs:[]};
+    let section='';
+    for(const r of rows){
+      const A=String(r[0]==null?'':r[0]).trim();
+      const B=(r[1]==null?'':String(r[1])).replace(/\r\n/g,'\n').trim();
+      if(!A) continue;
+      const al=A.toLowerCase();
+      if(al==='avycon model'||al==='model'||al==='model number'){ o.model=B; continue; }
+      if(al==='sub title'||al==='subtitle'||al==='title'){ o.subtitle=B; continue; }
+      if(al==='sub title2'||al==='subtitle2'||al==='sub title 2'){ o.subtitle2=B; continue; }
+      if(al==='overview'){ o.overview=B; continue; }
+      if(al==='specification'||al==='specifications'){ continue; }
+      if(!B){ section=A; continue; }
+      o.specs.push({section, name:A, value:B});
+    }
+    if(!o.model) o.model=name||'IMPORTED';
+    return o;
+  }
+  pickFile(){
+    const inp=document.createElement('input');
+    inp.type='file'; inp.accept='.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    inp.onchange=()=>{ if(inp.files&&inp.files[0]) this.importXlsx(inp.files[0]); };
+    inp.click();
+  }
+  async importXlsx(file){
+    if(!file) return;
+    if(!/\.xlsx$/i.test(file.name) && !/spreadsheet/.test(file.type)){ this.setState({importError:'.xlsx 파일을 넣어주세요.', dragOver:false}); return; }
+    this.setState({importing:true, importError:'', dragOver:false});
+    try{
+      const XLSX=await import('https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs');
+      const buf=await file.arrayBuffer();
+      const wb=XLSX.read(buf, {type:'array'});
+      const products=wb.SheetNames.map(n=>this._structifySheet(wb.Sheets[n], n, XLSX)).filter(p=>p.specs.length>0);
+      if(!products.length) throw new Error('스펙 데이터를 찾지 못했습니다. (A열 항목명 / B열 값 형식)');
+      const extra=products.slice(1);
+      this._loadProduct(products[0], products[0].id);
+      // keep imported products available alongside samples
+      this.setState(st=>({samples:[...products, ...(st.samples||[]).filter(s=>!products.find(p=>p.id===s.id))], importing:false}));
+      if(extra.length) this.setState({importNote:extra.length+'개 시트가 더 있습니다 (첫 시트를 불러왔습니다).'});
+    }catch(e){ console.error('xlsx import failed', e); this.setState({importing:false, importError:'엑셀을 읽지 못했습니다: '+(e.message||e)}); }
+  }
+  onDragOver(e){ e.preventDefault(); if(!this.state.dragOver) this.setState({dragOver:true}); }
+  onDragLeave(e){ e.preventDefault(); this.setState({dragOver:false}); }
+  onDropFile(e){ e.preventDefault(); const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; this.setState({dragOver:false}); if(f) this.importXlsx(f); }
+
+  // ── Reports & Export ─────────────────────────────────────────────────
+  _pg(items,pxFn,fb,rb){ const pages=[]; let cur=[],u=0,b=fb; for(const it of items){ const h=pxFn(it); if(u+h>b && cur.length){ pages.push(cur); cur=[];u=0;b=rb; } cur.push(it); u+=h; } if(cur.length||!pages.length) pages.push(cur); return pages; }
+  reportData(){
+    if(!this.state.raw) return null;
+    const m=this.buildMapping();
+    const reviews=this.buildReviews();
+    const sheet=this.computeSheet();
+    const byCat={}; reviews.forEach(r=>r.issues.forEach(i=>byCat[i.cat]=(byCat[i.cat]||0)+1));
+    const reviewRows=reviews.map(r=>({field:r.field, section:r.section, before:r.original, after:r.corrected,
+      cats:[...new Set(r.issues.map(i=>i.cat))].join(', '), applied:this.accepted(r.key)}));
+    const issues=[]; reviews.forEach(r=>r.issues.forEach(i=>issues.push({field:r.field, section:r.section, cat:i.cat, note:i.note, before:i.before, after:i.after, applied:this.accepted(r.key)})));
+    return {
+      model:sheet.model, title:sheet.title, scope:this.state.scope, date:new Date().toISOString().slice(0,10),
+      mapping:{matched:m.matched, total:m.total, unmapped:m.unmapped, cats:m.orderedCats},
+      review:{total:reviews.reduce((n,r)=>n+r.issues.length,0), applied:reviews.filter(r=>this.accepted(r.key)).length, byCat, rows:reviewRows, issues},
+      sheet
+    };
+  }
+  openReports(focus){ this.setState({showReports:true, reportFocus:focus||'mapping', showExport:false}); }
+  closeReports(){ this.setState({showReports:false}); }
+  toggleExport(){ this.setState(s=>({showExport:!s.showExport, exportMsg:''})); }
+  // ── session save / restore ───────────────────────────────────────────
+  saveSession(){
+    if(!this.state.raw){ this.setState({savedToast:'먼저 데이터를 불러오세요.'}); return; }
+    try{
+      const s=this.state;
+      const data={ v:1, scope:s.scope, raw:s.raw, assignments:s.assignments, reviewAccept:s.reviewAccept, overrides:s.overrides, meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, customOrder:s.customOrder, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample, savedAt:Date.now() };
+      localStorage.setItem('specstudio:session', JSON.stringify(data));
+      const t=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+      this.setState({savedToast:'✓ 저장됨 · '+t, hasSession:true});
+      clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
+    }catch(e){ console.error(e); this.setState({savedToast:'저장 실패 (용량 초과?)'}); }
+  }
+  restoreSession(){
+    try{
+      const raw=localStorage.getItem('specstudio:session'); if(!raw) return;
+      const d=JSON.parse(raw); if(!d||!d.raw) return;
+      this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:d.assignments||{}, reviewAccept:d.reviewAccept||{}, overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:d.bullets||[], dims:d.dims||[], certs:d.certs||{}, accessories:d.accessories||[], customOrder:d.customOrder||{}, disabledRules:d.disabledRules||{}, step:d.step||1, activeSample:d.activeSample, importError:'', savedToast:'✓ 저장된 작업을 불러왔습니다' });
+      clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
+    }catch(e){ console.error('restore failed', e); }
+  }
+
+  exportPdf(){
+    this.setState({showReports:true, showExport:false}, ()=>{ setTimeout(()=>{ try{ window.print(); }catch(e){ console.error(e); } }, 600); });
+  }
+
+  async exportXlsx(){
+    this.setState({exportMsg:'엑셀 생성 중…'});
+    try{
+      const XLSX=await import('https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs');
+      const sheet=this.computeSheet(); const reviews=this.buildReviews();
+      const aoa=[['Section','Field','Value (AI 검수 반영)']];
+      sheet.specCats.forEach(c=>c.fields.forEach(f=>aoa.push([c.label, f.name, f.value])));
+      const ws1=XLSX.utils.aoa_to_sheet(aoa); ws1['!cols']=[{wch:24},{wch:30},{wch:72}];
+      const raoa=[['Field','Section','Before','After','Type','Applied']];
+      reviews.forEach(r=>raoa.push([r.field, r.section, r.original, r.corrected, [...new Set(r.issues.map(i=>i.cat))].join(', '), this.accepted(r.key)?'Y':'N']));
+      const ws2=XLSX.utils.aoa_to_sheet(raoa); ws2['!cols']=[{wch:26},{wch:16},{wch:42},{wch:42},{wch:14},{wch:8}];
+      const wb=XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws1, 'Specifications');
+      XLSX.utils.book_append_sheet(wb, ws2, 'AI Review');
+      XLSX.writeFile(wb, sheet.model+'_검수데이터.xlsx');
+      this.setState({exportMsg:'✓ 엑셀 다운로드됨', showExport:false});
+    }catch(e){ console.error(e); this.setState({exportMsg:'엑셀 실패: '+(e.message||e)}); }
+  }
+
+  exportDocx(){
+    try{
+      const rep=this.reportData(); if(!rep) return;
+      const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      let h='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><style>'
+        +'body{font-family:Pretendard,Arial,sans-serif;color:#1a1a1a;font-size:10pt}h1{font-size:20pt;margin:0}h2{font-size:13pt;color:#941A31;border-bottom:1.5pt solid #941A31;padding-bottom:3pt;margin-top:20pt}'
+        +'table{border-collapse:collapse;width:100%;font-size:8.5pt;margin-top:6pt}td,th{border:0.5pt solid #cccccc;padding:3pt 5pt;text-align:left;vertical-align:top}'
+        +'.cat{background:#6e6e6e;color:#ffffff;font-weight:bold;text-align:center}.lbl{width:30%;color:#666666;text-align:right}</style></head><body>';
+      h+='<h1>'+esc(rep.model)+'</h1><p style="color:#8a1a2e;margin:4pt 0">'+esc(rep.title)+' · '+rep.date+'</p>';
+      h+='<h2>1. 정렬·매핑 리포트</h2><p>스코프 '+esc(rep.scope)+' · 매핑 '+rep.mapping.matched+'/'+rep.mapping.total+' · 미매핑 '+rep.mapping.unmapped.length+'</p>';
+      h+='<table><tr><th>Category</th><th>Field</th><th>Source</th><th>Value</th></tr>';
+      rep.mapping.cats.forEach(c=>c.fields.forEach(f=>{ h+='<tr><td>'+esc(c.category)+'</td><td>'+esc(f.name)+'</td><td>'+esc(f.source||'')+'</td><td>'+esc(f.value)+'</td></tr>'; }));
+      h+='</table>';
+      h+='<h2>2. AI 검수 리포트</h2><p>총 '+rep.review.total+'건 검출 · '+rep.review.applied+'건 반영</p>';
+      h+='<table><tr><th>Field</th><th>Before</th><th>After</th><th>Type</th><th>반영</th></tr>';
+      rep.review.rows.forEach(r=>{ h+='<tr><td>'+esc(r.field)+'</td><td>'+esc(r.before)+'</td><td>'+esc(r.after)+'</td><td>'+esc(r.cats)+'</td><td>'+(r.applied?'Y':'N')+'</td></tr>'; });
+      h+='</table>';
+      h+='<h2>3. SPECIFICATIONS — '+esc(rep.model)+'</h2><table>';
+      rep.sheet.specCats.forEach(c=>{ h+='<tr><td class="cat" colspan="2">'+esc(c.label)+'</td></tr>'; c.fields.forEach(f=>{ h+='<tr><td class="lbl">'+esc(f.name)+'</td><td>'+esc(f.value)+'</td></tr>'; }); });
+      h+='</table></body></html>';
+      const blob=new Blob(['\ufeff'+h], {type:'application/msword'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=rep.model+'_리포트.doc'; document.body.appendChild(a); a.click(); a.remove();
+      this.setState({exportMsg:'✓ Word 문서 다운로드됨', showExport:false});
+    }catch(e){ console.error(e); this.setState({exportMsg:'Word 실패: '+(e.message||e)}); }
+  }
+
+  async exportPptx(){
+    this.setState({exportMsg:'PPTX 생성 중…'});
+    try{
+      const mod=await import('https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.es.js');
+      const Pptx=mod.default||mod.PptxGenJS||window.PptxGenJS;
+      const rep=this.reportData(); const pptx=new Pptx(); pptx.layout='LAYOUT_WIDE';
+      const M='941A31', INK='1A1A1A', GR='6E6E6E';
+      let s=pptx.addSlide();
+      s.addShape(pptx.ShapeType.rect,{x:0,y:0,w:'100%',h:0.25,fill:{color:M}});
+      s.addText(rep.model,{x:0.6,y:2.5,w:12,h:1,fontSize:40,bold:true,color:INK,fontFace:'Pretendard'});
+      s.addText(rep.title,{x:0.6,y:3.5,w:12,h:0.6,fontSize:18,color:M});
+      s.addText('AVYCON Spec Sheet Report · '+rep.date,{x:0.6,y:6.7,w:12,h:0.4,fontSize:12,color:'7A7A7A'});
+      // mapping
+      s=pptx.addSlide(); s.addText('1. 정렬·매핑 결과',{x:0.5,y:0.4,w:12,h:0.6,fontSize:24,bold:true,color:M});
+      s.addText('스코프 '+rep.scope+'   ·   매핑 '+rep.mapping.matched+'/'+rep.mapping.total+'   ·   미매핑 '+rep.mapping.unmapped.length,{x:0.5,y:1.05,w:12,h:0.4,fontSize:14,color:'444444'});
+      const mrows=[[{text:'Category',options:{bold:true,fill:{color:'EEEEEE'}}},{text:'Field',options:{bold:true,fill:{color:'EEEEEE'}}},{text:'Value',options:{bold:true,fill:{color:'EEEEEE'}}}]];
+      rep.mapping.cats.forEach(c=>c.fields.forEach(f=>mrows.push([c.category, f.name, String(f.value).slice(0,80)])));
+      s.addTable(mrows.slice(0,26),{x:0.5,y:1.5,w:12.3,colW:[2.6,3.2,6.5],fontSize:8,border:{type:'solid',color:'DDDDDD',pt:0.5},valign:'top',autoPage:true,newSlideStartY:0.5});
+      // review
+      s=pptx.addSlide(); s.addText('2. AI 검수 리포트',{x:0.5,y:0.4,w:12,h:0.6,fontSize:24,bold:true,color:M});
+      s.addText('총 '+rep.review.total+'건 검출 · '+rep.review.applied+'건 반영',{x:0.5,y:1.05,w:12,h:0.4,fontSize:14,color:'444444'});
+      const rrows=[[{text:'Field',options:{bold:true}},{text:'Before',options:{bold:true}},{text:'After',options:{bold:true}},{text:'반영',options:{bold:true}}]];
+      rep.review.rows.forEach(r=>rrows.push([r.field, String(r.before).slice(0,46), String(r.after).slice(0,46), r.applied?'Y':'N']));
+      s.addTable(rrows,{x:0.5,y:1.5,w:12.3,colW:[2.8,4.4,4.4,0.7],fontSize:8,border:{type:'solid',color:'DDDDDD',pt:0.5},valign:'top',autoPage:true,newSlideStartY:0.5});
+      // spec
+      s=pptx.addSlide(); s.addText('3. SPECIFICATIONS — '+rep.model,{x:0.5,y:0.4,w:12,h:0.6,fontSize:22,bold:true,color:INK});
+      const srows=[];
+      rep.sheet.specCats.forEach(c=>{ srows.push([{text:c.label,options:{bold:true,color:'FFFFFF',fill:{color:GR},colspan:2,align:'center'}}]); c.fields.forEach(f=>srows.push([{text:f.name,options:{color:'666666'}}, String(f.value).slice(0,90)])); });
+      s.addTable(srows,{x:0.5,y:1.1,w:12.3,colW:[3.5,8.8],fontSize:7.5,border:{type:'solid',color:'E2E2E2',pt:0.5},valign:'top',autoPage:true,newSlideStartY:0.5});
+      await pptx.writeFile({fileName:rep.model+'_리포트.pptx'});
+      this.setState({exportMsg:'✓ PPTX 다운로드됨', showExport:false});
+    }catch(e){ console.error(e); this.setState({exportMsg:'PPTX 실패: '+(e.message||e)}); }
+  }
+  resetImport(){ this.setState({loaded:false, raw:null, activeSample:null, step:1, showUnmapped:false}); }
+  goStep(n){ if(n>1 && !this.state.loaded) return; this.setState({step:n}); }
+  onScope(e){ this.setState({scope:e.target.value}); }
+  assign(name,val){ const a={...this.state.assignments}; if(val==='') delete a[name]; else a[name]=val; this.setState({assignments:a}); }
+  toggleReview(key){ const a={...this.state.reviewAccept}; a[key]=!(a[key]!==false); this.setState({reviewAccept:a}); }
+  setReviewFilter(cat){ this.setState(s=>({reviewFilter: s.reviewFilter===cat?null:cat})); }
+  toggleExpand(key){ this.setState(s=>({expandedReviews:{...s.expandedReviews,[key]:!s.expandedReviews[key]}})); }
+  _segs(text, frags){
+    const t=String(text==null?'':text);
+    const fs=[...new Set((frags||[]).filter(f=>f&&typeof f==='string'&&f.length>0&&!/[…]/.test(f)))].sort((a,b)=>b.length-a.length);
+    if(!fs.length) return [{t, hit:false}];
+    const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); let re;
+    try{ re=new RegExp('('+fs.map(esc).join('|')+')','g'); }catch(e){ return [{t, hit:false}]; }
+    const out=[]; for(const p of t.split(re)){ if(p==='') continue; const h=fs.indexOf(p)>=0; out.push({t:p, hit:h, miss:!h}); }
+    return out.length?out:[{t, hit:false, miss:true}];
+  }
+  acceptAll(){ const a={}; this.buildReviews().forEach(r=>a[r.key]=true); this.setState({reviewAccept:a}); }
+  rejectAll(){ const a={}; this.buildReviews().forEach(r=>a[r.key]=false); this.setState({reviewAccept:a}); }
+  setPage(v){ this.setState({pageView:v}); }
+  zoomBy(d){ this.setState(s=>({zoom:Math.min(1.1, Math.max(0.3, +(s.zoom+d).toFixed(2)))})); }
+  editMeta(k,val){ this.setState(s=>({meta:{...s.meta,[k]:val}})); }
+  setSub(val){ this.setState(s=>({overrides:{...s.overrides,__subtitle:val}})); }
+  setSub2(val){ this.setState(s=>({overrides:{...s.overrides,__subtitle2:val}})); }
+  editAcc(i,k,v){ this.setState(s=>({accessories:s.accessories.map((x,j)=>j===i?{...x,[k]:v}:x)})); }
+  addAcc(){ this.setState(s=>({accessories:[...s.accessories,{imgId:'acc'+Date.now(), code:'', desc:''}]})); }
+  removeAcc(i){ this.setState(s=>({accessories:s.accessories.filter((_,j)=>j!==i)})); }
+  editBullet(i,v){ this.setState(s=>{const b=[...s.bullets]; b[i]=v; return {bullets:b};}); }
+  addBullet(){ this.setState(s=>({bullets:[...s.bullets,'']})); }
+  removeBullet(i){ this.setState(s=>({bullets:s.bullets.filter((_,j)=>j!==i)})); }
+  editDim(i,k,v){ this.setState(s=>{const d=s.dims.map((x,j)=>j===i?{...x,[k]:v}:x); return {dims:d};}); }
+  addDim(){ this.setState(s=>({dims:[...s.dims,{label:'',value:''}]})); }
+  removeDim(i){ this.setState(s=>({dims:s.dims.filter((_,j)=>j!==i)})); }
+  toggleCert(id){ this.setState(s=>({certs:{...s.certs,[id]:!s.certs[id]}})); }
+  setOverride(field,val){ this.setState(s=>({overrides:{...s.overrides,[field]:val}})); }
+  moveCat(cat,dir){
+    const cats=this.scopeCats().map(c=>c.category); const i=cats.indexOf(cat); const j=i+dir;
+    if(j<0||j>=cats.length) return; const arr=[...cats]; const t=arr[i]; arr[i]=arr[j]; arr[j]=t;
+    this.setState(s=>({customOrder:{...s.customOrder,[this.state.scope]:arr}}));
+  }
+  toggleRule(id){ this.setState(s=>({disabledRules:{...s.disabledRules,[id]:!s.disabledRules[id]}})); }
+  toggleSettings(){ this.setState(s=>({showSettings:!s.showSettings})); }
+  toggleUnmapped(){ this.setState(s=>({showUnmapped:!s.showUnmapped})); }
+  async aiReview(){
+    if(this.state.aiBusy) return;
+    this.setState({aiBusy:true});
+    try{
+      const m=this.buildMapping(); const lines=[];
+      m.orderedCats.forEach(c=>c.fields.forEach(f=>lines.push(f.name+': '+f.value)));
+      const prompt='You are a US/UL technical editor for AVYCON CCTV spec sheets. Review these spec field values for American English, UL voltage notation (12VDC, 24VAC), unit spacing, CCTV standard terms (microSD, PoE, IEC 62676-4 DORI noun forms), and typos. List ONLY remaining issues, max 6 lines, each formatted "Field — suggested fix". If clean, reply "추가 발견 사항 없음.".\n\n'+lines.slice(0,40).join('\n');
+      const out=await window.claude.complete(prompt);
+      this.setState({aiBusy:false, aiNote:(out||'').trim()||'응답이 없습니다.'});
+    }catch(e){ this.setState({aiBusy:false, aiNote:'실시간 AI 검수는 이 미리보기 환경에서 사용할 수 없습니다. 위의 규칙 기반 검수 결과를 사용하세요.'}); }
+  }
+
+  renderVals(){
+    const st=this.state;
+    const stepDefs=[
+      {n:1,label:'가져오기 · 정렬',sub:'Import & Map'},
+      {n:2,label:'AI 검수',sub:'Review'},
+      {n:3,label:'레이아웃',sub:'Layout'},
+      {n:4,label:'편집기',sub:'Editor'},
+    ];
+    const steps=stepDefs.map(d=>{
+      const active=st.step===d.n; const done=st.loaded && d.n<st.step;
+      const clickable=d.n===1||st.loaded;
+      return {n:d.n,label:d.label,sub:d.sub,badge:done?'✓':String(d.n),
+        opacity:clickable?'1':'.45',
+        dotBg:active?'#941A31':(done?'#941A31':'#eceef1'),
+        dotColor:(active||done)?'#fff':'#8b9099',
+        dotBorder:active?'#941A31':(done?'#941A31':'#dcdfe4'),
+        labelColor:active?'#941A31':'#5b6068',
+        underline:active?'#e23b52':'transparent',
+        onClick:()=>this.goStep(d.n)};
+    });
+    const scopeOptions=(st.cms?st.cms.scopes:['Camera']).map(s=>({value:s,label:s}));
+
+    const out={
+      ready:st.ready, notReady:!st.ready, loaded:st.loaded, notLoaded:st.ready&&!st.loaded,
+      isStep1:st.step===1, isStep2:st.step===2, isStep3:st.step===3, isStep4:st.step===4,
+      scope:st.scope, scopeOptions, onScope:(e)=>this.onScope(e),
+      showSettings:st.showSettings, onToggleSettings:()=>this.toggleSettings(), onCloseSettings:()=>this.setState({showSettings:false}),
+      steps,
+      zoom:st.zoom, zoom4:st.zoom4, zoomPct:Math.round(st.zoom*100),
+      onZoomIn:()=>this.zoomBy(0.06), onZoomOut:()=>this.zoomBy(-0.06),
+    };
+    // share / export (header)
+    out.canShare=st.loaded;
+    out.showExport=st.showExport; out.onToggleExport=()=>this.toggleExport(); out.exportMsg=st.exportMsg; out.hasExportMsg=!!st.exportMsg;
+    out.onExportPdf=()=>this.exportPdf(); out.onExportXlsx=()=>this.exportXlsx(); out.onExportDocx=()=>this.exportDocx(); out.onExportPptx=()=>this.exportPptx();
+    out.onSave=()=>this.saveSession(); out.savedToast=st.savedToast; out.hasToast=!!st.savedToast;
+    out.hasSession=st.hasSession; out.onContinue=()=>this.restoreSession();
+
+    // import dropzone
+    out.onPickFile=()=>this.pickFile();
+    out.onDragOver=(e)=>this.onDragOver(e);
+    out.onDragLeave=(e)=>this.onDragLeave(e);
+    out.onDropFile=(e)=>this.onDropFile(e);
+    out.dropBorder=st.dragOver?'#941A31':'#bcc7d6';
+    out.dropBg=st.dragOver?'#fbf4f5':'#fff';
+    out.dropIcon=st.importing?'⏳':'📑';
+    out.dropTitle=st.importing?'엑셀 분석 중…':(st.dragOver?'여기에 놓으세요':'엑셀 파일을 끌어다 놓기');
+    out.importError=st.importError; out.hasImportError=!!st.importError;
+
+    // sample cards
+    out.sampleCards=(st.samples||[]).map(s=>({id:s.id,model:s.model,title:s.subtitle,count:s.specs.length,onLoad:()=>this.loadSample(s.id)}));
+
+    if(st.loaded){
+      const m=this.buildMapping();
+      out.rawModel=st.raw.model;
+      out.mapMatched=m.matched; out.mapTotal=m.total; out.mapUnmappedCount=m.reviewCount;
+      out.hasUnmapped=m.reviewCount>0;
+      // raw sections
+      const secMap={}; const secOrder=[];
+      st.raw.specs.forEach(sp=>{ if(!secMap[sp.section]){secMap[sp.section]=[];secOrder.push(sp.section);} secMap[sp.section].push({name:sp.name,value:sp.value}); });
+      out.rawSections=secOrder.map(s=>({section:s||'—',fields:secMap[s]}));
+      // mapped cats
+      out.mappedCats=m.orderedCats.map(c=>({category:c.category, fields:c.fields.map(f=>({name:f.name,source:f.source,value:f.value,guess:!!f.guess,renamed:this.norm(f.name)!==this.norm(f.source||'')}))}));
+      // unmapped list options
+      const fieldOpts=m.allFields.map(f=>({value:f.field,label:f.category+' › '+f.name}));
+      out.unmappedList=m.unmapped.map(u=>{
+        const sug=u.suggestionField?[{value:u.suggestionField,label:'★ 추천: '+u.suggestionLabel+' ('+Math.round((u.score||0)*100)+'%)'}]:[];
+        return {source:u.name,value:u.value,section:u.section,current:u.current||'',
+          badge:u.guess?'추정':(u.suggestionField?'추천':'미매핑'), badgeColor:u.guess?'#c2700a':(u.suggestionField?'#2f6fb0':'#9aa0aa'),
+          options:[{value:'',label:'— 미지정 —'},...sug,{value:'__skip__',label:'사용 안 함'},{value:'__custom__',label:'사용자 정의로 추가'},...fieldOpts],
+          onAssign:(e)=>this.assign(u.name,e.target.value)};
+      });
+      out.onResetImport=()=>this.resetImport();
+      out.onToStep2=()=>this.goStep(2);
+      out.showUnmapped=st.showUnmapped; out.onToggleUnmapped=()=>this.toggleUnmapped(); out.onCloseUnmapped=()=>this.setState({showUnmapped:false});
+      out.onOpenReport=(f)=>this.openReports(f);
+      out.onReportMapping=()=>this.openReports('mapping'); out.onReportReview=()=>this.openReports('review'); out.onReportSheet=()=>this.openReports('sheet');
+
+      // reviews
+      const allReviews=this.buildReviews();
+      const rf=st.reviewFilter;
+      const reviews = rf? allReviews.filter(r=>r.issues.some(i=>i.cat===rf)) : allReviews;
+      out.reviews=reviews.map(r=>{
+        const cats=[...new Set(r.issues.map(i=>i.cat))];
+        const notes=[...new Set(r.issues.map(i=>i.note))];
+        const acc=this.accepted(r.key);
+        const exp=!!st.expandedReviews[r.key];
+        return {key:r.key, field:r.field, category:r.section,
+          beforeSegs:this._segs(r.original, r.issues.map(i=>i.before)),
+          afterSegs:this._segs(r.corrected, r.issues.map(i=>i.after)),
+          expanded:exp, expandLabel:exp?'접기 ▲':'전체 보기 ▼',
+          ws:exp?'normal':'nowrap', ov:exp?'visible':'hidden', wb:exp?'break-word':'normal',
+          tags:cats.map(c=>({label:c,color:this.CAT_COLOR[c]||'#666'})),
+          noteText:notes.join(' · '),
+          rowOpacity:acc?'1':'.5', borderColor:acc?'#e3c9cf':'#e6e8ec',
+          toggleBg:acc?'#941A31':'#c9ccd2', knobLeft:acc?'29px':'3px',
+          onToggle:()=>this.toggleReview(r.key), onExpand:()=>this.toggleExpand(r.key)};
+      });
+      const sc={}; allReviews.forEach(r=>r.issues.forEach(i=>{sc[i.cat]=(sc[i.cat]||0)+1;}));
+      out.totalCardActive=!rf; out.totalCardBorder=rf?'transparent':'#e23b52'; out.onFilterAll=()=>this.setReviewFilter(null);
+      out.reviewStats=Object.keys(sc).map(c=>{const active=rf===c; const col=this.CAT_COLOR[c]||'#666'; return {cat:c,count:sc[c],color:col,active,
+        bg:active?col:'#fff', fg:active?'#fff':col, sub:active?'rgba(255,255,255,.8)':'#7a7a7a', border:active?col:'#e6e8ec', onClick:()=>this.setReviewFilter(c)};});
+      out.totalIssues=allReviews.reduce((n,r)=>n+r.issues.length,0);
+      out.appliedCount=allReviews.filter(r=>this.accepted(r.key)).length;
+      out.onAcceptAll=()=>this.acceptAll(); out.onRejectAll=()=>this.rejectAll();
+      out.onBackTo1=()=>this.goStep(1); out.onToStep3=()=>this.goStep(3); out.onToStep4=()=>this.goStep(4);
+      out.aiBusy=st.aiBusy; out.aiBtnLabel=st.aiBusy?'검수 중…':'🔄 AI 심화 검수 실행'; out.aiBtnOpacity=st.aiBusy?'.6':'1';
+      out.onAIReview=()=>this.aiReview(); out.aiNote=st.aiNote; out.hasAiNote=!!st.aiNote;
+
+      // sheet
+      const sheet=this.computeSheet();
+      out.sheet=sheet;
+      out.showP1=st.pageView!=='2'; out.showP2=st.pageView!=='1';
+      out.pageTabs=[
+        {key:'both',label:'양면'},{key:'1',label:'1면'},{key:'2',label:'2면'}
+      ].map(p=>({label:p.label, bg:st.pageView===p.key?'#941A31':'transparent', color:st.pageView===p.key?'#fff':'#5e636b', onClick:()=>this.setPage(p.key)}));
+
+      // editor VM
+      out.metaModel=sheet.model;
+      out.metaSubtitle=sheet.title;
+      out.metaSubtitle2=sheet.subtitle2;
+      out.onMetaModel=(e)=>this.editMeta('model',e.target.value);
+      out.onMetaSub=(e)=>this.setSub(e.target.value);
+      out.onMetaSub2=(e)=>this.setSub2(e.target.value);
+      out.bulletsVM=st.bullets.map((b,i)=>({text:b,onInput:(e)=>this.editBullet(i,e.target.value),onRemove:()=>this.removeBullet(i)}));
+      out.onAddBullet=()=>this.addBullet();
+      out.accessoriesVM=st.accessories.map((a,i)=>({code:a.code,desc:a.desc,onCode:(e)=>this.editAcc(i,'code',e.target.value),onDesc:(e)=>this.editAcc(i,'desc',e.target.value),onRemove:()=>this.removeAcc(i)}));
+      out.onAddAcc=()=>this.addAcc();
+      out.dimsVM=st.dims.map((d,i)=>({label:d.label,value:d.value,onLabel:(e)=>this.editDim(i,'label',e.target.value),onValue:(e)=>this.editDim(i,'value',e.target.value),onRemove:()=>this.removeDim(i)}));
+      out.onAddDim=()=>this.addDim();
+      out.certsVM=this.CERTS.map(c=>{const on=!!st.certs[c.id]; return {label:c.label,onToggle:()=>this.toggleCert(c.id),
+        border:on?'#941A31':'#dcdfe4', bg:on?'#941A31':'#fff', color:on?'#fff':'#8b9099'};});
+      out.overrideSearch=st.search; out.onSearch=(e)=>this.setState({search:e.target.value});
+      const term=st.search.toLowerCase();
+      const flat=[]; sheet.specCats.forEach(c=>c.fields.forEach(f=>flat.push({name:f.name,value:f.value,field:f.key,category:c.label})));
+      out.overrideList=flat.filter(f=>!term||f.name.toLowerCase().includes(term)||f.category.toLowerCase().includes(term)).map(f=>({name:f.name,category:f.category,value:f.value,onInput:(e)=>this.setOverride(f.field,e.target.value)}));
+
+      // reports overlay data
+      const rep=this.reportData();
+      out.showReports=st.showReports; out.onCloseReports=()=>this.closeReports(); out.onPrintReport=()=>{ try{window.print();}catch(e){} };
+      out.repModel=rep.model; out.repTitle=rep.title; out.repScope=rep.scope; out.repDate=rep.date;
+      out.repMapMatched=rep.mapping.matched; out.repMapTotal=rep.mapping.total; out.repMapUnmappedN=rep.mapping.unmapped.length;
+      out.repReviewTotal=rep.review.total; out.repReviewApplied=rep.review.applied;
+      out.repReviewStats=Object.keys(rep.review.byCat).map(c=>({cat:c, count:rep.review.byCat[c], color:this.CAT_COLOR[c]||'#666'}));
+      // AI review — per-issue detail pages
+      const isuPx=i=>6+12.6*Math.max(1, Math.ceil((String(i.before).length+String(i.after).length)/40), Math.ceil(String(i.note).length/36));
+      const isuPages=this._pg(rep.review.issues, isuPx, 660, 855);
+      out.repIssuePages=isuPages.map((rows,i)=>({first:i===0, cont:i>0, no:i+1, total:isuPages.length,
+        rows:rows.map(x=>({field:x.field, cat:x.cat, catColor:this.CAT_COLOR[x.cat]||'#666', note:x.note, before:x.before, after:x.after, appliedLabel:x.applied?'반영':'제외', appliedColor:x.applied?'#1f8a5b':'#9aa0aa'}))}));
+      const paginate=(items,pxFn,fb,rb)=>{ const pages=[]; let cur=[],u=0,b=fb; for(const it of items){ const h=pxFn(it); if(u+h>b && cur.length){ pages.push(cur); cur=[];u=0;b=rb; } cur.push(it); u+=h; } if(cur.length||!pages.length) pages.push(cur); return pages; };
+      // mapping rows → Letter pages (px budgets)
+      const mrows=[]; rep.mapping.cats.forEach(c=>c.fields.forEach(f=>mrows.push({category:c.category,name:f.name,value:String(f.value),guess:!!f.guess})));
+      const mPx=r=>6+13.6*Math.max(1, Math.ceil(r.value.length/64), Math.ceil(r.name.length/22));
+      const mPages=paginate(mrows, mPx, 720, 850);
+      out.repMapPages=mPages.map((rows,i)=>({rows, first:i===0, cont:i>0, no:i+1, total:mPages.length}));
+      // unmapped review cards → pages
+      const um=rep.mapping.unmapped; out.repHasUnmapped=um.length>0;
+      const uPages=paginate(um, ()=>50, 820, 880);
+      out.repUnmapPages=uPages.map((rows,i)=>({first:i===0, cont:i>0, no:i+1, total:uPages.length,
+        rows:rows.map(u=>({name:u.name, value:String(u.value).slice(0,86), target:(u.suggestionLabel||'—'),
+          status:u.guess?'추정 매핑':(u.suggestionField?'추천 있음':'미매핑'), statusColor:u.guess?'#c2700a':(u.suggestionField?'#2f6fb0':'#9aa0aa'),
+          statusBg:u.guess?'#fdf2e3':(u.suggestionField?'#eaf2fb':'#f1f2f4')}))}));
+      // review rows → pages
+      const rPx=r=>6+13.0*Math.max(1, Math.ceil(String(r.before).length/40), Math.ceil(String(r.after).length/40), Math.ceil(String(r.field).length/22));
+      const rPages=paginate(rep.review.rows, rPx, 660, 840);
+      out.repReviewPages=rPages.map((rows,i)=>({first:i===0, cont:i>0, no:i+1, total:rPages.length,
+        rows:rows.map(r=>({field:r.field, before:r.before, after:r.after, appliedLabel:r.applied?'반영':'제외', appliedColor:r.applied?'#1f8a5b':'#9aa0aa'}))}));
+      out.repFocusMap=st.reportFocus==='mapping'||st.reportFocus==='all';
+    }
+
+    // settings
+    out.settingsTab=st.settingsTab; out.settingsOrder=st.settingsTab==='order'; out.settingsRules=st.settingsTab==='rules';
+    out.settingsTabs=[{key:'order',label:'표시 순서'},{key:'rules',label:'검수 규칙'}].map(t=>({label:t.label,
+      bg:st.settingsTab===t.key?'#941A31':'#eceef1', color:st.settingsTab===t.key?'#fff':'#5e636b', onClick:()=>this.setState({settingsTab:t.key})}));
+    out.orderCats=this.scopeCats().map((c,i)=>({name:c.category,num:i+1,onUp:()=>this.moveCat(c.category,-1),onDown:()=>this.moveCat(c.category,1)}));
+    out.ruleCatalog=(st.qc?st.qc.RULE_CATALOG:[]).map(r=>{const off=!!st.disabledRules[r.id]; return {id:r.id,cat:r.cat,note:r.note,color:this.CAT_COLOR[r.cat]||'#666',
+      toggleBg:off?'#c9ccd2':'#941A31', knobLeft:off?'2.5px':'21px', onToggle:()=>this.toggleRule(r.id)};});
+
+    return out;
+  }
+}
+</script>
+</body>
+</html>

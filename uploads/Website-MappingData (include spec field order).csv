@@ -1,0 +1,1077 @@
+﻿"Title","ID","Created Date","Updated Date","Owner","DB_Field_Name","Display_Category","Display_Name","Description","Data_Type(not use)","Product_Scope","Search_option","Filter_option","Compare_option","Order number"
+,"0013419b-ce5b-4af9-87ea-ebcce5a7a0ed",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+supported_os_for_web_viewer","Network","Supported O/S for Web Viewer",,,"[""Recorder""]",,,,248
+,"0053fa19-fa7f-4813-93fe-d270684d0853",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+output_voltage","General","Output Voltage",,,"[""PowerSupply""]",,,,334
+,"0203d88c-a899-4032-9822-85e535e6de01",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ports_for_ip_camera","PoE","Ports for IP Camera",,,"[""JunctionBox""]",,,,279
+,"02b154ea-876b-4153-90de-0b3557a12615",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+digital_multi_meter","HD Analog","Digital Multi Meter",,,"[""Tester""]",,,,520
+,"03d451b4-eb3e-4b3b-8a44-a2e692ed96de",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+alarm_events","Operational","Alarm Events",,,"[""Camera""]",,,,138
+,"04ad8b69-c66b-4ec2-87cb-247338d13f96",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+min_object_distance","Lens","Min. Object Distance",,,"[""Camera""]",,,,108
+,"04eaaef8-c711-473b-8605-d0b2e4f27d82",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+link-copy-of-avycon-products-main_category-2",,,"?",,,,,,533
+,"05ac0302-042b-4d4e-8eb7-941b80880d37",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+white_balance","Operational","White Balance",,,"[""Camera""]",,,,133
+,"0648a0e4-d01d-426f-b5e1-acbe3db22719",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+limited_warranty","RELIABILITY / DATA INTEGRITY","Limited warranty",,,"[""StorageDrivers""]",,,,362
+,"07eb4136-7104-4674-9080-5e37902a6e69",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hd-tvi_supported_resolution","HD Analog","HD-TVI Supported Resolution",,,"[""Tester""]",,,,514
+,"088964ec-2e03-4994-883d-74030cea3733",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_url10","Download Tab","Download File URL 10","다운로드 파일 (PDF, zip)",,"[""All""]",,,,44
+,"09859b63-17a8-4035-bcd4-10b384954d55",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+Owner",,,"?",,,,,,537
+,"09bba7c8-09c7-4142-ac1d-cefe58cad095",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+material","General","Material",,,"[""Camera"",""IPHornSpeaker"",""HDMIVideoAccessories""]",,,,178
+,"0a82c685-972b-48c8-8317-e17753ca0120",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+vlan","Layer 2 Switching","VLAN",,,"[""Networking""]",,,,435
+,"0c592e30-35fc-4972-96c7-db001d58597e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+latency","General","Latency",,,"[""HDMIVideoAccessories""]",,,,292
+,"0ca37558-f8ba-4ee2-adb7-453eb7b9fc90",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+connector","General","Connector",,,"[""IPHornSpeaker"",""HDMIVideoAccessories""]",,,,466
+,"0ccea72a-80e1-45eb-82e4-bd6030374cc9",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+proportional_pan","Pan / Tilt / Rotate","Proportional Pan",,,"[""Camera""]",,,,114
+,"0cd03841-a81d-4bb3-bc9c-3a57612d8d63",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_24vdc_power_output","General","Max 24VDC Power Output",,,"[""Tester""]",,,,497
+,"0e27eec6-84a7-45f9-922c-68b590168029",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+supported_video_format","General","Supported Video Format",,,"[""HDMIVideoAccessories""]",,,,306
+,"0edc385a-933c-43e4-abef-c52b2c073455",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+record_compression","Performance","Record Compression",,,"[""Recorder""]",,,,259
+,"0f641da0-9e6b-4485-a4ab-101d985ff216",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+network_port_type","General","Network Port Type",,,"[""Tester""]",,,,472
+,"102648ea-0820-4123-9985-04e0cf2e9110",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_name8","Download Tab","Download File Name 8","표시 이름",,"[""All""]",,,,39
+,"109d5244-dc74-46b0-9902-c87be9d1f0ea",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+video_out","Video","Video Out",,,"[""Camera""]",,,,100
+,"116a4a31-70da-4ecb-bc85-69d88431cf4b",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+product_name","Basic","Product Name","same as product_summary",,"[""All""]",,,,3
+,"11bc6f2e-57da-49a2-a4e3-a97ced743468",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+web","Management","WEB",,,"[""Networking""]",,,,448
+,"11c231d2-0a40-486a-ba8d-bd18dc52a149",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_framerate","Video","Max Framerate","remove _specs",,"[""Camera""]",,true,true,97
+,"11d2be73-e1b5-46fe-a7ab-e3e1dfd5dd0b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hdmi_output_resolution","General","HDMI Output Resolution",,,"[""HDMIVideoAccessories""]",,,,310
+,"1222026b-8170-427d-9d92-a00ec28a81b8",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_aperture_ratio","Lens","Max. Aperture Ratio",,,"[""Camera""]",,,,107
+,"12233d4a-ef14-4ee2-8ac0-0c709f61c842",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+aperture_range","Lens","Aperture Range",,,"[""Camera""]",,,,111
+,"126c55b3-b86f-4787-8470-6e546f1e8673",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_power_supply_rate_of_switch","PoE","Max Power Supply Rate of Switch",,,"[""JunctionBox""]",,,,277
+,"132e5ca1-ea4d-48b7-b51a-5f58aeb8ceb7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+built-in_microphone","Audio","Built-in Microphone",,,"[""IPHornSpeaker""]",,,,457
+,"139f8066-bf2e-4afc-8a1f-e30f35132cd6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_url7","Download Tab","Download File URL 7","다운로드 파일 (PDF, zip)",,"[""All""]",,,,38
+,"1457088f-4585-4c75-bb11-2f6081912509",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+camera_system","General","Camera System",,,"[""Camera""]",,true,,171
+,"1496482c-d30d-45a8-bce5-5d57cd2b27f1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+spot_monitor_support","Interface","Spot Monitor Support","remove _specs",,"[""Recorder""]",,true,true,222
+,"14d0b9ac-6c23-4faf-a2ca-d1becbd130c2",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+sn_ratio","Lens","S/N Ratio",,,"[""Camera""]",,,,110
+,"14f86060-931b-4f25-a906-edc593e70a4b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+security","Wi-Fi","Security","remove -1",,"[""Networking""]",,,,426
+,"15c4911b-701f-4d4f-b930-a35494883d4a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+network_management","Network","Network Management",,,"[""JunctionBox""]",,,,273
+,"15dec5bc-5822-4e4b-8f39-ce8e9e2ec214",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+configuration_file_download_upload","Management","Configuration File Download/Upload",,,"[""Networking""]",,,,452
+,"15fa6e83-3696-4c16-bf75-d2dc2811d99f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+input_voltage","General","Input Voltage",,,"[""PowerSupply""]",,,,332
+,"1629711d-0d4f-4bb2-866e-78eaef34afab",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+connection_type","General","Connection Type",,,"[""HDMIVideoAccessories""]",,,,293
+,"174e1d78-8b70-4345-9df0-c58596bc4c2e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+observe_63ppm_19ppf","DORI","Observe (63PPM/ 19PPF)",,,"[""Camera""]",,,,198
+,"17b558b6-bd1a-4602-914f-0db3acb54991",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ptz_control_baud_rate","General","PTZ Control Baud Rate",,,"[""Tester""]",,,,504
+,"185459c2-670a-466b-8ffa-4bb4d41de676",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+maxbuffer_to_host_interface_transfer_rate","Performance","MaxBuffer to host Interface transfer rate",,,"[""StorageDrivers""]",,,,352
+,"18b40a15-cef1-4ec9-b4e7-bbc7ad2437d8",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+uplink_port_rate","Hardware","Uplink Port Rate",,,"[""JunctionBox""]",,,,271
+,"190a934a-d2ba-43a0-8798-42fa3e818940",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+product_id","Basic","Product ID","제품 ID",,,,,,1
+,"19788357-9c46-4922-858f-b38ac09f0c30",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+operating_humidity","Electrical & Environmental","Operating Humidity",,,"[""Camera"",""Recorder"",""Networking"",""JunctionBox"",""IPHornSpeaker"",""Tester"",""HDMIVideoAccessories""]",,,,161
+,"199cbeab-895f-40ad-93b0-3eb7e3482ab6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+easy_installation","Operational","Easy Installation",,,"[""Recorder""]",,,,225
+,"1a3f1ee9-b2df-4fc9-9463-0333fd302031",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+pole_mount","Compatible Accessories","Pole Mount",,,"[""Camera""]",,,,193
+,"1c31c77f-bff9-4eb0-bc85-a3397e3517e9",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+FinalProducts_main (List)",,,"?",,,,,,531
+,"1c841c01-ee96-4192-bdc4-a4dc1066aec9",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+communication_type","General","Communication Type",,,"[""HDMIVideoAccessories""]",,,,317
+,"1d393ac8-96f2-42d4-9731-a8cf424ab53f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+network_authentication","Security","Network Authentication",,,"[""Camera""]",,,,155
+,"1d9f6e7a-1ea8-4ffe-bef1-9f3cf546da0b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+",,,,,,,,,
+,"1e2cd27c-54f7-4ef6-8b30-65394bf0e92a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+FinalProducts_sub (List)",,,"?",,,,,,532
+,"1eb50e40-cdec-4278-a497-06ab5eb05cfc",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+solution_category",,,"New added",,,,,,13
+,"1ebb69c0-8fe9-4706-acbc-6db2d827c2f3",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+transmission_bandwidth","Network","Transmission Bandwidth",,,"[""Recorder""]",,,,249
+,"1ec310c7-f979-459e-bc6b-913635301402",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+external_power_supply","Electrical & Environmental","External Power Supply",,,"[""Tester""]",,,,521
+,"1f3955a6-2d26-4949-9625-6183985c9d9e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+tx_poe_port","Hardware","TX PoE Port",,,"[""Networking""]",,true,true,406
+,"1f8fee4f-ec14-4654-8352-3dabdbd49d62",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hdmi_output","Interface","HDMI Output",,,"[""HDMIVideoAccessories""]",,,,305
+,"1fd076b4-00a6-4925-bdfc-456cb68c6aab",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+process_view","Debug","Process View",,,"[""Networking""]",,,,455
+,"211c82a8-d89b-4931-9aca-5bb3a6fc075b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+transmission_distance","Network","Transmission Distance","remove -1",,"[""Networking""]",,,,77
+,"21260a18-b0de-464a-89c1-2ff0b10e423b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hd-cvi_supported_resolution","HD Analog","HD-CVI Supported Resolution",,,"[""Tester""]",,,,516
+,"213ac990-8844-482a-af7c-0c18c56bf537",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+camera_setting","Operational","Camera Setting",,,"[""Recorder""]",,,,223
+,"214cb911-b09a-4a07-a4b7-f03cba450db1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+outgoing_bandwidth","Video","Outgoing Bandwidth","remove _specs",,"[""Recorder""]",,true,true,205
+,"2190d21c-449b-4f00-9dc2-205bd2d321a2",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+playback_channel","Performance","Playback Channel",,,"[""Recorder""]",,,,256
+,"22d58742-2579-4f7e-b08f-623ae56b38d7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+backup_file_type","Performance","Backup File Type",,,"[""Recorder""]",,,,251
+,"233414b7-bb55-4d8d-ac84-a0a575a35ede",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+annualized_workload_rating","RELIABILITY / DATA INTEGRITY","Annualized workload rating",,,"[""StorageDrivers""]",,,,358
+,"24155975-f4d6-47dd-8f1e-23828c91657c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+signal_input_voltage","Electrical & Environmental","Signal Input Voltage",,,"[""Networking""]",,,,402
+,"24654015-d2bf-4721-8f00-5c4807440420",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+external_storage","Performance","External Storage","remove _specs",,"[""Recorder""]",,true,true,250
+,"24a0ff19-f821-4468-833e-9b5db31983f1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+data_rate","General","Data Rate",,,"[""Networking""]",,,,373
+,"24aca98f-e831-4a03-82f6-bb728dcd25c6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+self_protection","Security","Self-Protection",,,"[""Networking""]",,,,445
+,"257cab97-c426-4fe8-aab7-656aebee8dc9",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+incoming_bandwidth","Video","Incoming Bandwidth","remove _specs",,"[""Recorder""]",,true,true,204
+,"258ddd7d-7bda-416c-94fe-700d5ab9c693",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+protocol","Network","Protocol",,,"[""Camera""]",,,,150
+,"25b3b0e2-1d2a-49d0-aa83-cefb3abd6e67",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ip_discovery","General","IP Discovery",,,"[""Tester""]",,,,479
+,"25bd07cd-b3bb-4a6b-8848-c52d2d87665a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+supported_on-screen_languages","General","Supported On-Screen Languages",,,"[""Tester""]",,,,470
+,"26757c60-86f1-4332-8dab-932292502d64",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+security","Network","Security",,,"[""Recorder""]",,,,246
+,"26d6ff90-3680-4234-a0d8-a502e6201d1b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+material_management","Mechanical","Material Management",,,"[""Camera""]",,,,180
+,"2702fd1e-cf39-478e-ad1c-61d454d1c230",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+qty","Contents","Qty",,,"[""CameraRecorderKit""]",,,,339
+,"279b1bae-7189-4fe2-95b7-8bcaf71a3482",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+transmission_signal","Video","Transmission Signal",,,"[""HDMIVideoAccessories""]",,,,311
+,"285c448a-0e6c-444b-96c1-b29bcc7c5d81",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+resolution","Contents","Resolution",,,"[""CameraRecorderKit""]",,,,335
+,"2870db5f-d236-4ed7-a2b6-4d7f1f50fed3",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+internal_cache","Hardware","Internal Cache",,,"[""JunctionBox""]",,,,266
+,"28bea21d-1a68-44e8-8b15-7c7b0978f9f1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+mac_address_table","Layer 2 Switching","MAC Address Table",,,"[""Networking""]",,,,428
+,"295e9343-b85d-4229-8b3f-053ac1ac9457",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+harmonic_distortion","Speaker","Harmonic Distortion",,,"[""IPHornSpeaker""]",,,,460
+,"2973bbdd-80d0-4b42-9c50-d60dbe25d504",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hdmi_output_support_resolution","General","HDMI Output Support Resolution",,,"[""Tester""]",,,,492
+,"2987a1ef-c8d3-43c9-8c9e-eb51aca157a2",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hd-tvi_supported_frame","HD Analog","HD-TVI Supported Frame",,,"[""Tester""]",,,,515
+,"2aa3441a-4544-43a6-bbec-5dcebaf2ba9a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+frequency_range","Speaker","Frequency Range","remove -1",,"[""IPHornSpeaker""]",,,,459
+,"2aa3f623-fd1b-49c9-8835-019d6a7ffcd1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+vga_input_support_resolution","General","VGA Input Support Resolution",,,"[""Tester""]",,,,494
+,"2b4a9bf4-1060-4e4d-9bd3-b8b1d5a22e65",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+display_resolution","General","Display Resolution",,,"[""HDMIVideoAccessories""]",,,,319
+,"2b74da5a-da63-40e8-a42e-a1e08fb5bae7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+smart_phone_app_playback_control","Operational","Smart Phone App Playback Control",,,"[""Recorder""]",,,,230
+,"2bc53145-b251-4365-847e-15e3f46f7af5",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+output_eye_mask","Transmitter","Output Eye Mask",,,"[""Networking""]",,,,389
+,"2d20dc8a-5353-4514-9132-87a31ae9a826",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ceiling_mount_single_unit","Compatible Accessories","Ceiling Mount (Single Unit)",,,"[""Camera""]",,,,191
+,"2f91f17f-f678-4b7f-ade9-a48c1f86b692",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ptz_control_communication","General","PTZ Control Communication",,,"[""Tester""]",,,,503
+,"304ce67a-99e4-42fd-8b85-10c2dabdd71f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+channels","General","Channels",,,"[""PowerSupply""]",,,,329
+,"30707a88-258f-4a13-89f7-accca0bdaccb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+soc","Hardware","SOC",,,"[""JunctionBox""]",,,,270
+,"30ac6d01-9cda-45d1-8286-c2f38e94cea7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+product_dimensions","General","Product Dimensions","remove -1",,"[""StorageDrivers""]",,,,345
+,"31327422-d547-4fa6-b1a6-49bd2c5cd1a3",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ip_device_inputs","Video","IP Device Inputs",,,"[""Recorder""]",,,,207
+,"31a372b6-7c8c-40e0-9f35-5b12cd9bc3c8",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+typical_input_optical_wavelength","Receiver","Typical Input Optical Wavelength",,,"[""Networking""]",,,,73
+,"31ff9a3d-45cd-414f-aba4-37ff101a9a7e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+finalProducts_main (List) ",,,"?",,,,,,529
+,"32270310-50ef-4e0d-87c7-def52e8efa51",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+usb_5v_power_output","General","USB 5V Power Output",,,"[""Tester""]",,,,498
+,"32f59cb0-de1d-4ae6-9030-d56adaab6b25",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+digital_image_stabilization","Operational","Digital Image Stabilization",,,"[""Camera""]",,,,128
+,"330c9ae4-392e-454c-ba47-3c27c4bc7efb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+spanning_tree","Layer 2 Switching","Spanning Tree",,,"[""Networking""]",,,,439
+,"331c7834-6f3d-47a9-9654-124505bddf37",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hdmi_input_support_frame","General","HDMI Input Support Frame",,,"[""Tester""]",,,,491
+,"336e9392-f5da-4e1b-8194-a7c6ddae11c0",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+detailed_description","Description","Detailed Description","불렛 상세 설명",,"[""All""]",,,,11
+,"336eb907-0b44-4217-bdd5-cc60ed28aead",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+power_supply_voltage","Electrical & Environmental","Power Supply Voltage",,,"[""Networking""]",,,,75
+,"33db2051-1b6d-46c7-ba96-cd9c5447b51d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+port_mirroring","Layer 2 Switching","Port Mirroring",,,"[""Networking""]",,,,434
+,"343c13af-ae8b-4279-b7a9-e81c7d9a6cbb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+recording_resolution","Performance","Recording Resolution","remove _specs",,"[""Recorder""]",,true,true,62
+,"350e106e-b1ed-4648-b6f5-00e044525b62",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+frequency_response","Speaker","Frequency Response",,,"[""IPHornSpeaker""]",,,,458
+,"352c113c-9e7c-445c-a712-9aa6191cc833",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+rs-485_data_monitoring","General","RS-485 Data Monitoring",,,"[""Tester""]",,,,510
+,"356fc9ad-ed18-47ab-91e8-3d445982874e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+rf_output_power","Wi-Fi","RF Output Power",,,"[""Networking""]",,,,424
+,"3625c4aa-d2c3-40b4-9306-109eced5e1e0",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+remote_access_software","Network","Remote Access Software",,,"[""Recorder""]",,,,244
+,"3662d9cc-b99e-4083-acf8-7e3d5a42f199",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+input_saturation_power_overload","Receiver","Input Saturation Power (Overload)",,,"[""Networking""]",,,,391
+,"374cd9c6-c15d-4735-b502-218911ec78d7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+built-in-media_player","General","Built-in-Media Player",,,"[""Tester""]",,,,489
+,"375bfc28-0195-4747-a589-406ba4c2d45d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hdr_support","General","HDR Support",,,"[""HDMIVideoAccessories""]",,,,303
+,"38040fa2-ebe6-4797-bb37-a8f52e788936",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+battery_type","Electrical & Environmental","Battery Type",,,"[""Tester""]",,,,522
+,"38341bec-9495-4f60-8cd3-4350db8f6c06",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+finalProducts (Item)",,,"?",,,,,,528
+,"38b0443b-5899-41f1-bd0b-2566f7d1aaf1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_name3","Download Tab","Download File Name 3","표시 이름",,"[""All""]",,,,29
+,"39bfd266-3d78-48b8-a3e1-114d921035d1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+audio_output","Interface","Audio Output","remove _specs",,"[""Camera"",""Recorder""]",,true,true,219
+,"3b11b7c9-31d8-4de3-903e-90c14541f742",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ssid_pairing","General","SSID Pairing",,,"[""HDMIVideoAccessories""]",,,,294
+,"3bb1fb5f-c254-46b3-9aea-823ec6a4f8ba",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+edge_brightness_compensation","Operational","Edge Brightness Compensation",,,"[""Camera""]",,,,141
+,"3c154f56-98ea-4ded-a337-b52b12fe0263",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+voip_codec","Network","VoIP Codec",,,"[""IPHornSpeaker"",""Networking""]",,,,464
+,"3c67861d-d991-47e2-b1b1-5fb01c1bb463",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+fast_backward_playback_control","Performance","Fast Backward Playback Control",,,"[""Recorder""]",,,,253
+,"3c69373d-73a9-47c3-afab-72cf0bab86eb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+power_specification","PoE","Power Specification",,,"[""JunctionBox""]",,,,281
+,"3c8fc15a-e6d2-42a5-8aa5-0f3ce44886fe",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ip_video_input","Video","Analog Device Resolution","New added(extra CH info)",,"[""Recorder""]",,,,203
+,"3c9e8654-bafc-4fcd-b473-38692ac24373",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+sfp_output_high","General","SFP Output High",,,"[""Networking""]",,,,380
+,"3d433e28-6bb6-4a56-a566-eb01d92ec49b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+analog_video_inputs","Interface","Analog Video Inputs",,,"[""Tester""]",,,,483
+,"3d71b410-e91e-4ff9-884f-04adb3cf937d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+wide_dynamic_range","Operational","Wide Dynamic Range","remove _specs",,"[""Camera""]",,true,true,121
+,"3e15a406-4863-4ae1-9143-d90a0369071f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hdmi_input_support_resolution","General","HDMI Input Support Resolution",,,"[""Tester""]",,,,490
+,"3e1c8886-f3f8-4723-8104-5152b09843d4",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+Created Date",,,,,,,,,535
+,"3eb6f3da-285b-4d64-ac01-8f623ea92d26",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+supported_storage","Performance","Supported Storage",,,"[""Recorder""]",,,,263
+,"3f993b7d-1417-45e1-babb-88bf61dd8b71",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+protocol","Interface","Protocol","remove -1",,"[""HDMIVideoAccessories""]",,,,325
+,"3fa5e173-a4a5-4094-80c5-19f46d02f3bf",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+function_control","Operational","Function Control",,,"[""Camera""]",,,,147
+,"40295e0d-a117-42bf-bf18-5778888eda3d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hdmi_version","General","HDMI Version",,,"[""HDMIVideoAccessories""]",,,,66
+,"40ab857d-6e93-4702-b76b-57fa4fdf625d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+typical_input_voltage","General","Typical Input Voltage",,,"[""Networking""]",,,,376
+,"416447e4-8428-4682-81b4-0d47d95b60da",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ddc_signal_input_&_output","General","DDC Signal Input & Output",,,"[""HDMIVideoAccessories""]",,,,289
+,"4176f038-a376-4d18-9d3b-0892eca3c550",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+rf_sensitivity","Wi-Fi","RF Sensitivity",,,"[""Networking""]",,,,425
+,"419c6413-b23b-42d3-b4fe-ac47b2804e2d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+operating_shock_(2_ms_read)","Electrical & Environmental","Operating Shock (2 ms, read)",,,"[""StorageDrivers""]",,,,367
+,"41afd811-3601-4d34-a299-abdb70341d21",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+rs485","Interface","RS485",,,"[""Camera""]",,,,201
+,"41be4b27-76f0-4352-bedc-d00bb62b2c43",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+color_bar_generator","General","Color Bar Generator",,,"[""Tester""]",,,,506
+,"41f3dfa3-5063-42bf-927a-8ddcd9966cd2",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+speed_class","Performance","Speed Class",,,"[""StorageDrivers""]",,,,356
+,"439f1e4b-aa6e-49ab-bc18-1cc8ec8de545",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ram","Hardware","RAM",,,"[""Networking""]",,,true,413
+,"459fefb5-2d06-4545-8db0-923179ff9209",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+exchange_capacity","Hardware","Exchange Capacity",,,"[""JunctionBox""]",,,,265
+,"46f326c2-0792-4f2f-a6c2-2ec63473e812",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hd-cvi_supported_frame","HD Analog","HD-CVI Supported Frame",,,"[""Tester""]",,,,517
+,"4765e56a-db2f-4be9-aeb6-a68a515df836",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+active_deterrence","Operational","Active Deterrence","remove _specs",,"[""Camera""]",,true,true,125
+,"47bcadaa-5d37-4cac-bffe-b5a71fccffce",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+typical_battery_life","Electrical & Environmental","Typical Battery Life",,,"[""Tester""]",,,,524
+,"47cdfecd-9e5a-4487-bf79-6a816f68448a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+supported_ip_cameras","General","Supported IP Cameras",,,"[""Tester""]",,,,481
+,"4899899a-7ecf-4810-ba38-7aa4737796aa",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+epa_effective_projected_area","Electrical & Environmental","EPA (Effective Projected Area)",,,"[""Camera""]",,,,164
+,"49a1b0ec-2b3e-415c-87df-a5b694f55c34",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+rf_frequency","Wi-Fi","RF Frequency",,,"[""Networking""]",,,,423
+,"49d64b78-25dd-47f9-943e-401544bf42e2",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+signal_to_noise_ratio","Speaker","Signal to Noise Ratio",,,"[""IPHornSpeaker""]",,,,461
+,"4a4d716a-b0a3-42cd-a815-9e4d3b8957d6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+access_control","Security","Access Control",,,"[""Camera""]",,,,157
+,"4a91949a-7b1e-49b1-95fb-e870521e0eb6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+language","System","Language",,,"[""Recorder""]",,,,264
+,"4ab83a75-29d1-49d2-8786-be83a697f2d3",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+sdi_input_resolution","General","SDI Input Resolution",,,"[""HDMIVideoAccessories""]",,,,309
+,"4d04f61e-f947-4b46-b1ba-d6151241f4da",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+jumbo_frame","Layer 2 Switching","Jumbo Frame",,,"[""Networking""]",,,,432
+,"4d988598-c440-42ac-b479-7cf47a8657dc",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+rs485_port","Interface","RS485 Port",,,"[""Recorder""]",,,,241
+,"4e44bf62-402e-4c85-874b-87beb1d2646a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+playback_frame_rate","Performance","Playback Frame Rate",,,"[""Recorder""]",,,,257
+,"4f32c77f-6567-4c28-90bc-5bf266de8005",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+multicast","Layer 2 Switching","Multicast",,,"[""Networking""]",,,,441
+,"4f38ac4e-8282-4260-bc66-13160710f0eb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+pa_chipset","Hardware","PA Chipset",,,"[""Networking""]",,,true,412
+,"5052c7c5-e82e-4187-8c7d-5ea792397309",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+contents","General","Contents",,,"[""Networking""]",,,,71
+,"527681a0-3b62-45f3-8fbb-cb7609d039b6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+vga_input_support_frame","General","VGA Input Support Frame",,,"[""Tester""]",,,,495
+,"528f20f2-16ba-4df5-8e77-2685649c99d1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_url9","Download Tab","Download File URL 9","다운로드 파일 (PDF, zip)",,"[""All""]",,,,42
+,"52b3ab7c-2a29-4def-8984-461c56adaeaf",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+decoding_codec","General","Decoding Codec",,,"[""Tester""]",,,,477
+,"52cb17ee-0f16-4a64-8a0d-d90a3402a971",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+emc_safety","Certification & Standards","EMC Safety",,,"[""Networking""]",,,,79
+,"536e9495-2d5e-433d-a747-a8b5e2ac373c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+light_type","Operational","Light Type","remove _specs",,"[""Camera""]",,true,true,124
+,"543e2772-afbb-4a42-b7b5-8988ddb93041",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+type","General","Type",,,"[""JunctionBox"",""HDMIVideoAccessories"",""""]",,,,91
+,"54c4e56d-a7a0-41bc-817b-658dd258574a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+backlight_compensation","Operational","Backlight Compensation",,,"[""Camera""]",,,,127
+,"54c99b15-4725-4789-b70b-b8213c7b2b82",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_url1","Download Tab","Download File URL 1","다운로드 파일 (PDF, zip)",,"[""All""]",,,,26
+,"5521d961-bd28-44d3-b167-42c4c1972f0c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+cpu","Hardware","CPU",,,"[""Networking""]",,,true,410
+,"553461be-6236-4758-93a8-aafeda3a97d6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_host_to_from_drive_interface_transfer_rate_(sustained)","Performance","Max Host to/from drive Interface transfer rate (sustained)",,,"[""StorageDrivers""]",,,,353
+,"5544f313-b168-4e0b-9898-c39e55319f19",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+cli","Management","CLI",,,"[""Networking""]",,,,84
+,"55a6bd43-6df4-4036-a7fe-99547e05d97e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+operational_interface","General","Operational Interface",,,"[""HDMIVideoAccessories""]",,,,321
+,"5662d5c7-928d-427d-8fb3-e533cd840e18",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+storage_temprature","Electrical & Environmental","Storage Temprature",,,"[""HDMIVideoAccessories""]",,,,67
+,"56aeda20-503c-4f87-9e89-0a72e9478df5",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+utp_cable_testing","General","UTP Cable Testing",,,"[""Tester""]",,,,509
+,"57041109-0cd5-43a4-ad01-5906c4040baa",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+supported_os_for_smart_phone_app","Operational","Supported O/S for Smart Phone App",,,"[""Recorder""]",,,,232
+,"57285668-f3e2-4da6-b496-52d0ec624e89",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_name4","Download Tab","Download File Name 4","표시 이름",,"[""All""]",,,,31
+,"57a82e05-2c9e-4769-9552-27eff3bcf339",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+supported_resolution","Video","Supported Resolution","remove -1",,"[""HDMIVideoAccessories""]",,,,69
+,"57da82b4-93b2-431a-aea7-a49a3d60542a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_url3","Download Tab","Download File URL 3","다운로드 파일 (PDF, zip)",,"[""All""]",,,,30
+,"588fb603-2d2c-480a-82be-adca29da7f6f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+power_input_voltage","Electrical & Environmental","Power Input Voltage",,,"[""Networking""]",,,true,167
+,"5893b292-ae4c-4dea-9aba-351355c20aaa",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+spi_flash","Hardware","SPI Flash",,,"[""Networking""]",,,true,414
+,"58bb7404-7f0a-4231-9725-c10e59c2191b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+focal_length","Lens","Focal Length","remove _specs",,"[""Camera""]",,true,true,103
+,"5a031a6d-e6b4-4c5c-868a-dc661cbaca11",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+typical_rx_input_impendance","High-Speed Electrical Transmission Line (SFP)","Typical RX Input Impendance",,,"[""Networking""]",,,,396
+,"5a062929-2fc3-41c4-93a3-27506d81c226",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+smart_phone_app_push_notification","Operational","Smart Phone App Push Notification",,,"[""Recorder""]",,,,231
+,"5c58132c-6b97-4cb0-a635-4df33bc8e88c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+formats","HD Analog","Formats",,,"[""Tester""]",,,,512
+,"5d014f35-7077-4c26-8e1b-12d465badcd9",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+starllion_ready","General","Starllion Ready","remove _specs",,"[""Camera"",""Recorder""]",,true,true,168
+,"5d4435a5-aef7-429d-bfd5-8e9642015d3e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ping","Debug","PING",,,"[""Networking""]",,,,85
+,"5d9fec4e-113d-41c7-8354-f85c1d901f68",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+local_image_capture_format","General","Local Image Capture Format",,,"[""Tester""]",,,,487
+,"5dcb3677-79e5-42cd-931f-d19c7418f57d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+sdi_data_transfer_rate","General","SDI Data Transfer Rate",,,"[""HDMIVideoAccessories""]",,,,307
+,"5ed6fb3e-3298-4c4d-a28e-cbae02a802bb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+cable_length","General","Cable Length",,,"[""Networking""]",,,,374
+,"5f3df54f-c192-4750-925d-7d20fa831235",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+esid_protection","General","ESID Protection",,,"[""HDMIVideoAccessories""]",,,,295
+,"5f6c9ca7-cd07-4043-94ba-2ba15d4e5084",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+rtsp_streaming","General","RTSP Streaming",,,"[""Tester""]",,,,507
+,"60e85d1a-b3aa-45e9-afdb-184c05fe93a8",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+display_type","General","Display Type",,,"[""HDMIVideoAccessories""]",,,,318
+,"610aa76e-ef77-4e3f-a274-7cbd55db3567",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+webpage_language","General","Webpage Language",,,"[""Camera""]",,,,176
+,"612c423d-ddc5-4343-b3ed-a5347b702650",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+rate_limit","Layer 2 Switching","Rate Limit",,,"[""Networking""]",,,,438
+,"6153ffeb-14ed-4f7c-935c-603d41027c2a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+power_supply","PoE","Power Supply","remove -1",,"[""JunctionBox""]",,,,282
+,"61cebace-3ae7-4a93-9141-5f34c5bd4b85",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+acl","Security","ACL",,,"[""Networking""]",,,,83
+,"62de92ed-34f3-4f49-aaab-8473e2542f12",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+related_products","Description","Related Products","연관 제품 (콤마로 구분) ",,"[""All""]",true,,,21
+,"651efa93-ff21-4174-a6d2-77720ed47189",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+reset","Interface","Reset",,,"[""Recorder""]",,,,242
+,"6542dfab-9feb-4a2b-a52a-c2e1bb8e6ea0",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+built-in-wifi","General","Built-in-WiFi",,,"[""Tester""]",,,,473
+,"65c8b403-b203-42c8-b46e-e5a400703e60",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+remote_connection","Network","Remote Connection",,,"[""Recorder""]",,,,245
+,"65cc1cd7-754d-4355-946f-918f8ea74dbe",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+thunder_prevention","Protection","Thunder Prevention",,,"[""JunctionBox""]",,,,284
+,"6603f0c4-4c12-4c7a-a799-10833cd152c7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+sensitivity","Receiver","Sensitivity",,,"[""Networking""]",,,,390
+,"6672ea46-fb47-4a73-9b0d-8a4c4b84e909",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+rj45_cable_tdr_testing","General","RJ45 Cable TDR Testing",,,"[""Tester""]",,,,508
+,"669354af-e074-4f8d-89b2-8c116f8381be",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+product_weight","General","Product Weight","remove -1",,"[""StorageDrivers""]",,,,346
+,"66fd2911-28c9-40f5-a9f0-f1b55484d7b4",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+traffic_control","Layer 2 Switching","Traffic Control",,,"[""Networking""]",,,,437
+,"6706db9c-e837-44f8-9140-48e8df177d23",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_sound_pressure_level","Speaker","Max Sound Pressure Level",,,"[""IPHornSpeaker""]",,,,87
+,"679918d8-0208-46fb-a8f8-1fcd3d3a5800",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ai_streams","Features","AI Streams",,,"[""StorageDrivers""]",,,,348
+,"69122da1-5f65-44ef-b81f-4a1ac61cea05",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+product_summary","Description","Product Summary","간단한 제품 요약 (1~2문장)",,"[""All""]",true,,,10
+,"691879ed-56ac-403e-a220-2e4497184e32",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+power_consumptions_without_hdd","Electrical & Environmental","Power Consumptions without HDD",,,"[""Recorder""]",,,,165
+,"6980774e-e1a1-454f-95e8-fb99fa1c015a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+output_resolution_vga","Video","Output Resolution VGA",,,"[""Recorder""]",,,,214
+,"6a4d0441-3efd-4fa3-8ae7-5db17810623a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+fuse_type","General","Fuse Type",,,"[""PowerSupply""]",,,,330
+,"6af4d45b-3e26-4baf-b1fa-e8fca13db2d1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+camera_title","Operational","Camera Title",,,"[""Camera""]",,,,126
+,"6b117d93-61a9-48c8-9b1b-e3633779b70a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+power_saving","Electrical & Environmental","Power Saving",,,"[""Tester""]",,,,526
+,"6b4de279-19fc-4e22-8f0d-328f0d8b51fa",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+output_resolution_hdmi2","Video","Output Resolution HDMI2",,,"[""Recorder""]",,,,211
+,"6c1dcbdb-2e8a-404d-8265-c07de2193cf7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_power_consumption_of_switch","PoE","Max Power Consumption of Switch",,,"[""JunctionBox""]",,,,276
+,"6c4a60a9-d35b-4591-8070-6a427273f8ab",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+advanced_networking_tools","General","Advanced Networking Tools",,,"[""Tester""]",,,,511
+,"6c83186a-fd13-458f-a891-c1802e16ca20",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+power_consumption","Electrical & Environmental","Power Consumption",,,"[""Networking""]",,,true,89
+,"6de4dc86-bb0c-4326-bbd0-db53565db7ff",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_url6","Download Tab","Download File URL 6","다운로드 파일 (PDF, zip)",,"[""All""]",,,,36
+,"6e38c24d-b3df-48c9-9ba8-f0f8562266f8",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+gallery_images_urls","Media","Gallery Images URLs","추가 이미지 링크 (개별등록)",,,,,,16
+,"6eb0f882-3eda-4fa6-8b17-1cd386a2b950",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_protection","Protection","Max Protection",,,"[""HDMIVideoAccessories""]",,,,316
+,"6ecf6726-fc4d-4ae3-9a26-4060e5a4aa51",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+cache","Performance","Cache",,,"[""StorageDrivers""]",,,,354
+,"6f1815dc-5b6a-47e5-8938-862f75d39b73",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+impact_protection","General","Impact Protection","remove _specs",,"[""Camera"",""Networking""]",,true,true,169
+,"703d777a-830b-41fa-8a30-dc3018d6e951",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+firmware_feature_name","Features","Firmware Feature Name",,,"[""StorageDrivers""]",,,,349
+,"705fd75c-dd0c-4e28-b961-630c3927bb14",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+resolution","General","Resolution","remove -1",,"[""Tester""]",,,,469
+,"709a94c8-ab0a-477b-a60d-aca970a49f34",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+control_mode","General","Control Mode",,,"[""HDMIVideoAccessories""]",,,,322
+,"7128fa5f-f91b-4277-8a29-39b614724819",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_voltage","General","Max Voltage",,,"[""Networking""]",,,,377
+,"71777c8e-d59a-4511-b685-bbde2afdf594",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+video_compression","Performance","Video Compression",,,"[""Camera""]",,,,148
+,"71cad346-eae2-46db-ba49-fdd4a929eb62",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+weight_without_hdd","General","Weight without HDD",,,"[""Recorder""]",,,,60
+,"7223366e-9161-4eb9-9ded-42ef16c7675c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+motion_detection","Operational","Motion Detection",,,"[""Camera""]",,,,130
+,"723083c4-095d-4030-82cc-5a5f3b0a6672",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_url8","Download Tab","Download File URL 8","다운로드 파일 (PDF, zip)",,"[""All""]",,,,40
+,"72cd146f-6fc2-484f-8cbc-68109d9423ef",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+analog_video_outputs_signal_type","General","Analog Video Outputs Signal Type",,,"[""Tester""]",,,,486
+,"7304e830-42c8-4a29-8684-8ec4dec76e77",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+dual_nic","Interface","Dual NIC","remove _specs",,"[""Recorder""]",,true,true,221
+,"7319bdbc-2274-4e23-910a-59b3e742707d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_ip_camera_power_by_af","PoE","Max IP Camera Power by af",,,"[""JunctionBox""]",,,,274
+,"73d72ff0-4644-40c9-9963-fd0074eb518b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+local_video_capture_format","General","Local Video Capture Format",,,"[""Tester""]",,,,488
+,"73e78629-638a-49e7-b044-7321b08e9631",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+recognize_125ppm_38ppf","DORI","Recognize (125PPM/ 38PPF)",,,"[""Camera""]",,,,199
+,"74d97919-0baf-41ad-aa69-73c8a3d3417d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+firmware_name","Firmware Tab","Firmware Name","New added (펌웨어 이름)",,"[""All""]",,,,45
+,"74ef2c40-42c8-4151-97a4-b72f4dcc6ccb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_name5","Download Tab","Download File Name 5","표시 이름",,"[""All""]",,,,33
+,"76b5996a-200b-4d4f-8d8c-e897858256c5",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+average_output_power","Transmitter","Average Output Power",,,"[""Networking""]",,,,72
+,"76d3f410-e1d4-4381-9cfa-5e62f803d3d0",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_url4","Download Tab","Download File URL 4","다운로드 파일 (PDF, zip)",,"[""All""]",,,,32
+,"77bb51f3-045a-45ef-a67f-c6a0ade80149",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+safety","Certification & Standards","Safety",,,"[""Camera""]",,,,185
+,"77de59b3-4bff-4269-b4d6-75fc3b09f60a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+accessories","Included Accessories","Accessories",,,"[""Camera""]",,,,54
+,"796a8c99-1c23-4cf8-af2c-b2e97a34a21a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+rapid_onvif","General","Rapid ONVIF",,,"[""Tester""]",,,,480
+,"7a0864dd-2abf-44d9-8e4e-eebd7081d758",2026-03-30T15:47:55Z,2026-05-28T16:41:42Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+product_status","Basic","Product Status","제품 상태 필터 항목 (예: On Slae, New, Sold)",,"[""All""]",true,true,,9
+,"7b121983-d987-4c26-8811-b71beaac6e4b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+impendance","General","Impendance",,,"[""HDMIVideoAccessories""]",,,,308
+,"7c1fef6c-efe7-45cd-8f8c-899bf701ee88",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+serial_port","Interface","Serial Port",,,"[""HDMIVideoAccessories""]",,,,323
+,"7c39b1ef-f4f5-4c8b-9435-626a2cc06e56",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+loss_of_signal_assert","Receiver","Loss of Signal Assert",,,"[""Networking""]",,,,392
+,"7d9212f8-adfb-4a9a-ac54-01b588adcbcd",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+local_ui","Interface","Local UI",,,"[""Recorder""]",,,,240
+,"7e13a7d6-464f-4d36-ad25-eae24927bd11",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+main_category","Basic","Main Category","대분류 (예: Network Camera, HD Analog Camera, Video Recorder, Accessories, Camera/Recorder Kits, Storage Drives, Networking Solutions,IP Speaker Horm, Tester)",,"[""All""]",true,,,7
+,"7f0532be-b5f5-4ce0-a584-820ebebf3182",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+min_illumination_bw","Video","Min. Illumination (B/W)",,,"[""Camera""]",,,,99
+,"7f376c6c-3ebf-4c03-9a12-e74cff0e3080",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+surge_current","General","Surge Current",,,"[""Networking""]",,,,378
+,"7fa281c1-c372-4a0f-9277-127ecab6b0e4",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+FinalProducts (Item)",,,"?",,,,,,530
+,"7fc25930-3d6d-4177-aa56-e136408f2ade",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+screen_size","General","Screen Size",,,"[""Tester""]",,,,467
+,"803d0452-e251-4214-87ed-9bc108383826",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+load_unload_cycles","RELIABILITY / DATA INTEGRITY","Load/unload cycles",,,"[""StorageDrivers""]",,,,357
+,"81c4eb5a-50a3-47b6-933d-c4c766daf07b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+telnet","Management","Telnet",,,"[""Networking""]",,,,447
+,"820201f6-c5eb-4fad-ac4f-ac32539948d6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+static_app_&_routing","Layer 3 Switching","Static App & Routing",,,"[""Networking""]",,,,442
+,"8254753e-d221-423a-a8e5-3f947f9f3b03",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+idle_motion","Pan / Tilt / Rotate","Idle Motion",,,"[""Camera""]",,,,120
+,"8259dd85-4512-4a7c-870c-7f5afc8701b6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+main_stream_resolution","Video","Main Stream Resolution",,,"[""Camera""]",,,,94
+,"82a6a31e-f60c-452f-baf9-5b5617c502c1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+control","System","Control",,,"[""Recorder""]",,,,63
+,"835b955c-dc57-4c20-b314-3bc9fb434d65",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+audio_compression","Performance","Audio Compression",,,"[""Camera"",""Recorder""]",,,,149
+,"8386488c-7a44-4817-9338-0b35b1d86104",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+traceroute","Debug","TRACEROUTE",,,"[""Networking""]",,,,454
+,"83d7dc9b-9003-475b-865b-eff8076cfdcd",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+main_image_url","Media","Main Image URL","대표 이미지 링크 (1024px 이상)",,"[""All""]",,,,15
+,"83d8da28-6e6e-4bd2-9b29-f4e95132a8b0",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+operating_temperature","Electrical & Environmental","Operating Temperature","remove -1",,"[""StorageDrivers""]",,,,364
+,"84ddea12-00c8-4594-b170-053a27b7a2fa",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+video_rotation","Operational","Video Rotation",,,"[""Camera""]",,,,136
+,"8544bf17-8481-463f-a2fd-59d9583350cd",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+alarm_input","Interface","Alarm Input",,,"[""Camera"",""Recorder""]",,,,61
+,"85b19bf1-5d95-4e3e-bbe7-5ff8c324ece5",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+idle_acoustics","Electrical & Environmental","Idle Acoustics",,,"[""StorageDrivers""]",,,,369
+,"85ec8307-3f46-4a39-bbb3-8ac76c1081d5",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+per_port_max_power","PoE","Per Port Max Power",,,"[""Networking""]",,,true,78
+,"86dff6a2-600c-4f90-8355-9cc47c4491f5",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+packet_buffer_memory","Hardware","Packet Buffer Memory",,,"[""Networking""]",,,true,417
+,"87003bfd-0a7d-4c98-b444-c89ce19c692e",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+key_feature_2",,,"New added",,,,,,14
+,"870ab19b-c551-4312-a209-c8c025515b18",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+downlink_port_rate","Hardware","Downlink Port Rate",,,"[""JunctionBox""]",,,,64
+,"871091cc-45fb-4bdd-b8b9-8858a995910c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+surge_protection","Certification & Standards","Surge Protection","remove -1",,"[""Networking""]",,,,421
+,"879dd464-41e4-442f-abdb-99daaac8271b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+backup_function","Performance","Backup Function",,,"[""Recorder""]",,,,252
+,"87af9493-cc15-4f38-ad2d-a7eea90cf1af",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+forwarding_capacity","Hardware","Forwarding Capacity",,,"[""Networking""]",,,,415
+,"885af7de-38c0-43be-9a54-83f3c173b3b9",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+firmware_url","Firmware Tab","Firmware URL","펌웨어 다운로드",,"[""All""]",,,,24
+,"88f6d559-d4a4-482f-94f1-a13fea595489",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+frequency_range","General","Frequency Range",,,"[""HDMIVideoAccessories""]",,,,301
+,"88ff22a8-22ca-4b38-b5e0-cb8f05a07a21",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+streaming","Network","Streaming",,,"[""Camera""]",,,,152
+,"8943c4b3-67f5-4037-ae20-b629ea5452be",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+dual_junction_box","Compatible Accessories","Dual Junction Box",,,"[""Camera""]",,,,190
+,"89bd34da-bdc7-4f44-8f14-30fde808f7c5",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ir_frequency","General","IR Frequency",,,"[""HDMIVideoAccessories""]",,,,296
+,"89e835ce-cdc7-49a3-b1c8-9aff5cd288fb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+analog_video_outputs","Interface","Analog Video Outputs",,,"[""Tester""]",,,,485
+,"8b18882c-2e22-49b1-98a1-c09815fbd6ad",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hdd_port","Interface","HDD Port","remove _specs",,"[""Recorder""]",,true,true,58
+,"8bb5bc73-d4fe-4ec7-a24d-f859a00f0486",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+gallery_images_urls1","Media","Gallery Images URLs","New added",,,,,,17
+,"8d6f83ca-dd4b-4980-b014-5c60424be31f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+smart_phone_app_control","Operational","Smart Phone App Control",,,"[""Recorder""]",,,,227
+,"8dad9961-2499-4a79-905e-70a8f6b94387",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ID",,,"?",,,,,,534
+,"8dddfb91-fec5-462d-8f13-a8500dace5b4",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+memory","General","Memory",,,"[""Camera""]",,,,177
+,"8ddf553f-bcf1-49fa-8805-b5730a4afdeb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+sfp_input_high","General","SFP Input High",,,"[""Networking""]",,,,382
+,"8e2dd83d-e6dc-4934-a743-ae5ed7e2d328",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ahd_supported_resolution","HD Analog","AHD Supported Resolution",,,"[""Tester""]",,,,518
+,"8e48e0c3-4db9-43d6-b4ab-35c776bf1aad",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+easy_connection","Operational","Easy Connection",,,"[""Recorder""]",,,,224
+,"8f1f45dd-2ced-4fa0-a5aa-05211c6b987e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+rpm","Performance","RPM",,,"[""StorageDrivers""]",,,,355
+,"8f47753a-e0a5-44ed-87dd-1bff92c57b8d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+camera_model","Contents","Camera Model",,,"[""CameraRecorderKit""]",,,,338
+,"8f74ff11-57af-4e1a-bd56-f84c7f38b93a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+dual_monitor_support","Interface","Dual Monitor Support","remove _specs",,"[""Recorder""]",,true,true,220
+,"8f7628f7-3d5e-4075-b2be-c686a4fc325b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_name7","Download Tab","Download File Name 7","표시 이름",,"[""All""]",,,,37
+,"8fb38d92-0582-4c31-b90f-9a8b50b7d3dd",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+receiving_range","General","Receiving Range",,,"[""HDMIVideoAccessories""]",,,,297
+,"8ffd9b6b-429c-4cb0-8a5e-45c2d434c7d9",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hdmi_port","Interface","HDMI Port",,,"[""Recorder""]",,,,239
+,"90156cd1-e6f7-49b5-8b1f-04de3c99693e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ports_for_switcher","PoE","Ports for Switcher",,,"[""JunctionBox""]",,,,280
+,"905b2a30-1a67-4a52-b9f0-ff2cc698223e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+speed_setup","Pan / Tilt / Rotate","Speed Setup",,,"[""Camera""]",,,,118
+,"90f5b5d9-f756-4d73-bed1-dc3fcbbc3ef4",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+industrial_case_operating_temperature","Electrical & Environmental","Industrial Case Operating Temperature",,,"[""Networking""]",,,,405
+,"91c8a7b8-c9e5-4db5-af38-db70e8225870",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+privacy_masking","Operational","Privacy Masking",,,"[""Camera""]",,,,131
+,"91e21125-fcdd-4c02-aebb-ee11b058bd5d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+supported_audio","General","Supported Audio",,,"[""HDMIVideoAccessories""]",,,,302
+,"920dc56a-654f-4573-bc2b-c311db9ddecc",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+screen_type","General","Screen Type",,,"[""Tester""]",,,,468
+,"92671bb4-7b60-423f-b7af-b06a33cb57d0",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+pre_installed_hdd_capacity","Contents","Pre-Installed HDD Capacity",,,"[""CameraRecorderKit""]",,,,337
+,"92b43b09-be02-4f71-8eca-4ee812af011c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+typical_center_wavelength","Transmitter","Typical Center Wavelength",,,"[""Networking""]",,,,385
+,"92b9f8d4-57d9-464c-a5ac-19c04163353f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+gallery_images_urls3","Media","Gallery Images URLs","New added",,,,,,19
+,"934cc911-29a1-4c39-935d-b28043ec01a5",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+other_compatible_models","Compatible Accessories","Other Compatible Models",,,"[""Camera""]",,,,197
+,"9359e4e4-ab1a-4ff0-8bc6-ee045d729204",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hanging_adaptor","Compatible Accessories","Hanging Adaptor",,,"[""Camera""]",,,,55
+,"936ae7f6-badc-4b9a-b273-1e6013e507ca",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+gain_control","Operational","Gain Control",,,"[""Camera""]",,,,132
+,"938ab875-1637-4d03-a22f-f526763ec910",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+front_panel_usb_port_usb_20","Interface","Front Panel USB Port (USB 2.0)",,,"[""Recorder""]",,,,238
+,"93e87edf-5e8f-49a9-9757-64a869c8da8e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+recorder_model","Contents","Recorder Model",,,"[""CameraRecorderKit""]",,,,336
+,"9445e4d2-9e48-40f9-ba3d-7f4efc221b44",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+formatted_capacity","General","Formatted Capacity",,,"[""StorageDrivers""]",,,,340
+,"94a64659-00fd-4b03-9c46-4250ddd262a6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+features","Security","Features",,,"[""Networking""]",,,,444
+,"950f5ddd-41f0-418c-9179-02c87fbe6bad",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+2_4ghz_speed","General","2.4Ghz Speed",,,"[""Tester""]",,,,474
+,"95fa13e0-29bb-4e5f-af47-c7594009d04f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+typical_differential_line_input_impendance","Transmitter","Typical Differential Line Input Impendance",,,"[""Networking""]",,,,388
+,"9666eeb7-b289-4271-9eec-7992bacd2521",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+typical_battery_charging_time","Electrical & Environmental","Typical Battery Charging Time",,,"[""Tester""]",,,,525
+,"96faf6cd-e99b-44c4-9f94-d73eef0e9eef",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+corner_mount","Compatible Accessories","Corner Mount",,,"[""Camera""]",,,,195
+,"9737f136-c866-4f05-89ef-1087c8fdb03b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+non_recoverable_read_errors_per_bits_read","RELIABILITY / DATA INTEGRITY","Non-recoverable read errors per bits read",,,"[""StorageDrivers""]",,,,359
+,"975cb68d-5666-458d-b0e7-945895ff1a44",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+imaging_device","Video","Imaging Device",,,"[""Camera""]",true,,,47
+,"983baefb-8483-4595-a394-b95e4d40aa29",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+poe_budget","PoE","PoE Budget",,,"[""Networking""]",,,true,420
+,"9989faa2-812f-4860-b892-ed75b7cef74a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+surge_protection","Protection","Surge Protection",,,"[""HDMIVideoAccessories""]",,,,70
+,"99c19307-9fdd-4d44-a7ad-1aa6323f15a1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+vga_port","Interface","VGA Port",,,"[""Recorder""]",,,,243
+,"9a14141c-0d2c-4db8-95dd-f9290fd796e6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+record_frame","Performance","Record Frame",,,"[""Recorder""]",,,,260
+,"9ac96928-9756-4e77-996e-b37c2aea0f77",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+key_feature_1",,,"New added",,,,,,12
+,"9ae7a142-5360-4cc5-8e52-621bb7c11428",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_switcher_power_by_at","PoE","Max Switcher Power by at",,,"[""JunctionBox""]",,,,278
+,"9b6bf721-4cd0-42e3-9362-d3d4e6083e1a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+sfp_ports","Hardware","SFP Ports",,,"[""Networking""]",,true,true,409
+,"9b9416cd-1e13-4495-a4ca-6822b6b1cbb1",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+features_tab","Description","Features Tab","New added",,"[""All""]",,,,5
+,"9c018e57-86b6-4fd1-bfc4-a75a69ac5c91",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ptz_control_protocol","General","PTZ Control Protocol",,,"[""Tester""]",,,,505
+,"9c7752cb-825b-45db-a24c-16766464655d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+network_standard","Network","Network Standard",,,"[""Networking""]",,,true,419
+,"9d606aa1-781b-4a9d-a899-d39fe633ca3b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+mtbf","RELIABILITY / DATA INTEGRITY","MTBF",,,"[""StorageDrivers""]",,,,360
+,"9db9285b-c416-4741-b7f6-eee9709abe4b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+electric_shutter_speed","Operational","Electric Shutter Speed",,,"[""Camera""]",,,,135
+,"9ded70d8-11e1-4d66-a9e4-f18e073ee5db",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+detect_25ppm_8ppf","DORI","Detect (25PPM/ 8PPF)",,,"[""Camera""]",,,,56
+,"9e4e7487-14ad-4d1e-ab55-18f00aa14311",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+total_device","Video","Total Device",,,"[""Recorder""]",,,,215
+,"9e65a405-feb7-4f55-b1e1-e95deeadf6e3",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ports","General","Ports",,,"[""Networking""]",,,,372
+,"9e82d081-c637-4105-821e-44d8552c4618",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ip_device_protocol","Video","IP Device Protocol",,,"[""Recorder""]",,,,208
+,"9e871710-fc2b-4f90-b34c-a53012ad39fe",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+additional_security","Security","Additional Security",,,"[""Camera""]",,,,159
+,"9ee6e8d8-ccf7-4717-bc51-4deaf2e6899b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+product_dimensions","General","Product Dimensions",,,"[""Networking""]",,,true,173
+,"9fa3b807-e309-44de-8047-11c93010ef2a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","day__night","Operational","Day & Night","remove _specs",,"[""Camera""]",,true,true,49
+,"9fc73db6-dca7-4b93-84ba-f25f9243d93c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+alarm_output","Interface","Alarm Output",,,"[""Camera"",""Recorder""]",,,,233
+,"a0d67939-b9cf-4886-a294-bb352e4423c6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+wall_mount","Compatible Accessories","Wall Mount",,,"[""Camera""]",,,,192
+,"a0ff87b5-45c0-44b2-a8f0-dbc9b327dfae",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+min_illumination_color","Video","Min. Illumination (Color)",,,"[""Camera""]",,,,98
+,"a1be5b33-6309-4af5-8005-83e5f558e41f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+output_current","General","Output Current",,,"[""PowerSupply""]",,,,333
+,"a1c3c4ec-8754-4403-bbad-75a5d4feac6c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ir_wavelength","Operational","IR Wavelength",,,"[""Camera""]",,,,140
+,"a233724e-f1e5-45d9-8b37-3c2196b42c65",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+led","Hardware","LED",,,"[""JunctionBox""]",,,,267
+,"a351361f-7c28-4765-bf86-b6eebcd4e1f8",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+display_character","General","Display Character",,,"[""HDMIVideoAccessories""]",,,,320
+,"a429a583-3d48-4bec-a553-08ce0f3a6610",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+fast_forward_playback_control","Performance","Fast Forward Playback Control",,,"[""Recorder""]",,,,254
+,"a4d9f0b8-5586-4e89-bfff-a02662e3229f",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+sub_category","Basic","Sub Category","소분류 (예: 각 대분류 아래 소분류, Network Camera>Vandal Dome Series)",,"[""All""]",true,,,8
+,"a521c69b-a566-4801-a109-56fccdc8641d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+mobile_stream_resolution","Video","Mobile Stream Resolution",,,"[""Camera""]",,,,96
+,"a66bcf61-e346-481e-a286-0d892c79274c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+power_up_action","Pan / Tilt / Rotate","Power Up Action",,,"[""Camera""]",,,,119
+,"a751433d-b19e-4df4-9cfb-eeda37b08e01",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+included_ip_tools","General","Included IP Tools",,,"[""Tester""]",,,,482
+,"a79303ec-bd60-4972-bf2c-1a6398fe20c6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+qos","Convergence","QoS",,,"[""Networking""]",,,,82
+,"a7fb6fad-e779-4186-91ad-4a0b1a4392fe",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+additional_ptz_features","Pan / Tilt / Rotate","Additional PTZ Features",,,"[""Camera""]",,,,113
+,"a88eeeb2-1425-4373-ab40-90f5957ae842",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+voip","Network","VoIP",,,"[""IPHornSpeaker"",""Networking""]",,,,463
+,"a8ae7ac4-fe93-4c20-8028-2f9fbcb7f8f4",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+image_setting","Operational","Image Setting",,,"[""Camera""]",,,,145
+,"a8cb95d6-0f87-4661-920a-e34e7387deab",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hdmi_output_support_frame","General","HDMI Output Support Frame",,,"[""Tester""]",,,,493
+,"aa414590-45d0-455c-8a4a-ad1377e987d6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+drop_down_shortcut_menu","General","Drop Down Shortcut Menu",,,"[""Tester""]",,,,502
+,"abd551da-45cf-4c48-974a-289efe822fa8",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+extended_case_operating_temperature","Electrical & Environmental","Extended Case Operating Temperature",,,"[""Networking""]",,,,404
+,"ad40189b-7e66-49cb-be75-c61b2d79e288",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+focus_control","Lens","Focus Control",,,"[""Camera""]",,,,109
+,"ad8c08fc-4579-4ac6-91ea-7245511a540e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+certification_&_standards","General","Certification & Standards",,,"[""PowerSupply""]",,,,328
+,"ad900aee-e6f4-42f5-91b6-f224d9338a6e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+power_input_current","Electrical & Environmental","Power Input Current",,,"[""Recorder""]",,,,166
+,"ae4832ab-8114-4fde-b7e0-342b3a6af7e6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+data_protect","Security","Data Protect",,,"[""Camera""]",,,,158
+,"af0026d6-d4fd-439d-8bd8-fda541df31b1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+description","Amplier","Description",,,"[""IPHornSpeaker""]",,,,465
+,"af7dea14-1126-4c3c-9c4b-f99cdee0c9bf",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+junction_box","Compatible Accessories","Junction Box",,,"[""Camera""]",,,,189
+,"afdcafe2-f6b2-4f13-8746-fe479064b9cf",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ral_code","Mechanical","RAL Code",,,"[""Camera""]",,,,181
+,"b0406889-dd0d-492d-8a57-4c54b621480e",2026-05-28T16:38:15Z,2026-05-28T16:42:59Z,"f662116f-63e0-4d4a-9e44-9cec7a905955","product_tag","Basic","Product Tag","사진 우상단 태그 아이콘표시용 (예: New, Starllion Ready)",,"[""All""]",,,,539
+,"b043dd39-debf-48e5-bb09-e56e1eb7083d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+in-ceiling_mount","Compatible Accessories","In-ceiling Mount",,,"[""Camera""]",,,,194
+,"b0673be2-620a-4961-81dd-f8508001b000",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+mirror_image","Operational","Mirror Image",,,"[""Camera""]",,,,144
+,"b0849f17-19e8-4f1e-86ca-0688c96cc821",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+wi-fi_standard","Wi-Fi","Wi-Fi Standard",,,"[""Networking""]",,,,427
+,"b0993a13-006e-4c7d-92e8-609c869f9bdb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+user_authentication","Security","User Authentication",,,"[""Camera""]",,,,154
+,"b0b281dd-19e9-4090-a9b8-92a9975b6761",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_power_consumption","Electrical & Environmental","Max Power Consumption",,,"[""Networking""]",,,false,371
+,"b1034c14-43e7-4f11-9ab8-2dea93b419c5",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+model_number_sku","Basic","Model Number (SKU)","True model name",,"[""All""]",true,,,4
+,"b1423f89-f962-48c4-8c8b-f2cf30cb243d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+operating_temperature","Electrical & Environmental","Operating Temperature",,,"[""Camera"",""Recorder"",""Networking"",""JunctionBox"",""IPHornSpeaker"",""Tester"",""HDMIVideoAccessories""]",,,,160
+,"b1cecb60-9972-4a26-8534-7ff29e416cdb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+analog_device_resolution","Video","Analog Device Resolution",,,"[""Recorder""]",,,,206
+,"b3021d1a-f84e-459e-a645-89cb35b6f1e3",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+presets","Pan / Tilt / Rotate","Presets",,,"[""Camera""]",,,,115
+,"b3ced1b5-5242-4ab5-993a-aa3ce472b8a9",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ptz_control","Operational","PTZ Control",,,"[""Recorder""]",,,,226
+,"b3fb8bc2-2efe-40c8-b445-efdf2650f642",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+utp_cable_connector","Protection","UTP Cable Connector",,,"[""HDMIVideoAccessories""]",,,,314
+,"b404474b-4111-4a91-b8cc-a582797f5ecb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+typical_tx_input_impendance","High-Speed Electrical Transmission Host (SFP)","Typical TX Input Impendance",,,"[""Networking""]",,,,400
+,"b4d1aa83-887c-413f-b7ad-8f00632b066b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ingress_protection","General","Ingress Protection",,,"[""Camera"",""Networking"",""JunctionBox"",""IPHornSpeaker""]",,,,170
+,"b4ec5b7c-e57b-45ad-adb5-103e5ba9bcf6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+frequency","Electrical & Environmental","Frequency",,,"[""Networking""]",,,true,456
+,"b5176ee0-69a8-4c49-b5b6-5474133a0ba8",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+edit_support","General","EDIT Support",,,"[""HDMIVideoAccessories""]",,,,304
+,"b5b72cda-7599-442b-8a28-489b284928c0",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+anti-interference","Video","Anti-Interference",,,"[""HDMIVideoAccessories""]",,,,312
+,"b655f6a7-2506-4ba0-aaac-5e5885dd61c4",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+alarm_triggers","Operational","Alarm Triggers",,,"[""Camera""]",,,,137
+,"b734d7ec-b454-4025-a9be-d82bed8dd64e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_url2","Download Tab","Download File URL 2","다운로드 파일 (PDF, zip)",,"[""All""]",,,,28
+,"b7e0eef9-2156-4803-a827-f75f7094a78b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_12vdc_power_output","General","Max 12VDC Power Output",,,"[""Tester""]",,,,496
+,"b8001eae-8562-4a07-8242-88ad0af26b7d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+endurance","RELIABILITY / DATA INTEGRITY","Endurance",,,"[""StorageDrivers""]",,,,361
+,"b868e8ae-6966-4c17-a126-b62cc393e57c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+typical_tx_output_impendance","High-Speed Electrical Transmission Line (SFP)","Typical TX Output Impendance",,,"[""Networking""]",,,,395
+,"b89c901b-31de-4785-8638-fbe1342949b1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+storage_temperature","Electrical & Environmental","Storage Temperature",,,"[""Camera"",""Networking"",""JunctionBox""]",,,,162
+,"b8cb4395-da7b-43e2-b275-a568e3320bb1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+tarnish_resistant_components","Features","Tarnish Resistant Components",,,"[""StorageDrivers""]",,,,350
+,"bacea432-1278-4959-b32d-d5dad880f0ac",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+receiver_damage_threshold","General","Receiver Damage Threshold",,,"[""Networking""]",,,,383
+,"bb2fa978-9e27-4fc6-af85-0f1cc12485fc",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_name1","Download Tab","Download File Name 1","표시 이름",,"[""All""]",,,,25
+,"bbd2710d-1971-43bd-b0d6-2454d40b51cd",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+advanced_format","General","Advanced Format",,,"[""StorageDrivers""]",,,,342
+,"bbe62ca3-1172-4452-9a01-7e3349081a3f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+record_mode","Performance","Record Mode",,,"[""Recorder""]",,,,261
+,"bc752ecd-5abf-4a60-a8c9-1d81582b0d50",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+Title","Basic","Product Title","New added(?)",,,,,,2
+,"bd7711b5-38ca-46d7-8b36-936fb87df133",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+poe_power_output_type","General","PoE Power Output Type",,,"[""Tester""]",,,,499
+,"be52092c-9e98-4834-b9e8-ababae2ffd82",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+mac_address_binding","Layer 2 Switching","MAC Address Binding",,,"[""Networking""]",,,,429
+,"be7da920-5bfa-4bc0-a372-09cdf9f1add8",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+emc","Certification & Standards","EMC",,,"[""Camera""]",,,,184
+,"be850481-aa17-42d9-b4f6-b97a2b7b4a8c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+defog","Operational","Defog",,,"[""Camera""]",,,,129
+,"bf15dc6d-bd2c-4edd-a2a9-c1d4ecc15c1b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+pan__tilt__rotate_range","Pan / Tilt / Rotate","Pan / Tilt / Rotate Range",,,"[""Camera""]",,,,48
+,"bf601421-6aee-4276-bfa6-24fb45325b34",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+output_resolution_hdmi4","Video","Output Resolution HDMI4",,,"[""Recorder""]",,,,213
+,"bf983a42-3d8b-4407-b226-dd8aad165c5b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+coaxial_cable_connector","Protection","Coaxial Cable Connector",,,"[""HDMIVideoAccessories""]",,,,313
+,"bfa70ec9-57f7-449c-95e3-a4ad1b7839a6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_name10","Download Tab","Download File Name 10","표시 이름",,"[""All""]",,,,43
+,"c0adf533-5dd1-4435-acf7-9a6f550a4d61",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+sd_card_slot","General","SD Card Slot","remove _specs",,"[""Camera""]",,true,true,52
+,"c17f0728-cc09-4bb8-bedd-556c3a6bed52",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_name2","Download Tab","Download File Name 2","표시 이름",,"[""All""]",,,,27
+,"c1f45393-f2bf-446e-9bc1-e3d4b892e54f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+rj45","Hardware","RJ45",,,"[""JunctionBox""]",,,,269
+,"c2354ec3-6c32-4a67-a92e-a407a5f7a672",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+single_ended_data_output_swing","High-Speed Electrical Transmission Host (SFP)","Single Ended Data Output Swing",,,"[""Networking""]",,,,398
+,"c2a8f730-19a6-49a3-96e3-02875a39631a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+typical_line_frequency","High-Speed Electrical Transmission Line (SFP)","Typical Line Frequency",,,"[""Networking""]",,,,74
+,"c2f6bed9-44a4-415f-978e-a154e824f524",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+gallery_images_urls2","Media","Gallery Images URLs","New added",,,,,,18
+,"c3223103-1f95-4716-bbb9-139523652d94",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+typical_supply_current","General","Typical Supply Current",,,"[""Networking""]",,,,375
+,"c32c3e2c-6973-4a25-b833-ecee2b3d36ef",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+camera_supported","Features","Camera Supported",,,"[""StorageDrivers""]",,,,347
+,"c4369b6a-f9f0-4f98-82cf-df6d721edb09",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+video_format","Video","Video Format",,,"[""Camera""]",,,,102
+,"c555106b-a214-4ced-96ba-2750a04470c5",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+snmp","Management","SNMP",,,"[""Networking""]",,,,449
+,"c5d30489-6d8b-4ee7-8039-cfe1243373ef",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+form_factor","General","Form Factor",,,"[""StorageDrivers""]",,,,341
+,"c66012ec-d39c-4600-98c2-c131c472a651",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_resolution","Video","Max Resolution","remove _specs",,"[""Camera""]",true,true,true,93
+,"c66f78a1-8f11-475c-b5d8-7eb87b0839ae",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+single_ended_data_input_swing","High-Speed Electrical Transmission Host (SFP)","Single Ended Data Input Swing",,,"[""Networking""]",,,,397
+,"c68fec4d-4af2-4c1d-8186-b9ecac2935c5",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+supported_video","General","Supported Video",,,"[""HDMIVideoAccessories""]",,,,300
+,"c6dc0580-d240-4470-bae9-8c2aa97c5518",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+battery_capacity","Electrical & Environmental","Battery Capacity",,,"[""Tester""]",,,,523
+,"c77bae98-5914-40ba-920f-9ea4aac9c9f6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+supported_browser_for_web_viewer","Network","Supported Browser for Web Viewer",,,"[""Recorder""]",,,,247
+,"c799694f-4fb6-4a6a-87ca-df3d4af1ee31",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+average_seek_acoustics","Electrical & Environmental","Average Seek Acoustics",,,"[""StorageDrivers""]",,,,370
+,"c89d0398-de7b-4789-ae05-1240d6627cc1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+related_search_keyword","Description","Related Search Keyword","연관 검색어 키워드",,"[""All""]",true,,,20
+,"c8aacafa-8977-4ca0-922c-e5ecadb50663",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","100_1000_mbps_lan_ethernet_ports","Hardware","100/1000 Mbps LAN Ethernet Ports",,,"[""Networking""]",,,true,407
+,"c8da6889-695c-4eab-8e28-64fd9b7a46d6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+off_output_power","Transmitter","OFF Output Power",,,"[""Networking""]",,,,387
+,"c92d6840-d8bf-4a48-a78e-8af0da3a75ab",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+lens_type","Lens","Lens Type","remove _specs",,"[""Camera""]",,true,true,104
+,"c93f556a-d8e1-4821-87bb-01a64bc8630a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+slow_forward_playback_control","Performance","Slow Forward Playback Control",,,"[""Recorder""]",,,,262
+,"c963d1f4-b0f8-48a4-ae4c-e3c2cb69f7b5",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hdcp_version","General","HDCP Version",,,"[""HDMIVideoAccessories""]",,,,285
+,"c9cc9fee-24a3-4f00-95b1-3c6e84ceea54",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_name6","Download Tab","Download File Name 6","표시 이름",,"[""All""]",,,,35
+,"ca185fa4-a6f9-4e80-913b-fa8d88bf0e7d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+compatible_conduit_hole__gangbox","Mechanical","Compatible Conduit hole / Gangbox",,,"[""Camera""]",,,,182
+,"ca1f9b55-a97d-4833-bb89-e84c012dbf6b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ethernet","Network","Ethernet",,,"[""Camera""]",,,,50
+,"ca639dd4-34d5-4a71-abc0-c6bd664607e7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_storage_capacity","Performance","Max Storage Capacity",,,"[""Recorder""]",,,,255
+,"ca8a2bfc-012d-4bc7-a03d-84cde1bb29d7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+protocol","Network","Protocol","remove -2",,"[""IPHornSpeaker"",""Networking""]",,,,462
+,"caaae26a-00fb-49f0-82b4-6a523b80b5b6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_port_power_supply_rate","PoE","Max Port Power Supply Rate",,,"[""JunctionBox""]",,,,275
+,"cb2f7d9e-f269-4042-9147-45adde9548c7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+card_health_status_monitoring_capability","Features","Card Health Status Monitoring Capability",,,"[""StorageDrivers""]",,,,351
+,"cb5bd84e-c0ec-424e-91fd-3b6681af3fb2",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+sfp_input_low","General","SFP Input Low",,,"[""Networking""]",,,,381
+,"cbbd6d6f-68e4-47c6-8401-230763a7a274",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ring_protocol","Layer 2 Switching","Ring Protocol",,,"[""Networking""]",,,,440
+,"cc14bcbb-ee0d-48cb-b5be-d9ca59edb7a6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+security","Network","Security","remove -2",,"[""IPHornSpeaker"",""Networking""]",,,,88
+,"cd914075-dbc3-4f1d-9cbf-d1ca3e7e6735",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+video_channels","Video","Video Channels","remove _specs",,"[""Recorder""]",,true,true,57
+,"cdce3d9b-bf9f-4ef2-a3aa-9b26081aa3a2",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+tmds_signal_input_&_output","General","TMDS Signal Input & Output",,,"[""HDMIVideoAccessories""]",,,,288
+,"cdd0ac99-024a-4352-a362-662b7b7c1727",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hotspot","General","Hotspot",,,"[""Tester""]",,,,476
+,"cdf6b9c8-51cd-4227-8b4f-05545ef9bd21",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+certificated_icons","Description","Certification Icon","New added (icon URL)",,"[""All""]",,,,22
+,"ce01252a-9f9e-427d-8a3d-d299c0ddec92",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+analytics","Operational","Analytics","remove _specs",,"[""Camera"",""Recorder""]",,true,true,123
+,"ce3670c2-b8a9-46a6-b6fb-9de82c83055a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+packet_forwarding_rate","Hardware","Packet Forwarding Rate",,,"[""JunctionBox""]",,,,268
+,"ce83ade8-dfca-4123-99d9-6358b63b1a09",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hdmi_signal","General","HDMI Signal",,,"[""HDMIVideoAccessories""]",,,,298
+,"ce888975-853d-43ae-a278-1236bf5dd6e9",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hdmi_input","Interface","HDMI Input",,,"[""HDMIVideoAccessories""]",,,,68
+,"cef62336-47bb-4606-8346-5055cdc1d1a1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+raid","Interface","RAID","remove _specs",,"[""Recorder""]",,true,true,217
+,"cf91aec4-5cd8-48ac-807e-e0177419755b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+wi-fi_frequency_bands","General","Wi-Fi Frequency Bands",,,"[""HDMIVideoAccessories""]",,,,290
+,"cf9ab410-718a-475f-8e51-d191745f3fad",2026-03-30T15:47:55Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+overview_tab","Description","Overview Tab","New added",,"[""All""]",,,,6
+,"d0dbc543-a9bd-4aa1-ad63-2c9ba00f8048",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+taa_compliant","Certification & Standards","TAA Compliant","remove _specs",,"[""Camera"",""Recorder"",""IPHornSpeaker""]",,true,true,183
+,"d0f06686-9d1e-4870-bb46-2d190a19bbf8",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+speed_pantilt","Pan / Tilt / Rotate","Speed (Pan/Tilt)",,,"[""Camera""]",,,,112
+,"d1783adc-bfc0-4dfb-bdb5-353433a36852",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+transmission_distance","General","Transmission Distance",,,"[""HDMIVideoAccessories""]",,,,291
+,"d19d5a08-037f-4bba-be94-30c157e87918",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+coaxial_control","Interface","Coaxial Control",,,"[""Recorder""]",,,,236
+,"d24fa673-6122-4bbc-b9f4-4c7ff849fee8",2026-03-30T15:47:54Z,2026-05-22T15:52:09Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","product_sales
+","Product Sales","Product Sales","제품의 활성화 체크",,"[""All""]",,,,538
+,"d2b62056-b63c-4951-8e16-4bb5bfc925f7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+port_feature","Layer 2 Switching","Port Feature",,,"[""Networking""]",,,,433
+,"d35d3953-676a-49e8-8f14-2dfb7184bee9",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+console","Management","Console",,,"[""Networking""]",,,,446
+,"d37a9ead-2ea6-4870-b4c9-2b7e502f1795",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+typical_los_hysteresis","Receiver","Typical LOS Hysteresis",,,"[""Networking""]",,,,394
+,"d3d13d20-70da-43a2-bde0-56e8c8e7f710",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+lens_distortion_correction","Operational","Lens Distortion Correction",,,"[""Camera""]",,,,134
+,"d43403c2-67e3-4b6e-a470-3f84904a13bd",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+input_frequency","General","Input Frequency",,,"[""PowerSupply""]",,,,331
+,"d49371a0-5023-4dc8-a844-878828fe4fea",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+commercial_case_operating_temperature","Electrical & Environmental","Commercial Case Operating Temperature",,,"[""Networking""]",,,,403
+,"d5131a38-5d2f-4cd1-a513-b3332cf151d3",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+back_panel_usb_port_usb_20","Interface","Back Panel USB Port (USB 2.0)",,,"[""Recorder""]",,,,235
+,"d55480b5-eda9-4060-add5-7d362a07cde7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+user_management","Management","User Management",,,"[""Networking""]",,,,450
+,"d597f1f4-6c68-43cd-aa8d-f5db68e49bf3",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+sharpness","Operational","Sharpness",,,"[""Camera""]",,,,143
+,"d5ba7137-8ba9-4e5b-8a40-d84505855256",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+identify_250ppm_76ppf","DORI","Identify (250PPM/ 76PPF)",,,"[""Camera""]",,,,200
+,"d6482d18-c0cc-492b-b285-a87e59b98292",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+rohs_compliant","General","RoHS Compliant",,,"[""StorageDrivers""]",,,,344
+,"d6792bfd-0181-4967-ac5e-4b4a209c68f8",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+parapet_mount","Compatible Accessories","Parapet Mount",,,"[""Camera""]",,,,196
+,"d6e4b976-d98a-447d-96ff-82b27896102e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+led_indicators","Hardware","LED Indicators",,,"[""Networking"",""HDMIVideoAccessories""]",,,,411
+,"d6f0efe2-17c0-4078-a5ed-7edd737b08ba",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+finalProducts_sub (List)",,,"?",,,,,,527
+,"d73ac048-fd13-4d04-8524-08305394c9e8",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+range","Protection","Range",,,"[""HDMIVideoAccessories""]",,,,315
+,"d786bf72-ee32-4251-acae-981a6bc3228f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+audio_input","Interface","Audio Input","remove _specs",,"[""Camera"",""Recorder""]",,true,true,218
+,"d7dce18f-731e-4d1f-8fb2-e746647980a5",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ip_device_resolution","Video","IP Device Resolution",,,"[""Recorder""]",,,,209
+,"d82ab6a8-0cb5-4112-bd05-2e52e0dfd964",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+vlan_interface","Layer 3 Switching","VLAN Interface",,,"[""Networking""]",,,,443
+,"d84e281d-6cd3-4820-9963-5de78fab415b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+typical_risefall_time","High-Speed Electrical Transmission Host (SFP)","Typical Rise/Fall Time",,,"[""Networking""]",,,,399
+,"da5585c4-5f73-45fd-a365-ea6f78ace375",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+playback_mode","Performance","Playback Mode",,,"[""Recorder""]",,,,258
+,"db1e24af-75e1-43d5-93a5-35d00d941051",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+poe_injector","Included Accessories","PoE Injector",,,"[""Camera""]",,,,187
+,"db730097-ce7c-4ab1-be63-3ed671c87677",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+sfp_output_low","General","SFP Output Low",,,"[""Networking""]",,,,379
+,"dc375e7e-c3a4-4bc3-8a1c-11bf0cf6020c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+documents","Included Accessories","Documents",,,"[""Camera"",""IPHornSpeaker""]",,,,188
+,"dd574dcb-7ba7-4c78-b831-167e6b18cad6",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+color","General","Color",,,"[""Camera"",""JunctionBox"",""IPHornSpeaker"",""HDMIVideoAccessories""]",,,,179
+,"dd81ab60-3506-44bf-8085-f1d5efca1a5d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+recording_technology","General","Recording Technology",,,"[""StorageDrivers""]",,,,343
+,"dd882be7-72da-476b-9974-1f7c023f9631",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+certification","Certification & Standards","Certification",,,"[""Networking""]",,,,422
+,"de121bd1-710b-48ac-986e-8ae57217d477",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+poe_port","Interface","PoE Port","remove _specs",,"[""Recorder"",""Networking""]",,true,true,216
+,"de3b7f96-b0a7-4e72-8ff8-a8698ff1d3bc",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+serial_port_baudrate","Interface","Serial Port Baudrate",,,"[""HDMIVideoAccessories""]",,,,324
+,"debe82f9-e998-4301-98b8-9fa5aec289a8",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+patrol_scan","Pan / Tilt / Rotate","Patrol Scan",,,"[""Camera""]",,,,116
+,"debf0b34-4f7e-4052-8185-19883ea5ec18",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+output_resolution_hdmi3","Video","Output Resolution HDMI3",,,"[""Recorder""]",,,,212
+,"deffcec1-8e87-495b-9a0f-ade0acbd4b82",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+bandwidth","Wi-Fi","Bandwidth",,,"[""Networking""]",,,,80
+,"dff5c8b2-6dab-488f-9fd0-aa11d0e34e3c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+sub_stream_resolution","Video","Sub Stream Resolution",,,"[""Camera""]",,,,95
+,"dffdd0d9-0cb8-42a3-ae91-d2ca2dd6d4bb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+storage_temperature","Electrical & Environmental","Storage Temperature","remove -1",,"[""StorageDrivers""]",,,,365
+,"e072fe13-bd4f-45bf-a484-16b9e918ded4",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+standard","PoE","Standard",,,"[""JunctionBox""]",,,,283
+,"e0abddca-63bc-47c2-aeb4-ad5a6f6d6ca3",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ahd_supported_frame","HD Analog","AHD Supported Frame",,,"[""Tester""]",,,,519
+,"e1195c49-38cc-47bf-bd22-17eab1163563",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+analog_video_inputs_signal_type","General","Analog Video Inputs Signal Type",,,"[""Tester""]",,,,484
+,"e198bb99-60b6-4a75-aab0-90b7dd275289",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+extinction_ratio","Transmitter","Extinction Ratio",,,"[""Networking""]",,,,384
+,"e32143f3-ed5d-4f2a-994a-3899399fe4d7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+smart_phone_app_live_view_control","Operational","Smart Phone App Live View Control",,,"[""Recorder""]",,,,228
+,"e32d9cf7-95e9-42d5-aec9-2486c3c961e0",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+system_log","Management","System Log",,,"[""Networking""]",,,,451
+,"e3543c91-5bb8-4ca3-ab2a-882c8c32f184",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+imaging_system","Video","Imaging System",,,"[""Camera""]",,,,101
+,"e455142f-621a-4d7f-bd33-4d21f6a159f1",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+transfer_rate","General","Transfer Rate",,,"[""HDMIVideoAccessories""]",,,,286
+,"e4805b63-978d-4047-9a5f-6dff4e0d8fd0",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+Updated Date",,,"?",,,,,,536
+,"e4a747bb-45de-4642-ad3e-8f6289379e3b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+switching_capacity","Layer 2 Switching","Switching Capacity",,,"[""Networking""]",,,true,81
+,"e4d76563-f223-4739-b6b4-3b13e13f3fcf",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+codec","Audio","Codec",,,"[""IPHornSpeaker""]",,,,86
+,"e5df4f2d-c8a3-4a5e-aec3-3f83ef987b1a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+power_supply","Included Accessories","Power Supply",,,"[""Camera""]",,,,186
+,"e63a67aa-3330-41b5-a67c-7fc84bc7d999",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+5_8ghz_speed","General","5.8Ghz Speed",,,"[""Tester""]",,,,475
+,"e6946906-a045-4dc9-ad43-a6658ef73170",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+pattern_scan","Pan / Tilt / Rotate","Pattern Scan",,,"[""Camera""]",,,,117
+,"e69bf76c-f9ef-422b-b8e9-eefc4cf72299",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+mac_address_learning_control","Layer 2 Switching","MAC Address Learning Control",,,"[""Networking""]",,,,431
+,"e701d05f-120d-442a-941f-2dec67faecfb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","100_1000_mbps_wan_ethernet_ports","Hardware","100/1000 Mbps WAN Ethernet Ports",,,"[""Networking""]",,,true,408
+,"e7671889-294a-4299-8111-3bb24a97e70e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+defect_correction","Operational","Defect Correction",,,"[""Camera""]",,,,146
+,"e77feb6e-752d-4482-957f-47ff1e573c84",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+zoom_ratio","Lens","Zoom Ratio",,,"[""Camera""]",,,,105
+,"e82c88bd-2d0f-4a59-8820-c3e626bcb1c7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+interface","Network","Interface",,,"[""JunctionBox"",""IPHornSpeaker""]",,,,92
+,"e842edb9-a97a-44e8-9359-5c9f749fa2ca",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+angular_field_of_view","Lens","Angular Field of View",,,"[""Camera""]",,,,106
+,"e873cb5a-97ef-4e5a-821c-280790daf782",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_name9","Download Tab","Download File Name 9","표시 이름",,"[""All""]",,,,41
+,"e89d8045-53fa-4f35-adc6-d481eb68796f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+recorder_system","General","Recorder System",,,"[""Recorder""]",,true,,175
+,"e8a647f2-2b85-46ca-b157-ce62b83c48db",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+camera_adding_method","Operational","Camera Adding Method",,,"[""Recorder""]",,,,59
+,"e8c18042-9aa5-4f50-8bdc-2f012bc6ce08",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ethernet_port","Interface","Ethernet Port",,,"[""Recorder""]",,,,237
+,"e90adb0f-279f-4220-a45a-91187d037c4c",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+os__firmware_protect","Security","OS / Firmware Protect",,,"[""Camera""]",,,,51
+,"e9a08b47-d8f3-4d9b-a93e-e7920669a612",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+poepse_voltage_test","General","PoE/PSE Voltage Test",,,"[""Tester""]",,,,501
+,"ea9bd41c-9468-4b46-8421-a0e8b79ad317",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+epoe","PoE","EPOE",,,"[""JunctionBox""]",,,,65
+,"eb24afc2-d9a8-443b-ac4f-5ff5d89faadf",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+network_port","Interface","Network Port",,,"[""Tester""]",,,,471
+,"eb48dfc6-efe8-431a-a806-439d895aede7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+adaptor_type","General","Adaptor Type",,,"[""PowerSupply""]",,,,327
+,"ebeaa3a2-7d2c-4e20-b4d6-8b59886b7a25",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+power_input_range","Electrical & Environmental","Power Input Range",,,"[""HDMIVideoAccessories""]",,,,326
+,"ec413f1d-0dff-4706-ba98-8c4efb53f832",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+highlight_compensation","Operational","HLC",,,"[""Camera""]",,,,142
+,"ec8caaad-58c8-437d-970c-e8add289bf71",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+forwarding_mode","Hardware","Forwarding Mode",,,"[""Networking""]",,,,416
+,"ecb01529-0020-419f-b19c-848fe48976a4",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+download_file_url5","Download Tab","Download File URL 5","다운로드 파일 (PDF, zip)",,"[""All""]",,,,34
+,"ecce7b24-39cf-4f4c-ae25-56de127aef0a",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+digital_noise_reduction","Operational","Digital Noise Reduction",,,"[""Camera""]",,,,122
+,"ef0d4004-5591-4d6d-bfa9-e4fbcd6f1f2f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+average_power_requirements","Power Management","Average power requirements",,,"[""StorageDrivers""]",,,,363
+,"efcac2de-d4f8-4558-9fe9-9161f033f91f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+output_resolution_hdmi1","Video","Output Resolution HDMI1",,,"[""Recorder""]",,,,210
+,"f0a74233-a075-4a66-bcce-a698774e931b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+supported_resolution","General","Supported Resolution",,,"[""HDMIVideoAccessories""]",,,,287
+,"f0b4fa31-67fe-4662-a373-0d8cbea8f1a0",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+non_operating_shock_(2_ms)","Electrical & Environmental","Non-operating Shock (2 ms)",,,"[""StorageDrivers""]",,,,368
+,"f249d7fa-64c3-47a2-83b4-508c42a74d1e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+link_aggression","Layer 2 Switching","Link Aggression",,,"[""Networking""]",,,,436
+,"f456156f-8ebe-4ffe-84b0-ed91a85c066d",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+hd_analog_input_type","HD Analog","HD Analog Input Type",,,"[""Tester""]",,,,513
+,"f4b35a19-5ec5-4670-bfae-174e568f8165",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+housing_style","Mechanical","Housing Style","remove _specs",,"[""Camera""]",,true,true,53
+,"f4e30ca5-7f7d-400d-a212-cffaffccc64e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+operating_shock_(2_ms_read_write)","Electrical & Environmental","Operating Shock (2 ms, read/write)",,,"[""StorageDrivers""]",,,,366
+,"f51933b4-e755-4d12-af72-ccd0cc5ee085",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+loss_of_signal_de-assert","Receiver","Loss of Signal De-assert",,,"[""Networking""]",,,,393
+,"f64c4099-456a-4f93-91c4-83ca025dedbd",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+bnc_port","Interface","BNC Port",,,"[""Recorder""]",,,,234
+,"f6d18507-eebf-4812-a22b-26bdd84715f8",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ndaa_compliant","Certification & Standards","NDAA Compliant",,,"[""Camera"",""Recorder"",""IPHornSpeaker""]",,,,90
+,"f71ada72-53ec-40c9-a50a-acffa5c28c98",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+bitrate_control","Network","Bitrate Control",,,"[""Camera""]",,,,151
+,"f7d7c780-1e89-4e1a-bfc4-9268597a6c1f",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+analog_video_input","Video","Analog Device Resolution","New added(extra CH info)",,"[""Recorder""]",,,,202
+,"f925a86e-3fc6-4576-bdb0-dd5a5506f2de",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+network_cable","General","Network Cable",,,"[""HDMIVideoAccessories""]",,,,299
+,"f96fea76-2d47-4756-b68c-1f2339fb3a9b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+mac_address","Network","MAC Address",,,"[""Networking"",""JunctionBox""]",,,true,418
+,"f9bedff3-4a1d-4158-8ea6-82c72ddc54cf",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+decoding_resolution","General","Decoding Resolution",,,"[""Tester""]",,,,478
+,"f9ede692-41eb-4896-bde7-7bcdf874bd6e",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+max_poe_power_output","General","Max PoE Power Output",,,"[""Tester""]",,,,500
+,"fa2d3e42-8433-4ecc-9478-80632a1267e4",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+firmware_version","Firmware Tab","Firmware Version","New added (펌웨어 버전)",,"[""All""]",,,,46
+,"fa6cfdfe-e21e-49d7-9e8d-4cf78ce76ec7",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+product_weight","General","Product Weight",,,"[""Networking""]",,,true,174
+,"fb407fc0-44ea-4e0a-b75a-2c08aaebd4dd",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+light_viewable_length","Operational","Light Viewable Length",,,"[""Camera""]",,,,139
+,"fbf628ab-e602-4e9b-a70f-ec79a1e63a70",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+ieee_standard","Network","IEEE Standard",,,"[""JunctionBox""]",,,,272
+,"fc353fb5-c578-4cf5-83bf-f4db26461c67",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+rms_spectrum_bandwidth","Transmitter","RMS Spectrum Bandwidth",,,"[""Networking""]",,,,386
+,"fc359f7a-764e-4ecd-bd1b-a0ea12ba10bb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+typical_rx_output_impendance","High-Speed Electrical Transmission Host (SFP)","Typical RX Output Impendance",,,"[""Networking""]",,,,401
+,"fcb655ac-be1d-4746-a342-0b2b4e03e713",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+storage_humidity","Electrical & Environmental","Storage Humidity",,,"[""Camera"",""Networking"",""JunctionBox""]",,,,163
+,"fd4c4653-26a7-47dc-a8dd-5c99b8e70e06",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+smart_phone_app_max_remote_user","Operational","Smart Phone App Max Remote User",,,"[""Recorder""]",,,,229
+,"fd4c7dea-57f6-40cc-bb40-9e72b6185360",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+tx_ports","Hardware","TX Ports",,,"[""Networking""]",,true,true,76
+,"fd60af78-c4f1-42bf-ad2f-d480d9a20493",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+product_series","General","Product Series",,,"[""Camera"",""Recorder""]",,true,,172
+,"fe3d1e51-7565-4360-8b04-61b3c6fd9498",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+datasheet_url","Specification Tab","Datasheet URL","스펙시트 다운로드",,"[""All""]",,,,23
+,"ff81463e-f433-4a75-8ec4-ec31e38242dd",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+secure_communication","Security","Secure Communication",,,"[""Camera""]",,,,156
+,"ff94ba06-fd1a-40ae-bffe-ea5314b0a55b",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+upgrade_firmware","Management","Upgrade Firmware",,,"[""Networking""]",,,,453
+,"ffa9f719-2451-4ada-aea5-b21cdbcd5e81",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+mac_address_filtering","Layer 2 Switching","MAC Address Filtering",,,"[""Networking""]",,,,430
+,"ffe7ca86-641d-4b2a-8c6c-70fb90d938fb",2026-03-30T15:47:54Z,2026-05-22T15:50:15Z,"36f160a8-d0da-4857-860a-1dfb38ceb0e2","
+application_programming_interface","Network","Application Programming Interface",,,"[""Camera""]",,,,153
