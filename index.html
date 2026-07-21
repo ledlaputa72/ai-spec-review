@@ -108,14 +108,18 @@
 
         <!-- not loaded: import -->
         <sc-if value="{{ notLoaded }}" hint-placeholder-val="{{ true }}">
-          <div style="text-align:center; padding:18px 0 26px;">
-            <div style="font-size:22px; font-weight:800; color:#941A31; letter-spacing:-.2px;">중국 데이터 가져오기</div>
-            <div style="font-size:13.5px; color:#5e636b; margin-top:7px; max-width:560px; margin-left:auto; margin-right:auto; line-height:1.5;">제조사 엑셀(.xlsx)을 업로드하면 CMS의 카테고리·표시 순서에 맞춰 자동 정렬됩니다. 아래 샘플로 바로 체험할 수도 있습니다.</div>
+          <div style="text-align:center; padding:18px 0 22px;">
+            <div style="font-size:22px; font-weight:800; color:#941A31; letter-spacing:-.2px;">{{ heroTitle }}</div>
+            <div style="font-size:13.5px; color:#5e636b; margin-top:7px; max-width:600px; margin-left:auto; margin-right:auto; line-height:1.5;">{{ heroDesc }}</div>
+          </div>
+          <div style="display:flex; gap:8px; justify-content:center; margin-bottom:16px;">
+            <button onClick="{{ onSrcXlsx }}" style="display:flex; align-items:center; gap:7px; background:{{ xlsxTabBg }}; color:{{ xlsxTabColor }}; border:1px solid #e3c9cf; border-radius:9px; padding:9px 16px; font-size:13px; font-weight:700; cursor:pointer;">📑 제조사 엑셀(.xlsx)</button>
+            <button onClick="{{ onSrcPdf }}" style="display:flex; align-items:center; gap:7px; background:{{ pdfTabBg }}; color:{{ pdfTabColor }}; border:1px solid #e3c9cf; border-radius:9px; padding:9px 16px; font-size:13px; font-weight:700; cursor:pointer;">📄 기제작 PDF 스펙시트</button>
           </div>
           <div onClick="{{ onPickFile }}" onDragOver="{{ onDragOver }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDropFile }}" style="border:2px dashed {{ dropBorder }}; border-radius:14px; background:{{ dropBg }}; padding:34px; display:flex; flex-direction:column; align-items:center; gap:6px; max-width:680px; margin:0 auto; cursor:pointer; transition:.15s;">
             <div style="font-size:34px;">{{ dropIcon }}</div>
             <div style="font-size:14px; font-weight:700; color:#44474e;">{{ dropTitle }}</div>
-            <div style="font-size:12px; color:#979ca4;">.xlsx · 제조사 데이터시트 양식 · 끌어다 놓거나 클릭</div>
+            <div style="font-size:12px; color:#979ca4;">{{ dropHint }}</div>
             <sc-if value="{{ hasImportError }}" hint-placeholder-val="{{ true }}"><div style="font-size:11.5px; color:#c0564f; font-weight:600; margin-top:4px;">{{ importError }}</div></sc-if>
           </div>
           <sc-if value="{{ hasSession }}" hint-placeholder-val="{{ true }}">
@@ -153,6 +157,7 @@
             <div style="display:flex; gap:9px; align-items:center;">
               <span style="font-size:12px; font-weight:700; color:#941A31; background:#f6edef; border:1px solid #e3c9cf; border-radius:20px; padding:6px 13px;">✓ {{ mapMatched }}개 매핑됨</span>
               <sc-if value="{{ hasUnmapped }}" hint-placeholder-val="{{ true }}"><button onClick="{{ onToggleUnmapped }}" style="font-size:12px; font-weight:700; color:#941A31; background:#f6edef; border:1px solid #e3c9cf; border-radius:20px; padding:6px 13px; cursor:pointer; display:flex; align-items:center; gap:6px;" style-hover="background:#efdfe2;">⚠ {{ mapUnmappedCount }}개 미매핑 · 연결하기</button></sc-if>
+              <sc-if value="{{ fromPdf }}" hint-placeholder-val="{{ true }}"><button onClick="{{ onExportRawXlsx }}" style="background:#941A31; border:none; color:#fff; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#a8243a;">▦ 엑셀로 내보내기</button></sc-if>
               <button onClick="{{ onReportMapping }}" style="background:#fff; border:1px solid #d9dce1; color:#941A31; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="border-color:#941A31;">📄 리포트 보기</button>
               <button onClick="{{ onResetImport }}" style="background:#fff; border:1px solid #d9dce1; color:#5e636b; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:600; cursor:pointer;">다른 파일</button>
             </div>
@@ -195,7 +200,7 @@
                           <div style="font-size:11.5px; color:#941A31; font-weight:700;">{{ f.name }}</div>
                           <sc-if value="{{ f.renamed }}" hint-placeholder-val="{{ true }}"><div style="font-size:9.5px; color:#a9b2c1; margin-top:1px;">← {{ f.source }}</div></sc-if>
                         </div>
-                        <span style="font-size:11.5px; color:#44474e; line-height:1.4; text-wrap:pretty;">{{ f.value }}</span>
+                        <span style="font-size:11.5px; color:#44474e; line-height:1.4; text-wrap:pretty; white-space:pre-line;">{{ f.value }}</span>
                       </div>
                     </sc-for>
                   </div>
@@ -294,8 +299,8 @@
                   <span style="margin-left:auto; font-size:10px; font-weight:700; color:#2f6fb0;">{{ r.expandLabel }}</span>
                 </div>
                 <div style="display:flex; flex-direction:column; gap:5px;">
-                  <div style="font-size:11.5px; background:#fcf4f4; border-radius:5px; padding:4px 9px; white-space:{{ r.ws }}; overflow:{{ r.ov }}; word-break:{{ r.wb }}; line-height:1.5;"><sc-for list="{{ r.beforeSegs }}" as="s" hint-placeholder-count="3"><sc-if value="{{ s.hit }}" hint-placeholder-val="{{ true }}"><span style="color:#d11a1a; text-decoration:line-through; font-weight:700;">{{ s.t }}</span></sc-if><sc-if value="{{ s.miss }}" hint-placeholder-val="{{ true }}"><span style="color:#5a5f68;">{{ s.t }}</span></sc-if></sc-for></div>
-                  <div style="display:flex; align-items:flex-start; gap:7px;"><span style="font-size:10px; color:#1f8a5b; font-weight:700; flex-shrink:0; padding-top:3px;">→ 수정 후</span><div style="font-size:11.5px; background:#f0f7f3; border-radius:5px; padding:4px 9px; flex:1; min-width:0; white-space:{{ r.ws }}; overflow:{{ r.ov }}; word-break:{{ r.wb }}; line-height:1.5;"><sc-for list="{{ r.afterSegs }}" as="s" hint-placeholder-count="3"><sc-if value="{{ s.hit }}" hint-placeholder-val="{{ true }}"><span style="color:#1f8a5b; font-weight:700;">{{ s.t }}</span></sc-if><sc-if value="{{ s.miss }}" hint-placeholder-val="{{ true }}"><span style="color:#1a1a1a;">{{ s.t }}</span></sc-if></sc-for></div></div>
+                  <div style="font-size:11.5px; background:#fcf4f4; border-radius:5px; padding:4px 9px; white-space:{{ r.ws }}; overflow:{{ r.ov }}; word-break:{{ r.wb }}; line-height:1.5;"><sc-for list="{{ r.beforeSegs }}" as="s" hint-placeholder-count="3"><sc-if value="{{ s.hit }}" hint-placeholder-val="{{ true }}"><span style="color:#d11a1a; background:#f9d9d9; text-decoration:line-through; font-weight:700; white-space:pre-wrap; border-radius:3px;">{{ s.t }}</span></sc-if><sc-if value="{{ s.miss }}" hint-placeholder-val="{{ true }}"><span style="color:#5a5f68;">{{ s.t }}</span></sc-if></sc-for></div>
+                  <div style="display:flex; align-items:flex-start; gap:7px;"><span style="font-size:10px; color:#1f8a5b; font-weight:700; flex-shrink:0; padding-top:3px;">→ 수정 후</span><div style="font-size:11.5px; background:#f0f7f3; border-radius:5px; padding:4px 9px; flex:1; min-width:0; white-space:{{ r.ws }}; overflow:{{ r.ov }}; word-break:{{ r.wb }}; line-height:1.5;"><sc-for list="{{ r.afterSegs }}" as="s" hint-placeholder-count="3"><sc-if value="{{ s.hit }}" hint-placeholder-val="{{ true }}"><span style="color:#0f7a48; background:#bfe8d0; font-weight:700; white-space:pre-wrap; border-radius:3px;">{{ s.t }}</span></sc-if><sc-if value="{{ s.miss }}" hint-placeholder-val="{{ true }}"><span style="color:#1a1a1a;">{{ s.t }}</span></sc-if></sc-for></div></div></div>
                 </div>
                 <div style="font-size:10.5px; color:#979ca4; margin-top:6px;">{{ r.noteText }}</div>
               </div>
@@ -329,11 +334,16 @@
               <span style="font-size:12px; color:#5e636b; min-width:42px; text-align:center;">{{ zoomPct }}%</span>
               <button onClick="{{ onZoomIn }}" style="width:30px; height:30px; border:1px solid #d9dce1; background:#fff; border-radius:7px; cursor:pointer; font-size:16px; color:#44474e;">+</button>
             </div>
+            <div style="display:flex; align-items:center; gap:4px;">
+              <button onClick="{{ onFitWidth }}" style="border:1px solid #d9dce1; background:{{ fitWidthBg }}; color:{{ fitWidthColor }}; border-radius:7px; padding:7px 10px; cursor:pointer; font-size:11.5px; font-weight:600;">↔ 너비 맞춤</button>
+              <button onClick="{{ onFitHeight }}" style="border:1px solid #d9dce1; background:{{ fitHeightBg }}; color:{{ fitHeightColor }}; border-radius:7px; padding:7px 10px; cursor:pointer; font-size:11.5px; font-weight:600;">↕ 세로 맞춤</button>
+              <button onClick="{{ onFitPage }}" style="border:1px solid #d9dce1; background:{{ fitPageBg }}; color:{{ fitPageColor }}; border-radius:7px; padding:7px 10px; cursor:pointer; font-size:11.5px; font-weight:600;">□ 페이지 맞춤</button>
+            </div>
             <button onClick="{{ onReportSheet }}" style="background:#fff; color:#941A31; border:1px solid #d9dce1; border-radius:8px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="border-color:#941A31;">📄 리포트</button>
             <button onClick="{{ onToStep4 }}" style="background:#941A31; color:#fff; border:none; border-radius:8px; padding:9px 18px; font-size:13px; font-weight:700; cursor:pointer;">사진·정보 편집 →</button>
           </div>
         </div>
-        <div class="scroll" style="flex:1; overflow:auto; padding:30px; display:flex; justify-content:center;">
+        <div class="scroll" ref="{{ sheetHostRef }}" style="flex:1; overflow:auto; padding:30px; display:flex; justify-content:center;">
           <div style="zoom:{{ zoom }};">
             <dc-import name="SpecSheet" sheet="{{ sheet }}" show-p1="{{ showP1 }}" show-p2="{{ showP2 }}" hint-size="816px,1100px"></dc-import>
           </div>
@@ -382,8 +392,10 @@
             </div>
             <div style="display:flex; flex-direction:column; gap:7px;">
               <sc-for list="{{ bulletsVM }}" as="b" hint-placeholder-count="5">
-                <div style="display:grid; grid-template-columns:1fr auto; gap:6px; align-items:center;">
+                <div style="display:grid; grid-template-columns:1fr auto auto auto; gap:5px; align-items:center;">
                   <input value="{{ b.text }}" onInput="{{ b.onInput }}" style="width:100%; border:1px solid #e6e8ec; border-radius:6px; padding:6px 9px; font-size:11.5px; color:#44474e;" />
+                  <button onClick="{{ b.onUp }}" style="width:24px; height:26px; border:1px solid #dfe3ea; background:#f6f7f9; color:#5e636b; border-radius:6px; cursor:pointer; font-size:10px; line-height:1; opacity:{{ b.upOpacity }};">▲</button>
+                  <button onClick="{{ b.onDown }}" style="width:24px; height:26px; border:1px solid #dfe3ea; background:#f6f7f9; color:#5e636b; border-radius:6px; cursor:pointer; font-size:10px; line-height:1; opacity:{{ b.downOpacity }};">▼</button>
                   <button onClick="{{ b.onRemove }}" style="width:26px; height:26px; border:1px solid #f0d6d6; background:#fdf3f3; color:#c0564f; border-radius:6px; cursor:pointer; font-size:14px; line-height:1;">×</button>
                 </div>
               </sc-for>
@@ -394,6 +406,18 @@
           <div style="padding:16px 18px; border-bottom:1px solid #eceef1;">
             <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:9px;">제품 사진 · 치수 도면</div>
             <div style="font-size:11.5px; color:#5e636b; line-height:1.5; background:#f5f6f8; border-radius:8px; padding:10px 12px;">왼쪽 미리보기의 <b style="color:#941A31;">제품 사진</b>·<b style="color:#941A31;">치수 도면</b> 영역에 이미지를 직접 끌어다 놓으세요. 드롭한 이미지는 자동 저장됩니다.</div>
+            <div style="font-size:10.5px; color:#8b9099; margin:12px 0 6px; font-weight:700;">치수 도면 개수</div>
+            <div style="display:flex; gap:6px;">
+              <button onClick="{{ onDim1 }}" style="flex:1; border:1px solid #d9dce1; background:{{ dim1Bg }}; color:{{ dim1Color }}; border-radius:7px; padding:7px; font-size:11.5px; font-weight:700; cursor:pointer;">도면 1개</button>
+              <button onClick="{{ onDim2 }}" style="flex:1; border:1px solid #d9dce1; background:{{ dim2Bg }}; color:{{ dim2Color }}; border-radius:7px; padding:7px; font-size:11.5px; font-weight:700; cursor:pointer;">도면 2개</button>
+            </div>
+            <sc-if value="{{ dimTwo }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:10.5px; color:#8b9099; margin:12px 0 6px; font-weight:700;">2번째 도면 배치</div>
+              <div style="display:flex; gap:6px;">
+                <button onClick="{{ onDimStack }}" style="flex:1; border:1px solid #d9dce1; background:{{ stackBg }}; color:{{ stackColor }}; border-radius:7px; padding:7px; font-size:11.5px; font-weight:700; cursor:pointer;">↕ 위·아래</button>
+                <button onClick="{{ onDimRow }}" style="flex:1; border:1px solid #d9dce1; background:{{ rowBg }}; color:{{ rowColor }}; border-radius:7px; padding:7px; font-size:11.5px; font-weight:700; cursor:pointer;">↔ 좌·우</button>
+              </div>
+            </sc-if>
           </div>
 
           <!-- 치수 값 -->
@@ -566,7 +590,7 @@
                 <tr style="border-bottom:1px solid #ececec;">
                   <td style="padding:3px 8px; color:#888; vertical-align:top; word-break:break-word;">{{ r.category }}</td>
                   <td style="padding:3px 8px; font-weight:600; vertical-align:top; word-break:break-word;">{{ r.name }} <sc-if value="{{ r.guess }}" hint-placeholder-val="{{ true }}"><span style="font-size:7.5px; font-weight:700; color:#c2700a; background:#fdf2e3; border-radius:3px; padding:0 4px;">추정</span></sc-if></td>
-                  <td style="padding:3px 8px; vertical-align:top; word-break:break-word;">{{ r.value }}</td>
+                  <td style="padding:3px 8px; vertical-align:top; word-break:break-word; white-space:pre-line;">{{ r.value }}</td>
                 </tr>
               </sc-for>
             </tbody>
@@ -707,17 +731,19 @@ class Component extends DCLogic {
     ready:false, loaded:false, step:1, scope:'Camera', activeSample:null,
     raw:null, assignments:{}, reviewAccept:{}, overrides:{},
     meta:{model:'', subtitle:''}, bullets:[], dims:[], certs:{}, accessories:[],
-    pageView:'both', zoom:0.66, zoom4:0.5, showSettings:false, settingsTab:'order',
+    pageView:'both', zoom:0.66, zoom4:0.5, fitMode:null, dimCount:1, dimLayout:'column', showSettings:false, settingsTab:'order',
     customOrder:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false,
-    importing:false, importError:'', dragOver:false, importNote:'',
+    importing:false, importError:'', dragOver:false, importNote:'', importSource:'xlsx',
     showReports:false, reportFocus:'mapping', showExport:false, exportMsg:'', savedToast:'', hasSession:false,
     reviewFilter:null, expandedReviews:{},
     cms:null, samples:null, qc:null
   };
 
   CERTS = [
-    {id:'ul',label:'UL'},{id:'fcc',label:'FCC'},{id:'ce',label:'CE'},{id:'rohs',label:'RoHS'},
-    {id:'ndaa',label:'NDAA'},{id:'taa',label:'TAA'},{id:'ip66',label:'IP66'},{id:'ip67',label:'IP67'},
+    {id:'ndaa',label:'NDAA',img:'./assets/certs/NDAA.png'},{id:'taa',label:'TAA',img:'./assets/certs/TAA.png'},
+    {id:'ce',label:'CE',img:'./assets/certs/CE.png'},{id:'fcc',label:'FCC',img:'./assets/certs/FCC.png'},
+    {id:'ai',label:'AI',img:'./assets/certs/AI.png'},
+    {id:'ul',label:'UL'},{id:'rohs',label:'RoHS'},{id:'ip66',label:'IP66'},{id:'ip67',label:'IP67'},
     {id:'ik10',label:'IK10'},{id:'onvif',label:'ONVIF'},{id:'weee',label:'WEEE'},{id:'reach',label:'REACH'}
   ];
   ALIAS = {
@@ -843,8 +869,16 @@ class Component extends DCLogic {
     const model=this.state.meta.model||raw.model;
     const CL={ndaa:'NDAA COMPLIANT',taa:'TAA',ce:'CE',fcc:'FCC',ul:'UL',rohs:'RoHS',ip66:'IP66',ip67:'IP67',ik10:'IK10',onvif:'ONVIF',weee:'WEEE',reach:'REACH'};
     const CORDER=['ndaa','ce','fcc','ul','rohs','taa','ip66','ip67','ik10','onvif','weee','reach'];
-    const certs=this.CERTS.filter(c=>this.state.certs[c.id]).map(c=>({id:c.id,label:CL[c.id]||c.label})).sort((a,b)=>CORDER.indexOf(a.id)-CORDER.indexOf(b.id));
-    return {model, title, subtitle2, certs, bullets:this.state.bullets, dims:this.state.dims, accessories:this.state.accessories, specCats};
+    const imgMap={}; this.CERTS.forEach(c=>{ if(c.img) imgMap[c.id]=c.img; });
+    const aiOn=!!this.state.certs.ai;
+    const certsAll=this.CERTS.filter(c=>c.id!=='ai'&&this.state.certs[c.id]).map(c=>({id:c.id,label:CL[c.id]||c.label,img:imgMap[c.id]||''})).sort((a,b)=>CORDER.indexOf(a.id)-CORDER.indexOf(b.id));
+    const certImgs=certsAll.filter(c=>c.img);
+    const certTexts=certsAll.filter(c=>!c.img);
+    const aiBadge=aiOn?[{img:'./assets/certs/AI.png'}]:[];
+    const dim2=this.state.dimCount>=2;
+    const dimDir=this.state.dimLayout==='row'?'row':'column';
+    const dimSlotFlex=this.state.dimLayout==='row'?'1 1 0':'0 0 auto';
+    return {model, title, subtitle2, certImgs, certTexts, aiBadge, aiOn, bullets:this.state.bullets, dims:this.state.dims, accessories:this.state.accessories, specCats, dim2, dimDir, dimSlotFlex};
   }
 
   // actions
@@ -861,9 +895,8 @@ class Component extends DCLogic {
     if(dimSpec) dims.push({label:'Dimensions', value:qc.runQC(dimSpec.value,'Product Dimensions',[]).result});
     if(wSpec) dims.push({label:'Weight', value:qc.runQC(wSpec.value,'Weight',[]).result});
     if(!dims.length) dims.push({label:'Dimensions', value:''});
-    const certs={ndaa:true,ce:true,fcc:true};
-    const ACC=[['AVM-MMS-CVR-M1','TOP COVER'],['AVM-DUAL-WMT-L1','WALL MOUNT'],['AVM-PT-CMT-PM-L1','CEILING MOUNT'],['AVM-CRM-A1','CORNER MOUNT'],['AVM-P-POM-A2','POLE MOUNT'],['AVM-JB-WMT-A1','JUNCTION BOX FOR WALL MOUNT'],['AVM-P-PWMT','PARAPET MOUNT'],['AVM-PT-TMT-T25','THREADED TOP FOR PARAPET MOUNT']];
-    const accessories=ACC.map((a,i)=>({imgId:'acc'+i, code:a[0], desc:a[1]}));
+    const certs=(s.certs&&Object.keys(s.certs).length)?{...s.certs}:{ndaa:true,ce:true,fcc:true};
+    const accessories=Array.from({length:8},(_,i)=>({imgId:'acc'+i, code:'', desc:''}));
     this.setState({raw:s, activeSample:id||s.id, loaded:true, step:1, assignments:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories});
   }
   // ── Excel (.xlsx) import ──────────────────────────────────────────────
@@ -912,7 +945,27 @@ class Component extends DCLogic {
   }
   onDragOver(e){ e.preventDefault(); if(!this.state.dragOver) this.setState({dragOver:true}); }
   onDragLeave(e){ e.preventDefault(); this.setState({dragOver:false}); }
-  onDropFile(e){ e.preventDefault(); const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; this.setState({dragOver:false}); if(f) this.importXlsx(f); }
+  _routeFile(f){ if(!f) return; if(/\.pdf$/i.test(f.name)||f.type==='application/pdf') this.importPdf(f); else this.importXlsx(f); }
+  onDropFile(e){ e.preventDefault(); const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; this.setState({dragOver:false});
+    if(this.state.importSource==='pdf') { if(f) this.importPdf(f); } else if(f) this._routeFile(f); }
+  setSource(src){ this.setState({importSource:src, importError:''}); }
+  pickPdf(){
+    const inp=document.createElement('input'); inp.type='file'; inp.accept='.pdf,application/pdf';
+    inp.onchange=()=>{ if(inp.files&&inp.files[0]) this.importPdf(inp.files[0]); }; inp.click();
+  }
+  async importPdf(file){
+    if(!file) return;
+    if(!/\.pdf$/i.test(file.name) && file.type!=='application/pdf'){ this.setState({importError:'.pdf 파일을 넣어주세요.', dragOver:false}); return; }
+    this.setState({importing:true, importError:'', dragOver:false, importSource:'pdf'});
+    try{
+      if(!this._pdfMod){ const src=await fetch('./pdf-extract.js').then(r=>r.text()); const url=URL.createObjectURL(new Blob([src],{type:'text/javascript'})); this._pdfMod=await import(url); }
+      const buf=await file.arrayBuffer();
+      const product=await this._pdfMod.extractPdf(buf);
+      product.fromPdf=true;
+      this._loadProduct(product, product.id);
+      this.setState(st=>({samples:[product, ...(st.samples||[]).filter(s=>s.id!==product.id)], importing:false, lastImportKind:'pdf'}));
+    }catch(e){ console.error('pdf import failed', e); this.setState({importing:false, importError:'PDF 추출 실패: '+(e.message||e)}); }
+  }
 
   // ── Reports & Export ─────────────────────────────────────────────────
   _pg(items,pxFn,fb,rb){ const pages=[]; let cur=[],u=0,b=fb; for(const it of items){ const h=pxFn(it); if(u+h>b && cur.length){ pages.push(cur); cur=[];u=0;b=rb; } cur.push(it); u+=h; } if(cur.length||!pages.length) pages.push(cur); return pages; }
@@ -960,6 +1013,28 @@ class Component extends DCLogic {
     this.setState({showReports:true, showExport:false}, ()=>{ setTimeout(()=>{ try{ window.print(); }catch(e){ console.error(e); } }, 600); });
   }
 
+  async exportRawXlsx(){
+    const raw=this.state.raw; if(!raw){ this.setState({savedToast:'먼저 데이터를 불러오세요.'}); return; }
+    this.setState({savedToast:'엑셀 변환 중…'});
+    try{
+      const XLSX=await import('https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs');
+      // manufacturer excel format: A=key/section, B=value
+      const aoa=[];
+      aoa.push(['AVYCON Model', raw.model||'']);
+      aoa.push(['Sub Title', raw.subtitle||'']);
+      if(raw.subtitle2) aoa.push(['Sub Title2', raw.subtitle2]);
+      aoa.push(['Overview', raw.overview||'']);
+      aoa.push(['Specification', '']);
+      let sec=null;
+      raw.specs.forEach(sp=>{ if(sp.section!==sec){ sec=sp.section; aoa.push([sec, '']); } aoa.push([sp.name, sp.value]); });
+      const ws=XLSX.utils.aoa_to_sheet(aoa); ws['!cols']=[{wch:32},{wch:80}];
+      const wb=XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, (raw.model||'PRODUCT').replace(/[^\w\-]/g,'').slice(0,28)||'Sheet1');
+      XLSX.writeFile(wb, (raw.model||'product')+'_변환데이터.xlsx');
+      this.setState({savedToast:'✓ 엑셀로 변환·다운로드됨'});
+      clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
+    }catch(e){ console.error(e); this.setState({savedToast:'엑셀 변환 실패: '+(e.message||e)}); }
+  }
   async exportXlsx(){
     this.setState({exportMsg:'엑셀 생성 중…'});
     try{
@@ -1045,19 +1120,51 @@ class Component extends DCLogic {
   toggleReview(key){ const a={...this.state.reviewAccept}; a[key]=!(a[key]!==false); this.setState({reviewAccept:a}); }
   setReviewFilter(cat){ this.setState(s=>({reviewFilter: s.reviewFilter===cat?null:cat})); }
   toggleExpand(key){ this.setState(s=>({expandedReviews:{...s.expandedReviews,[key]:!s.expandedReviews[key]}})); }
-  _segs(text, frags){
-    const t=String(text==null?'':text);
-    const fs=[...new Set((frags||[]).filter(f=>f&&typeof f==='string'&&f.length>0&&!/[…]/.test(f)))].sort((a,b)=>b.length-a.length);
-    if(!fs.length) return [{t, hit:false}];
-    const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); let re;
-    try{ re=new RegExp('('+fs.map(esc).join('|')+')','g'); }catch(e){ return [{t, hit:false}]; }
-    const out=[]; for(const p of t.split(re)){ if(p==='') continue; const h=fs.indexOf(p)>=0; out.push({t:p, hit:h, miss:!h}); }
-    return out.length?out:[{t, hit:false, miss:true}];
+  // Character-level LCS diff → precise change segments (only truly changed chars).
+  _diff(before, after){
+    const a=String(before==null?'':before), b=String(after==null?'':after);
+    const n=a.length, m=b.length;
+    // trim common prefix/suffix to keep the LCS table small
+    let p=0; while(p<n&&p<m&&a[p]===b[p]) p++;
+    let s=0; while(s<n-p&&s<m-p&&a[n-1-s]===b[m-1-s]) s++;
+    const aM=a.slice(p,n-s), bM=b.slice(p,m-s);
+    const R=aM.length, C=bM.length;
+    const beforeSegs=[], afterSegs=[];
+    const pushB=(t,hit)=>{ if(!t)return; const L=beforeSegs[beforeSegs.length-1]; if(L&&L.hit===hit){L.t+=t;} else beforeSegs.push({t,hit,miss:!hit}); };
+    const pushA=(t,hit)=>{ if(!t)return; const L=afterSegs[afterSegs.length-1]; if(L&&L.hit===hit){L.t+=t;} else afterSegs.push({t,hit,miss:!hit}); };
+    if(p){ pushB(a.slice(0,p),false); pushA(b.slice(0,p),false); }
+    if(R*C<=90000){
+      const dp=Array.from({length:R+1},()=>new Int32Array(C+1));
+      for(let i=R-1;i>=0;i--) for(let j=C-1;j>=0;j--) dp[i][j]=aM[i]===bM[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+      let i=0,j=0;
+      while(i<R&&j<C){ if(aM[i]===bM[j]){ pushB(aM[i],false); pushA(bM[j],false); i++;j++; }
+        else if(dp[i+1][j]>=dp[i][j+1]){ pushB(aM[i],true); i++; }
+        else { pushA(bM[j],true); j++; } }
+      while(i<R){ pushB(aM[i],true); i++; }
+      while(j<C){ pushA(bM[j],true); j++; }
+    } else { pushB(aM,true); pushA(bM,true); }
+    if(s){ pushB(a.slice(n-s),false); pushA(b.slice(m-s),false); }
+    if(!beforeSegs.length) beforeSegs.push({t:a,hit:false,miss:true});
+    if(!afterSegs.length) afterSegs.push({t:b,hit:false,miss:true});
+    return {beforeSegs, afterSegs};
   }
   acceptAll(){ const a={}; this.buildReviews().forEach(r=>a[r.key]=true); this.setState({reviewAccept:a}); }
   rejectAll(){ const a={}; this.buildReviews().forEach(r=>a[r.key]=false); this.setState({reviewAccept:a}); }
   setPage(v){ this.setState({pageView:v}); }
-  zoomBy(d){ this.setState(s=>({zoom:Math.min(1.1, Math.max(0.3, +(s.zoom+d).toFixed(2)))})); }
+  zoomBy(d){ this.setState(s=>({zoom:Math.min(2, Math.max(0.3, +(s.zoom+d).toFixed(2))), fitMode:null})); }
+  fitZoom(mode){
+    const host=this._sheetHost; if(!host) return;
+    const pad=48; const avW=host.clientWidth-pad; const avH=host.clientHeight-pad;
+    const twoUp=this.state.pageView==='both';
+    const pageW=816, pageH=1056;
+    let z=1;
+    if(mode==='width') z=avW/pageW;
+    else if(mode==='height') z=avH/pageH;
+    else if(mode==='page'){ // fit one full page in view
+      z=Math.min(avW/pageW, avH/pageH); }
+    z=Math.min(2, Math.max(0.3, +z.toFixed(3)));
+    this.setState({zoom:z, fitMode:mode});
+  }
   editMeta(k,val){ this.setState(s=>({meta:{...s.meta,[k]:val}})); }
   setSub(val){ this.setState(s=>({overrides:{...s.overrides,__subtitle:val}})); }
   setSub2(val){ this.setState(s=>({overrides:{...s.overrides,__subtitle2:val}})); }
@@ -1067,10 +1174,13 @@ class Component extends DCLogic {
   editBullet(i,v){ this.setState(s=>{const b=[...s.bullets]; b[i]=v; return {bullets:b};}); }
   addBullet(){ this.setState(s=>({bullets:[...s.bullets,'']})); }
   removeBullet(i){ this.setState(s=>({bullets:s.bullets.filter((_,j)=>j!==i)})); }
+  moveBullet(i,dir){ this.setState(s=>{ const b=[...s.bullets]; const j=i+dir; if(j<0||j>=b.length) return {}; const t=b[i]; b[i]=b[j]; b[j]=t; return {bullets:b}; }); }
   editDim(i,k,v){ this.setState(s=>{const d=s.dims.map((x,j)=>j===i?{...x,[k]:v}:x); return {dims:d};}); }
   addDim(){ this.setState(s=>({dims:[...s.dims,{label:'',value:''}]})); }
   removeDim(i){ this.setState(s=>({dims:s.dims.filter((_,j)=>j!==i)})); }
   toggleCert(id){ this.setState(s=>({certs:{...s.certs,[id]:!s.certs[id]}})); }
+  setDimCount(n){ this.setState({dimCount:n}); }
+  setDimLayout(l){ this.setState({dimLayout:l}); }
   setOverride(field,val){ this.setState(s=>({overrides:{...s.overrides,[field]:val}})); }
   moveCat(cat,dir){
     const cats=this.scopeCats().map(c=>c.category); const i=cats.indexOf(cat); const j=i+dir;
@@ -1122,6 +1232,11 @@ class Component extends DCLogic {
       steps,
       zoom:st.zoom, zoom4:st.zoom4, zoomPct:Math.round(st.zoom*100),
       onZoomIn:()=>this.zoomBy(0.06), onZoomOut:()=>this.zoomBy(-0.06),
+      onFitWidth:()=>this.fitZoom('width'), onFitHeight:()=>this.fitZoom('height'), onFitPage:()=>this.fitZoom('page'),
+      fitWidthBg:st.fitMode==='width'?'#941A31':'#fff', fitWidthColor:st.fitMode==='width'?'#fff':'#44474e',
+      fitHeightBg:st.fitMode==='height'?'#941A31':'#fff', fitHeightColor:st.fitMode==='height'?'#fff':'#44474e',
+      fitPageBg:st.fitMode==='page'?'#941A31':'#fff', fitPageColor:st.fitMode==='page'?'#fff':'#44474e',
+      sheetHostRef:(el)=>{ if(el) this._sheetHost=el; },
     };
     // share / export (header)
     out.canShare=st.loaded;
@@ -1130,15 +1245,23 @@ class Component extends DCLogic {
     out.onSave=()=>this.saveSession(); out.savedToast=st.savedToast; out.hasToast=!!st.savedToast;
     out.hasSession=st.hasSession; out.onContinue=()=>this.restoreSession();
 
-    // import dropzone
-    out.onPickFile=()=>this.pickFile();
+    // import dropzone + source tabs
+    const pdfMode=st.importSource==='pdf';
+    out.srcXlsx=!pdfMode; out.srcPdf=pdfMode;
+    out.onSrcXlsx=()=>this.setSource('xlsx'); out.onSrcPdf=()=>this.setSource('pdf');
+    out.xlsxTabBg=pdfMode?'#fff':'#941A31'; out.xlsxTabColor=pdfMode?'#5e636b':'#fff';
+    out.pdfTabBg=pdfMode?'#941A31':'#fff'; out.pdfTabColor=pdfMode?'#fff':'#5e636b';
+    out.onPickFile=()=> pdfMode?this.pickPdf():this.pickFile();
     out.onDragOver=(e)=>this.onDragOver(e);
     out.onDragLeave=(e)=>this.onDragLeave(e);
     out.onDropFile=(e)=>this.onDropFile(e);
     out.dropBorder=st.dragOver?'#941A31':'#bcc7d6';
     out.dropBg=st.dragOver?'#fbf4f5':'#fff';
-    out.dropIcon=st.importing?'⏳':'📑';
-    out.dropTitle=st.importing?'엑셀 분석 중…':(st.dragOver?'여기에 놓으세요':'엑셀 파일을 끌어다 놓기');
+    out.dropIcon=st.importing?'⏳':(pdfMode?'📄':'📑');
+    out.dropTitle=st.importing?(pdfMode?'PDF 추출 중…':'엑셀 분석 중…'):(st.dragOver?'여기에 놓으세요':(pdfMode?'기제작 PDF 스펙시트를 끌어다 놓기':'제조사 엑셀을 끌어다 놓기'));
+    out.dropHint=pdfMode?'.pdf · AVYCON 포맷 스펙시트 · 텍스트 추출 → 엑셀 데이터로 변환':'.xlsx · 제조사 데이터시트 양식 · 끌어다 놓거나 클릭';
+    out.heroTitle=pdfMode?'기제작 PDF 스펙시트 가져오기':'중국 데이터 가져오기';
+    out.heroDesc=pdfMode?'이미 수동 제작된 AVYCON 스펙시트 PDF에서 스펙을 추출해 엑셀 데이터 포맷으로 변환합니다. 이후 AI 검수·레이아웃 단계로 그대로 진행됩니다. (중국 엑셀이 없는 제품용)':'제조사 엑셀(.xlsx)을 업로드하면 CMS의 카테고리·표시 순서에 맞춰 자동 정렬됩니다. 아래 샘플로 바로 체험할 수도 있습니다.';
     out.importError=st.importError; out.hasImportError=!!st.importError;
 
     // sample cards
@@ -1166,6 +1289,7 @@ class Component extends DCLogic {
       });
       out.onResetImport=()=>this.resetImport();
       out.onToStep2=()=>this.goStep(2);
+      out.fromPdf=!!(st.raw&&st.raw.fromPdf); out.onExportRawXlsx=()=>this.exportRawXlsx();
       out.showUnmapped=st.showUnmapped; out.onToggleUnmapped=()=>this.toggleUnmapped(); out.onCloseUnmapped=()=>this.setState({showUnmapped:false});
       out.onOpenReport=(f)=>this.openReports(f);
       out.onReportMapping=()=>this.openReports('mapping'); out.onReportReview=()=>this.openReports('review'); out.onReportSheet=()=>this.openReports('sheet');
@@ -1179,9 +1303,10 @@ class Component extends DCLogic {
         const notes=[...new Set(r.issues.map(i=>i.note))];
         const acc=this.accepted(r.key);
         const exp=!!st.expandedReviews[r.key];
+        const _d=this._diff(r.original, r.corrected);
         return {key:r.key, field:r.field, category:r.section,
-          beforeSegs:this._segs(r.original, r.issues.map(i=>i.before)),
-          afterSegs:this._segs(r.corrected, r.issues.map(i=>i.after)),
+          beforeSegs:_d.beforeSegs,
+          afterSegs:_d.afterSegs,
           expanded:exp, expandLabel:exp?'접기 ▲':'전체 보기 ▼',
           ws:exp?'normal':'nowrap', ov:exp?'visible':'hidden', wb:exp?'break-word':'normal',
           tags:cats.map(c=>({label:c,color:this.CAT_COLOR[c]||'#666'})),
@@ -1216,13 +1341,21 @@ class Component extends DCLogic {
       out.onMetaModel=(e)=>this.editMeta('model',e.target.value);
       out.onMetaSub=(e)=>this.setSub(e.target.value);
       out.onMetaSub2=(e)=>this.setSub2(e.target.value);
-      out.bulletsVM=st.bullets.map((b,i)=>({text:b,onInput:(e)=>this.editBullet(i,e.target.value),onRemove:()=>this.removeBullet(i)}));
+      out.bulletsVM=st.bullets.map((b,i)=>({text:b,onInput:(e)=>this.editBullet(i,e.target.value),onRemove:()=>this.removeBullet(i),onUp:()=>this.moveBullet(i,-1),onDown:()=>this.moveBullet(i,1),upOpacity:i===0?'.3':'1',downOpacity:i===st.bullets.length-1?'.3':'1'}));
       out.onAddBullet=()=>this.addBullet();
       out.accessoriesVM=st.accessories.map((a,i)=>({code:a.code,desc:a.desc,onCode:(e)=>this.editAcc(i,'code',e.target.value),onDesc:(e)=>this.editAcc(i,'desc',e.target.value),onRemove:()=>this.removeAcc(i)}));
       out.onAddAcc=()=>this.addAcc();
       out.dimsVM=st.dims.map((d,i)=>({label:d.label,value:d.value,onLabel:(e)=>this.editDim(i,'label',e.target.value),onValue:(e)=>this.editDim(i,'value',e.target.value),onRemove:()=>this.removeDim(i)}));
       out.onAddDim=()=>this.addDim();
-      out.certsVM=this.CERTS.map(c=>{const on=!!st.certs[c.id]; return {label:c.label,onToggle:()=>this.toggleCert(c.id),
+      const d2=st.dimCount>=2, rowL=st.dimLayout==='row';
+      out.dimTwo=d2;
+      out.onDim1=()=>this.setDimCount(1); out.onDim2=()=>this.setDimCount(2);
+      out.dim1Bg=d2?'#fff':'#941A31'; out.dim1Color=d2?'#44474e':'#fff';
+      out.dim2Bg=d2?'#941A31':'#fff'; out.dim2Color=d2?'#fff':'#44474e';
+      out.onDimStack=()=>this.setDimLayout('column'); out.onDimRow=()=>this.setDimLayout('row');
+      out.stackBg=rowL?'#fff':'#941A31'; out.stackColor=rowL?'#44474e':'#fff';
+      out.rowBg=rowL?'#941A31':'#fff'; out.rowColor=rowL?'#fff':'#44474e';
+      out.certsVM=this.CERTS.map(c=>{const on=!!st.certs[c.id]; return {label:c.label,img:c.img||'',hasImg:!!c.img,onToggle:()=>this.toggleCert(c.id),
         border:on?'#941A31':'#dcdfe4', bg:on?'#941A31':'#fff', color:on?'#fff':'#8b9099'};});
       out.overrideSearch=st.search; out.onSearch=(e)=>this.setState({search:e.target.value});
       const term=st.search.toLowerCase();

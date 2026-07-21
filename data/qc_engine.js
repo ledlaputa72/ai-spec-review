@@ -58,9 +58,26 @@ const RULES = [
 
   // —— Redundant / cleanup ——
   makeRule('lessthan', '문법', "'less than ≤' 중복 제거", /less\s+than\s*≤/gi, '≤'),
-  makeRule('comma', '표기', '쉼표 뒤 공백', /,(?=[^\s\d])/g, () => ', '),
+  makeRule('listsep', '표기', '빈 목록 항목·중복 쉼표 정리', /\s*,(?:\s*,)+\s*/g, () => ', '),
+  makeRule('edgesep', '표기', '앞뒤 불필요한 쉼표 제거', /^\s*,\s*|\s*,\s*$/g, () => ''),
+  makeRule('comma', '표기', '쉼표 뒤 공백', /(?<!\d),(?=\d)|,(?=[^\s\d])/g, () => ', '),
   makeRule('multispace', '표기', '이중 공백 제거', / {2,}/g, ' '),
-  makeRule('strayparen', '표기', '불필요한 닫는 괄호 제거', /(\d)\)(?!\s*[a-zA-Z(])(?=\s|$)/g, '$1'),
+  { id: 'strayparen', cat: '표기', note: '짝 없는 닫는 괄호 제거', run(str) {
+    // Only remove a ")" that has no matching "(" — never touch balanced pairs like "(F1.2)".
+    const hits = [];
+    let opens = 0;
+    let out = '';
+    for (let i = 0; i < str.length; i++) {
+      const ch = str[i];
+      if (ch === '(') { opens++; out += ch; }
+      else if (ch === ')') {
+        if (opens > 0) { opens--; out += ch; }        // matched — keep
+        else { hits.push({ before: ')', after: '' }); } // unmatched — drop
+      } else out += ch;
+    }
+    if (hits.length) return { out, hits: [{ before: '…)', after: '…' }] };
+    return { out: str, hits: [] };
+  } },
 ];
 
 const TYPO_RULE = { id: 'typo', cat: '오타', note: '오타 수정', run(str) {

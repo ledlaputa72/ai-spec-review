@@ -10,12 +10,13 @@
 <helmet>
 <style>
   @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 </style>
 <script src="./image-slot.js"></script>
 <script src="./vector-slot.js"></script>
 </helmet>
 
-<div style="display:flex; flex-direction:column; gap:26px; font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif; color:#1a1a1a;">
+<div style="display:flex; flex-direction:column; gap:26px; font-family:'Pretendard','Inter',-apple-system,BlinkMacSystemFont,sans-serif; color:#1a1a1a;">
 
   <!-- ================= PAGE 1 ================= -->
   <sc-if value="{{ showP1 }}" hint-placeholder-val="{{ true }}">
@@ -25,14 +26,12 @@
     <div style="display:flex; align-items:center; justify-content:space-between;">
       <div style="display:flex; align-items:center; gap:11px;">
         <div style="line-height:0;">
-          <div style="background:#1a1a1a; color:#fff; font-size:9px; font-weight:800; letter-spacing:1.5px; text-align:center; padding:2px 7px;">DIVERSITY</div>
-          <div style="border:1px solid #1a1a1a; border-top:none; color:#1a1a1a; font-size:7.5px; font-weight:700; letter-spacing:5px; text-align:center; padding:1.5px 0 1.5px 5px;">SERIES</div>
+          <img src="./assets/diversity_logo.png" alt="DIVERSITY SERIES" style="height:26px; width:auto; display:block;" />
         </div>
         <span style="font-size:12px; font-weight:600; color:#1a1a1a; letter-spacing:.3px;">{{ sheet.model }}</span>
       </div>
-      <div style="display:flex; align-items:baseline; gap:1px;">
-        <span style="font-size:21px; font-weight:900; letter-spacing:.5px; color:#8a1a2e; font-style:italic;">AVYCON</span>
-        <span style="font-size:9px; color:#8a1a2e; font-weight:700;">®</span>
+      <div style="display:flex; align-items:center;">
+        <img src="./assets/avycon_logo.png" alt="AVYCON" style="height:22px; width:auto; display:block;" />
       </div>
     </div>
     <div style="height:1px; background:#d0d0d0; margin-top:8px;"></div>
@@ -41,11 +40,19 @@
     <div style="display:grid; grid-template-columns:44% 56%; gap:24px; margin-top:26px;">
       <image-slot id="ss_product_photo" style="width:100%; height:248px; display:block;" shape="rect" fit="contain" placeholder="제품 사진 드롭"></image-slot>
       <div style="padding-top:14px;">
-        <div style="font-size:33px; font-weight:800; color:#1a1a1a; letter-spacing:-.5px;">{{ sheet.model }}</div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="font-size:33px; font-weight:800; color:#1a1a1a; letter-spacing:-.5px;">{{ sheet.model }}</div>
+          <sc-for list="{{ sheet.aiBadge }}" as="a" hint-placeholder-count="0">
+            <img src="{{ a.img }}" alt="AI" style="height:24px; width:auto; display:block;" />
+          </sc-for>
+        </div>
         <div style="height:2px; background:#8a1a2e; margin:7px 0 11px;"></div>
-        <div style="display:flex; align-items:center; gap:9px; margin-bottom:16px;">
-          <sc-for list="{{ sheet.certs }}" as="c" hint-placeholder-count="3">
-            <span style="font-size:11px; font-weight:800; color:#1a1a1a; letter-spacing:.3px; border-right:1px solid #c2c2c2; padding-right:9px;">{{ c.label }}</span>
+        <div style="display:flex; align-items:center; gap:9px; margin-bottom:16px; flex-wrap:wrap;">
+          <sc-for list="{{ sheet.certImgs }}" as="c" hint-placeholder-count="3">
+            <img src="{{ c.img }}" alt="{{ c.label }}" style="height:17px; width:auto; display:block;" />
+          </sc-for>
+          <sc-for list="{{ sheet.certTexts }}" as="c" hint-placeholder-count="0">
+            <span style="font-size:11px; font-weight:800; color:#1a1a1a; letter-spacing:.3px; border-left:1px solid #c2c2c2; padding-left:9px;">{{ c.label }}</span>
           </sc-for>
         </div>
         <div style="font-size:14.5px; font-weight:600; color:#1a1a1a; letter-spacing:.2px;">{{ sheet.title }}</div>
@@ -61,7 +68,7 @@
         <div style="height:2px; background:linear-gradient(to right,#1a1a1a 0,#1a1a1a 80px,#cfcfcf 80px,#cfcfcf 100%); margin:5px 0 12px;"></div>
         <div style="display:flex; flex-direction:column; gap:6px;">
           <sc-for list="{{ sheet.bullets }}" as="b" hint-placeholder-count="12">
-            <div style="display:flex; gap:8px; font-size:11px; line-height:1.35; color:#1a1a1a;">
+            <div style="display:flex; gap:8px; font-size:12px; line-height:1.35; color:#1a1a1a;">
               <span style="flex-shrink:0;">•</span>
               <span style="text-wrap:pretty;">{{ b }}</span>
             </div>
@@ -69,12 +76,16 @@
         </div>
       </div>
       <!-- DIMENSIONS -->
-      <div>
+      <div style="display:flex; flex-direction:column;">
         <div style="font-size:15px; font-weight:800; color:#1a1a1a; letter-spacing:.3px;">DIMENSIONS</div>
         <div style="height:2px; background:linear-gradient(to right,#1a1a1a 0,#1a1a1a 80px,#cfcfcf 80px,#cfcfcf 100%); margin:5px 0 10px;"></div>
         <div style="font-size:10px; color:#3a3a3a; margin-bottom:8px;">Unit : inch(mm)</div>
-        <vector-slot id="ss_dims_1" style="width:100%; height:120px; display:block; margin-bottom:10px;" placeholder="치수 도면 1 (측면)"></vector-slot>
-        <vector-slot id="ss_dims_2" style="width:100%; height:130px; display:block;" placeholder="치수 도면 2 (정면/하단)"></vector-slot>
+        <div style="flex:1; min-height:150px; display:flex; flex-direction:{{ sheet.dimDir }}; gap:10px;">
+          <vector-slot id="ss_dims_1" style="flex:1 1 0; min-height:120px; display:block;" placeholder="치수 도면 1"></vector-slot>
+          <sc-if value="{{ sheet.dim2 }}" hint-placeholder-val="{{ true }}">
+            <vector-slot id="ss_dims_2" style="flex:1 1 0; min-height:120px; display:block;" placeholder="치수 도면 2"></vector-slot>
+          </sc-if>
+        </div>
         <div style="margin-top:9px; display:flex; flex-direction:column; gap:4px;">
           <sc-for list="{{ sheet.dims }}" as="d" hint-placeholder-count="3">
             <div style="display:flex; justify-content:space-between; font-size:10px; color:#3a3a3a; border-bottom:1px dotted #d4d4d4; padding-bottom:3px;">
@@ -121,14 +132,12 @@
     <div style="display:flex; align-items:center; justify-content:space-between;">
       <div style="display:flex; align-items:center; gap:11px;">
         <div style="line-height:0;">
-          <div style="background:#1a1a1a; color:#fff; font-size:9px; font-weight:800; letter-spacing:1.5px; text-align:center; padding:2px 7px;">DIVERSITY</div>
-          <div style="border:1px solid #1a1a1a; border-top:none; color:#1a1a1a; font-size:7.5px; font-weight:700; letter-spacing:5px; text-align:center; padding:1.5px 0 1.5px 5px;">SERIES</div>
+          <img src="./assets/diversity_logo.png" alt="DIVERSITY SERIES" style="height:26px; width:auto; display:block;" />
         </div>
         <span style="font-size:12px; font-weight:600; color:#1a1a1a; letter-spacing:.3px;">{{ sheet.model }}</span>
       </div>
-      <div style="display:flex; align-items:baseline; gap:1px;">
-        <span style="font-size:21px; font-weight:900; letter-spacing:.5px; color:#8a1a2e; font-style:italic;">AVYCON</span>
-        <span style="font-size:9px; color:#8a1a2e; font-weight:700;">®</span>
+      <div style="display:flex; align-items:center;">
+        <img src="./assets/avycon_logo.png" alt="AVYCON" style="height:22px; width:auto; display:block;" />
       </div>
     </div>
 
@@ -143,8 +152,8 @@
           <div style="background:#6e6e6e; color:#fff; font-size:7.5px; font-weight:700; letter-spacing:.7px; text-align:center; padding:1px 0;">{{ cat.label }}</div>
           <sc-for list="{{ cat.fields }}" as="f" hint-placeholder-count="4">
             <div style="display:grid; grid-template-columns:29% 71%; border-bottom:1px solid #e6e6e6;">
-              <div style="font-size:7.5px; color:#6b6b6b; font-weight:500; text-align:right; padding:1px 9px 1px 4px; border-right:1px solid #d8d8d8; line-height:1.2;">{{ f.name }}</div>
-              <div style="font-size:7.5px; color:#1a1a1a; padding:1px 4px 1px 9px; line-height:1.2; text-wrap:pretty;">{{ f.value }}</div>
+              <div style="font-size:9.3px; color:#6b6b6b; font-weight:500; text-align:right; padding:1px 9px 1px 4px; border-right:1px solid #d8d8d8; line-height:1.2;">{{ f.name }}</div>
+              <div style="font-size:9.3px; color:#1a1a1a; padding:1px 4px 1px 9px; line-height:1.2; text-wrap:pretty; white-space:pre-line;">{{ f.value }}</div>
             </div>
           </sc-for>
         </div>
