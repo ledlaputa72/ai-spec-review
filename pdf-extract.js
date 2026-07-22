@@ -108,15 +108,11 @@ export async function extractPdf(arrayBuffer) {
   product.id = product.model || 'PDF-IMPORT';
   // ---- detect certification badges from all extracted text ----
   const allText = [product.overview, product.subtitle, ...product.specs.map((s) => s.name + ' ' + s.value)].join(' \n ');
-  // NDAA/TAA/CE/FCC badges are drawn as images in AVYCON datasheets (not extractable
-  // text), and appear on essentially every model — seed them on by default.
+  // Only the 4 badge logos are used (NDAA · TAA · CE · FCC). They're drawn as images
+  // in AVYCON datasheets (not extractable text) and appear on essentially every model,
+  // so seed all four on by default.
   const certs = { ndaa: true, taa: true, ce: true, fcc: true };
-  if (/\bUL\b/.test(allText)) certs.ul = true;
-  if (/RoHS/i.test(allText)) certs.rohs = true;
-  if (/\bIP67\b/i.test(allText)) certs.ip67 = true; else if (/\bIP66\b/i.test(allText)) certs.ip66 = true;
-  if (/\bIK10\b/i.test(allText)) certs.ik10 = true;
-  if (/\bONVIF\b/i.test(allText)) certs.onvif = true;
-  // AI badge: AVYCON datasheets mark analytics-capable models with an "AI" badge
+  // AI badge: analytics-capable models carry an "AI" badge
   if (/\bAI\b/.test(allText) || /analytic|human & vehicle|smart feature|deep learning/i.test(allText)) certs.ai = true;
   product.certs = certs;
   if (!product.specs.length) throw new Error('스펙 표를 찾지 못했습니다. AVYCON 스펙시트 PDF인지 확인하세요.');

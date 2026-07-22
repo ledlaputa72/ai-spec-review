@@ -320,32 +320,69 @@
 
     <!-- ===== STEP 3 : LAYOUT ===== -->
     <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ true }}">
-      <div style="display:flex; flex-direction:column; height:100%;">
-        <div style="flex-shrink:0; background:#fff; border-bottom:1px solid #dde0e5; padding:11px 24px; display:flex; align-items:center; justify-content:space-between; gap:14px;">
-          <div style="font-size:14px; font-weight:800; color:#941A31;">스펙시트 레이아웃 <span style="font-size:12px; font-weight:500; color:#8b9099;">· US Letter 세로 · 2페이지</span></div>
-          <div style="display:flex; align-items:center; gap:14px;">
-            <div style="display:flex; background:#eceef1; border-radius:8px; padding:3px;">
-              <sc-for list="{{ pageTabs }}" as="p" hint-placeholder-count="3">
-                <button onClick="{{ p.onClick }}" style="border:none; cursor:pointer; font-size:12px; font-weight:700; padding:6px 12px; border-radius:6px; background:{{ p.bg }}; color:{{ p.color }};">{{ p.label }}</button>
-              </sc-for>
-            </div>
-            <div style="display:flex; align-items:center; gap:6px;">
-              <button onClick="{{ onZoomOut }}" style="width:30px; height:30px; border:1px solid #d9dce1; background:#fff; border-radius:7px; cursor:pointer; font-size:16px; color:#44474e;">−</button>
-              <span style="font-size:12px; color:#5e636b; min-width:42px; text-align:center;">{{ zoomPct }}%</span>
-              <button onClick="{{ onZoomIn }}" style="width:30px; height:30px; border:1px solid #d9dce1; background:#fff; border-radius:7px; cursor:pointer; font-size:16px; color:#44474e;">+</button>
-            </div>
-            <div style="display:flex; align-items:center; gap:4px;">
-              <button onClick="{{ onFitWidth }}" style="border:1px solid #d9dce1; background:{{ fitWidthBg }}; color:{{ fitWidthColor }}; border-radius:7px; padding:7px 10px; cursor:pointer; font-size:11.5px; font-weight:600;">↔ 너비 맞춤</button>
-              <button onClick="{{ onFitHeight }}" style="border:1px solid #d9dce1; background:{{ fitHeightBg }}; color:{{ fitHeightColor }}; border-radius:7px; padding:7px 10px; cursor:pointer; font-size:11.5px; font-weight:600;">↕ 세로 맞춤</button>
-              <button onClick="{{ onFitPage }}" style="border:1px solid #d9dce1; background:{{ fitPageBg }}; color:{{ fitPageColor }}; border-radius:7px; padding:7px 10px; cursor:pointer; font-size:11.5px; font-weight:600;">□ 페이지 맞춤</button>
-            </div>
-            <button onClick="{{ onReportSheet }}" style="background:#fff; color:#941A31; border:1px solid #d9dce1; border-radius:8px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="border-color:#941A31;">📄 리포트</button>
-            <button onClick="{{ onToStep4 }}" style="background:#941A31; color:#fff; border:none; border-radius:8px; padding:9px 18px; font-size:13px; font-weight:700; cursor:pointer;">사진·정보 편집 →</button>
-          </div>
-        </div>
-        <div class="scroll" ref="{{ sheetHostRef }}" style="flex:1; overflow:auto; padding:30px; display:flex; justify-content:center;">
+      <div style="display:flex; height:100%;">
+        <!-- preview -->
+        <div class="scroll" ref="{{ sheetHostRef }}" style="flex:1; overflow:auto; padding:30px; display:flex; justify-content:center; background:#e6e8ea;">
           <div style="zoom:{{ zoom }};">
             <dc-import name="SpecSheet" sheet="{{ sheet }}" show-p1="{{ showP1 }}" show-p2="{{ showP2 }}" hint-size="816px,1100px"></dc-import>
+          </div>
+        </div>
+
+        <!-- options panel -->
+        <div class="scroll" style="width:390px; flex-shrink:0; background:#fff; border-left:1px solid #dde0e5; overflow:auto; padding:0;">
+          <div style="padding:16px 18px; border-bottom:1px solid #eceef1; position:sticky; top:0; background:#fff; z-index:5;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+              <div>
+                <div style="font-size:15px; font-weight:800; color:#941A31;">레이아웃 옵션</div>
+                <div style="font-size:11px; color:#8b9099; margin-top:2px;">US Letter 세로 · 2페이지</div>
+              </div>
+              <button onClick="{{ onReportSheet }}" style="background:#fff; color:#941A31; border:1px solid #d9dce1; border-radius:8px; padding:7px 11px; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap;" style-hover="border-color:#941A31;">📄 리포트</button>
+            </div>
+          </div>
+
+          <!-- 버전 -->
+          <div style="padding:16px 18px; border-bottom:1px solid #eceef1;">
+            <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:11px;">출력 버전</div>
+            <div style="display:flex; background:#eceef1; border-radius:8px; padding:3px;">
+              <button onClick="{{ onVerReviewed }}" style="flex:1; border:none; cursor:pointer; font-size:12.5px; font-weight:700; padding:8px 0; border-radius:6px; background:{{ verRevBg }}; color:{{ verRevColor }};">수정버전</button>
+              <button onClick="{{ onVerRaw }}" style="flex:1; border:none; cursor:pointer; font-size:12.5px; font-weight:700; padding:8px 0; border-radius:6px; background:{{ verRawBg }}; color:{{ verRawColor }};">기존버전</button>
+            </div>
+            <sc-if value="{{ verReviewed }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex; flex-direction:column; gap:9px; margin-top:11px; background:#f6edef; border:1px solid #e3c9cf; border-radius:8px; padding:11px 13px;">
+                <label onClick="{{ onToggleReview }}" style="display:flex; align-items:center; gap:8px; cursor:pointer;"><span style="width:34px; height:18px; border-radius:10px; background:{{ revTrackReview }}; position:relative; display:inline-block; flex-shrink:0;"><span style="position:absolute; top:2px; left:{{ revKnobReview }}; width:14px; height:14px; border-radius:50%; background:#fff;"></span></span><span style="font-size:12px; font-weight:700; color:#44474e;">AI 검수 반영</span></label>
+                <label onClick="{{ onToggleCms }}" style="display:flex; align-items:center; gap:8px; cursor:pointer;"><span style="width:34px; height:18px; border-radius:10px; background:{{ revTrackCms }}; position:relative; display:inline-block; flex-shrink:0;"><span style="position:absolute; top:2px; left:{{ revKnobCms }}; width:14px; height:14px; border-radius:50%; background:#fff;"></span></span><span style="font-size:12px; font-weight:700; color:#44474e;">CMS 정렬·매핑</span></label>
+              </div>
+            </sc-if>
+          </div>
+
+          <!-- 페이지 보기 -->
+          <div style="padding:16px 18px; border-bottom:1px solid #eceef1;">
+            <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:11px;">페이지 보기</div>
+            <div style="display:flex; background:#eceef1; border-radius:8px; padding:3px;">
+              <sc-for list="{{ pageTabs }}" as="p" hint-placeholder-count="3">
+                <button onClick="{{ p.onClick }}" style="flex:1; border:none; cursor:pointer; font-size:12.5px; font-weight:700; padding:8px 0; border-radius:6px; background:{{ p.bg }}; color:{{ p.color }};">{{ p.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- 확대·맞춤 -->
+          <div style="padding:16px 18px; border-bottom:1px solid #eceef1;">
+            <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:11px;">확대 · 맞춤</div>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+              <button onClick="{{ onZoomOut }}" style="width:34px; height:32px; border:1px solid #d9dce1; background:#fff; border-radius:7px; cursor:pointer; font-size:16px; color:#44474e;">−</button>
+              <span style="flex:1; text-align:center; font-size:13px; font-weight:700; color:#44474e;">{{ zoomPct }}%</span>
+              <button onClick="{{ onZoomIn }}" style="width:34px; height:32px; border:1px solid #d9dce1; background:#fff; border-radius:7px; cursor:pointer; font-size:16px; color:#44474e;">+</button>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button onClick="{{ onFitWidth }}" style="flex:1; border:1px solid #d9dce1; background:{{ fitWidthBg }}; color:{{ fitWidthColor }}; border-radius:7px; padding:8px 4px; cursor:pointer; font-size:11px; font-weight:600;">↔ 너비</button>
+              <button onClick="{{ onFitHeight }}" style="flex:1; border:1px solid #d9dce1; background:{{ fitHeightBg }}; color:{{ fitHeightColor }}; border-radius:7px; padding:8px 4px; cursor:pointer; font-size:11px; font-weight:600;">↕ 세로</button>
+              <button onClick="{{ onFitPage }}" style="flex:1; border:1px solid #d9dce1; background:{{ fitPageBg }}; color:{{ fitPageColor }}; border-radius:7px; padding:8px 4px; cursor:pointer; font-size:11px; font-weight:600;">□ 페이지</button>
+            </div>
+          </div>
+
+          <!-- 다음 -->
+          <div style="padding:16px 18px;">
+            <button onClick="{{ onToStep4 }}" style="width:100%; background:#941A31; color:#fff; border:none; border-radius:8px; padding:12px 18px; font-size:13.5px; font-weight:700; cursor:pointer;" style-hover="background:#a8243a;">사진·정보 편집 →</button>
           </div>
         </div>
       </div>
@@ -714,9 +751,15 @@
         </div>
         </sc-for>
 
-        <!-- REPORT 3 — SPEC SHEET -->
-        <div style="display:flex; flex-direction:column; gap:24px;">
-          <dc-import name="SpecSheet" sheet="{{ sheet }}" show-p1="{{ true }}" show-p2="{{ true }}" hint-size="816px,1100px"></dc-import>
+        <!-- REPORT 3 — SPEC SHEET (AI 검수본) -->
+        <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+          <div style="width:816px; font-size:13px; font-weight:800; color:#941A31; padding:4px 0;">STEP 3 · 스펙시트 — 수정버전 (AI 검수 · CMS 정렬·매핑 반영)</div>
+          <dc-import name="SpecSheet" sheet="{{ sheetReviewed }}" show-p1="{{ true }}" show-p2="{{ true }}" hint-size="816px,1100px"></dc-import>
+        </div>
+        <!-- REPORT 3B — SPEC SHEET (원본) -->
+        <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+          <div style="width:816px; font-size:13px; font-weight:800; color:#6b6b6b; padding:4px 0;">STEP 3 · 스펙시트 — 기존버전 (중국/PDF 원본 데이터)</div>
+          <dc-import name="SpecSheet" sheet="{{ sheetRaw }}" show-p1="{{ true }}" show-p2="{{ true }}" hint-size="816px,1100px"></dc-import>
         </div>
 
       </div>
@@ -735,16 +778,14 @@ class Component extends DCLogic {
     customOrder:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false,
     importing:false, importError:'', dragOver:false, importNote:'', importSource:'xlsx',
     showReports:false, reportFocus:'mapping', showExport:false, exportMsg:'', savedToast:'', hasSession:false,
-    reviewFilter:null, expandedReviews:{},
+    reviewFilter:null, expandedReviews:{}, sheetVersion:'reviewed', applyReview:true, applyCms:true,
     cms:null, samples:null, qc:null
   };
 
   CERTS = [
     {id:'ndaa',label:'NDAA',img:'./assets/certs/NDAA.png'},{id:'taa',label:'TAA',img:'./assets/certs/TAA.png'},
     {id:'ce',label:'CE',img:'./assets/certs/CE.png'},{id:'fcc',label:'FCC',img:'./assets/certs/FCC.png'},
-    {id:'ai',label:'AI',img:'./assets/certs/AI.png'},
-    {id:'ul',label:'UL'},{id:'rohs',label:'RoHS'},{id:'ip66',label:'IP66'},{id:'ip67',label:'IP67'},
-    {id:'ik10',label:'IK10'},{id:'onvif',label:'ONVIF'},{id:'weee',label:'WEEE'},{id:'reach',label:'REACH'}
+    {id:'ai',label:'AI',img:'./assets/certs/AI.png'}
   ];
   ALIAS = {
     imagesensor:'imaging_device', electronicshutterspeed:'electric_shutter_speed',
@@ -803,7 +844,7 @@ class Component extends DCLogic {
       const asn=A[sp.name];
       if(asn && byKey[asn]){ valueByField[asn]={value:sp.value,source:sp.name}; used.add(asn); return; }
       if(asn===''){ unmapped.push({name:sp.name,value:sp.value,section:sp.section,current:'',suggestionField:null,suggestionLabel:null,score:0,guess:false}); return; }
-      const best=this._bestMatch(sp.name, allFields, used);
+      const best=this._bestMatch(sp, allFields, used);
       if(best && best.score>=AUTO){
         valueByField[best.field]={value:sp.value,source:sp.name,guess:true,score:best.score}; used.add(best.field);
         pend.push({name:sp.name,value:sp.value,section:sp.section,current:best.field,suggestionField:best.field,suggestionLabel:best.name,score:best.score,guess:true});
@@ -825,7 +866,7 @@ class Component extends DCLogic {
     return {orderedCats, unmapped:review, pending:pend, unmappedTrue:unmapped, guessCount:pend.length, allFields, matched, total:raw.specs.length, reviewCount:review.length};
   }
 
-  // ── fuzzy field-name matching ────────────────────────────────────────
+  // ── fuzzy field matching (name + PDF category + value content) ────────
   _tokens(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().split(' ').filter(w=>w.length>1); }
   _lev(a,b){ const m=a.length,n=b.length; if(!m)return n; if(!n)return m; let prev=Array.from({length:n+1},(_,i)=>i),cur=new Array(n+1);
     for(let i=1;i<=m;i++){ cur[0]=i; for(let j=1;j<=n;j++){ const c=a[i-1]===b[j-1]?0:1; cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+c); } const t=prev;prev=cur;cur=t; } return prev[n]; }
@@ -835,7 +876,62 @@ class Component extends DCLogic {
     const jac=(sa.size&&sb.size)? inter/(sa.size+sb.size-inter):0;
     const contain=(na.length>=4&&nb.length>=4&&(na.includes(nb)||nb.includes(na)))?0.86:0;
     return Math.max(lev*0.95, jac, contain); }
-  _bestMatch(name, fields, used){ let best=null; for(const f of fields){ if(used.has(f.field)) continue; const sc=this._sim(name,f.name); if(!best||sc>best.score) best={field:f.field,name:f.name,category:f.category,score:sc}; } return best; }
+  // PDF section (category) ↔ CMS Display_Category alignment
+  _catAlign(section, category){
+    if(!section||!category) return 0;
+    const s=this.norm(section), c=this.norm(category);
+    if(s===c) return 1;
+    const MAP={ operational:'operational', video:'video', lens:'lens', network:'network', security:'security',
+      general:'general', mechanical:'mechanical', interface:'interface', interfaces:'interface',
+      environmental:'electricalandenvironmental', electrical:'electricalandenvironmental',
+      electricalandenvironmental:'electricalandenvironmental', certification:'certificationandstandards',
+      certificationandstandards:'certificationandstandards', dori:'dori', performance:'performance',
+      pantiltrotate:'pantiltrotate', mobilecommunication:'network', power:'electricalandenvironmental' };
+    if(MAP[s] && MAP[s]===c) return 0.9;
+    if(c.includes(s)||s.includes(c)) return 0.75;
+    return 0;
+  }
+  // value-content hints → boost fields whose meaning the value implies
+  _valueHint(value, fieldName){
+    const v=String(value||'').toLowerCase(), f=this.norm(fieldName); if(!v) return 0;
+    let best=0;
+    const RULES=[
+      [/\b(ft|m)\b|meter|feet|\dm\)/, ['viewablelength','viewabledistance','irdistance','irrange','distance']],
+      [/lux|@ ?f\d|agc/, ['minillumination','illumination']],
+      [/\bir\b|infrared|led/, ['irled','lighttype','irleds','led']],
+      [/warm|white light|strobe|red.*blue|blue.*red/, ['warmlight','whitelight','lighttype','supplementlight','complementary']],
+      [/db\b|wdr|wide dynamic/, ['widedynamicrange','wdr']],
+      [/\bh\.26|mjpeg|codec/, ['videocompression','compression','codec']],
+      [/kbps|mbps|bitrate/, ['bitrate','bitratecontrol']],
+      [/tcp|http|rtsp|onvif|dhcp/, ['protocol','networkprotocol','api']],
+      [/microsd|sd card|storage|gb\b|tb\b/, ['onboardstorage','sdcard','storage','memory']],
+      [/vdc|vac|poe|watt|\bw\b|voltage/, ['powerconsumption','powerinput','power','voltage']],
+      [/celsius|fahrenheit|°c|°f|humidity/, ['operatingtemperature','operatingcondition','environment','temperature']],
+      [/ip6\d|ik\d/, ['ingressprotection','protection','ratings']],
+      [/rj45|ethernet|base-t/, ['ethernet','network','interface']],
+      [/detection|region|crossing|tripwire|analytics|counting/, ['analytics','smartfeature','intelligentanalytics']],
+      [/aperture|f1\.|f2\./, ['maxapertureratio','aperture']],
+      [/\bmm\b|zoom|motorized|fixed lens/, ['focallength','lenstype','lens']],
+      [/pixel|cmos|sensor|progressive/, ['imagingdevice','imagesensor','effectivepixels','sensor','scanningsystem']],
+    ];
+    for(const [re, keys] of RULES){ if(re.test(v)){ for(const k of keys){ if(f.includes(k)){ best=Math.max(best,0.5); } } } }
+    return best;
+  }
+  _bestMatch(spec, fields, used){
+    const name=(typeof spec==='string')?spec:spec.name;
+    const section=(typeof spec==='object')?spec.section:'';
+    const value=(typeof spec==='object')?spec.value:'';
+    let best=null;
+    for(const f of fields){ if(used.has(f.field)) continue;
+      const nameSim=this._sim(name, f.name);
+      const catB=this._catAlign(section, f.category)*0.22;
+      const valB=this._valueHint(value, f.name)*0.18;
+      // combined: name-led, boosted by category + value evidence
+      const score=Math.min(1, nameSim + (nameSim>0.15?catB+valB:catB*0.5+valB*0.5));
+      if(!best||score>best.score) best={field:f.field,name:f.name,category:f.category,score,nameSim};
+    }
+    return best;
+  }
 
   buildReviews(){
     const raw=this.state.raw; if(!raw||!this.state.qc) return [];
@@ -852,33 +948,50 @@ class Component extends DCLogic {
   }
   accepted(key){ return this.state.reviewAccept[key]!==false; }
 
-  computeSheet(){
+  computeSheet(opts){
     const raw=this.state.raw; if(!raw) return null;
+    opts=opts||{};
+    const reviewed=!!opts.review;
+    const useCms=!!opts.cms;
     const disabled=Object.keys(this.state.disabledRules).filter(k=>this.state.disabledRules[k]);
     const ov=this.state.overrides;
     const resolve=(key, original, fieldName)=>{
       if(ov[key]!=null) return ov[key];
+      if(!reviewed) return original;   // 검수 미반영
       const {result,issues}=this.state.qc.runQC(original, fieldName, disabled);
       return (issues.length && this.accepted(key))?result:original;
     };
-    const secOrder=[]; const secMap={};
-    raw.specs.forEach((sp,i)=>{ const sec=sp.section||'—'; if(!secMap[sec]){secMap[sec]=[];secOrder.push(sec);} secMap[sec].push({name:sp.name, value:resolve('f'+i, sp.value, sp.name), key:'f'+i}); });
-    const specCats=secOrder.map(sec=>({label:sec.toUpperCase(), fields:secMap[sec]}));
+    let specCats;
+    if(useCms){
+      // CMS 정렬·매핑: CMS 카테고리 순서 + CMS 필드명, 값은 원본 spec에서 매핑
+      const m=this.buildMapping();
+      const idxByName={}; raw.specs.forEach((sp,i)=>{ idxByName[sp.name]=i; });
+      specCats=m.orderedCats.map(c=>({label:c.category.toUpperCase(), fields:c.fields.map(f=>{
+        const i=idxByName[f.source]; const key=(i!=null)?('f'+i):('src_'+f.source);
+        return {name:f.name, value:resolve(key, f.value, f.name), key};
+      })}));
+    } else {
+      // 원본(제조사) 섹션·필드명 순서
+      const secOrder=[]; const secMap={};
+      raw.specs.forEach((sp,i)=>{ const sec=sp.section||'—'; if(!secMap[sec]){secMap[sec]=[];secOrder.push(sec);} secMap[sec].push({name:sp.name, value:resolve('f'+i, sp.value, sp.name), key:'f'+i}); });
+      specCats=secOrder.map(sec=>({label:sec.toUpperCase(), fields:secMap[sec]}));
+    }
     const title=resolve('__title', raw.subtitle, 'Sub Title');
     const subtitle2=(ov.__subtitle2!=null)?ov.__subtitle2:(raw.subtitle2||'');
     const model=this.state.meta.model||raw.model;
     const CL={ndaa:'NDAA COMPLIANT',taa:'TAA',ce:'CE',fcc:'FCC',ul:'UL',rohs:'RoHS',ip66:'IP66',ip67:'IP67',ik10:'IK10',onvif:'ONVIF',weee:'WEEE',reach:'REACH'};
-    const CORDER=['ndaa','ce','fcc','ul','rohs','taa','ip66','ip67','ik10','onvif','weee','reach'];
+    const CORDER=['ndaa','taa','ce','fcc'];
     const imgMap={}; this.CERTS.forEach(c=>{ if(c.img) imgMap[c.id]=c.img; });
     const aiOn=!!this.state.certs.ai;
-    const certsAll=this.CERTS.filter(c=>c.id!=='ai'&&this.state.certs[c.id]).map(c=>({id:c.id,label:CL[c.id]||c.label,img:imgMap[c.id]||''})).sort((a,b)=>CORDER.indexOf(a.id)-CORDER.indexOf(b.id));
-    const certImgs=certsAll.filter(c=>c.img);
-    const certTexts=certsAll.filter(c=>!c.img);
+    // Only the 4 image logos, fixed order NDAA · TAA · CE · FCC
+    const certImgs=['ndaa','taa','ce','fcc'].filter(id=>this.state.certs[id]&&imgMap[id]).map((id,i)=>({id,label:CL[id],img:imgMap[id],divider:i>0}));
+    const certTexts=[];
     const aiBadge=aiOn?[{img:'./assets/certs/AI.png'}]:[];
     const dim2=this.state.dimCount>=2;
     const dimDir=this.state.dimLayout==='row'?'row':'column';
     const dimSlotFlex=this.state.dimLayout==='row'?'1 1 0':'0 0 auto';
-    return {model, title, subtitle2, certImgs, certTexts, aiBadge, aiOn, bullets:this.state.bullets, dims:this.state.dims, accessories:this.state.accessories, specCats, dim2, dimDir, dimSlotFlex};
+    const accessories=this.state.accessories.map((a,i)=>({...a, onRemove:()=>this.removeAcc(i)}));
+    return {model, title, subtitle2, certImgs, certTexts, aiBadge, aiOn, bullets:this.state.bullets, dims:this.state.dims, accessories, specCats, dim2, dimDir, dimSlotFlex};
   }
 
   // actions
@@ -896,7 +1009,7 @@ class Component extends DCLogic {
     if(wSpec) dims.push({label:'Weight', value:qc.runQC(wSpec.value,'Weight',[]).result});
     if(!dims.length) dims.push({label:'Dimensions', value:''});
     const certs=(s.certs&&Object.keys(s.certs).length)?{...s.certs}:{ndaa:true,ce:true,fcc:true};
-    const accessories=Array.from({length:8},(_,i)=>({imgId:'acc'+i, code:'', desc:''}));
+    const accessories=Array.from({length:4},(_,i)=>({imgId:'acc'+i, code:'', desc:''}));
     this.setState({raw:s, activeSample:id||s.id, loaded:true, step:1, assignments:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories});
   }
   // ── Excel (.xlsx) import ──────────────────────────────────────────────
@@ -1326,9 +1439,19 @@ class Component extends DCLogic {
       out.aiBusy=st.aiBusy; out.aiBtnLabel=st.aiBusy?'검수 중…':'🔄 AI 심화 검수 실행'; out.aiBtnOpacity=st.aiBusy?'.6':'1';
       out.onAIReview=()=>this.aiReview(); out.aiNote=st.aiNote; out.hasAiNote=!!st.aiNote;
 
-      // sheet
-      const sheet=this.computeSheet();
+      // sheet — 기존버전(raw) vs 수정버전(review±cms 선택)
+      const rev=st.sheetVersion!=='raw';
+      const sheet=this.computeSheet(rev?{review:st.applyReview, cms:st.applyCms}:{review:false, cms:false});
       out.sheet=sheet;
+      out.verReviewed=rev;
+      out.onVerRaw=()=>this.setState({sheetVersion:'raw'}); out.onVerReviewed=()=>this.setState({sheetVersion:'reviewed'});
+      out.verRawBg=!rev?'#941A31':'#fff'; out.verRawColor=!rev?'#fff':'#5e636b';
+      out.verRevBg=rev?'#941A31':'#fff'; out.verRevColor=rev?'#fff':'#5e636b';
+      out.applyReview=st.applyReview; out.applyCms=st.applyCms;
+      out.onToggleReview=()=>this.setState(s=>({applyReview:!s.applyReview}));
+      out.onToggleCms=()=>this.setState(s=>({applyCms:!s.applyCms}));
+      out.revTrackReview=st.applyReview?'#941A31':'#c9ccd2'; out.revKnobReview=st.applyReview?'19px':'3px';
+      out.revTrackCms=st.applyCms?'#941A31':'#c9ccd2'; out.revKnobCms=st.applyCms?'19px':'3px';
       out.showP1=st.pageView!=='2'; out.showP2=st.pageView!=='1';
       out.pageTabs=[
         {key:'both',label:'양면'},{key:'1',label:'1면'},{key:'2',label:'2면'}
@@ -1393,6 +1516,8 @@ class Component extends DCLogic {
       out.repReviewPages=rPages.map((rows,i)=>({first:i===0, cont:i>0, no:i+1, total:rPages.length,
         rows:rows.map(r=>({field:r.field, before:r.before, after:r.after, appliedLabel:r.applied?'반영':'제외', appliedColor:r.applied?'#1f8a5b':'#9aa0aa'}))}));
       out.repFocusMap=st.reportFocus==='mapping'||st.reportFocus==='all';
+      out.sheetReviewed=this.computeSheet({review:st.applyReview, cms:st.applyCms});
+      out.sheetRaw=this.computeSheet({review:false, cms:false});
     }
 
     // settings
