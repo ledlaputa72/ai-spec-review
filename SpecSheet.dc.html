@@ -117,7 +117,7 @@
   </div>
   </sc-if>
 
-  <!-- ================= PAGE 2 (specs) injected below ================= -->
+  <!-- ================= PAGE 2 (specs) — one page per sliced specCats ================= -->
   <sc-if value="{{ showP2 }}" hint-placeholder-val="{{ true }}">
   <div data-screen-label="SpecSheet P2" style="width:816px; height:1056px; background:#fff; box-shadow:0 6px 30px rgba(20,30,50,.16); display:flex; flex-direction:column; padding:30px 40px 50px; box-sizing:border-box; position:relative; overflow:hidden;">
     <!-- header -->
@@ -134,7 +134,7 @@
     </div>
 
     <!-- SPECIFICATIONS title -->
-    <div style="font-size:17px; font-weight:800; color:#1a1a1a; margin-top:10px;">SPECIFICATIONS</div>
+    <div style="font-size:17px; font-weight:800; color:#1a1a1a; margin-top:10px;">SPECIFICATIONS <span style="font-size:10px; font-weight:600; color:#9aa0aa;">{{ specCont }}</span></div>
     <div style="height:1.5px; background:#931a33; margin:4px 0 7px;"></div>
 
     <!-- spec table -->
@@ -168,6 +168,6 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:860,&quot;height&quot;:1100},&quot;sheet&quot;:{&quot;editor&quot;:null,&quot;default&quot;:{&quot;model&quot;:&quot;AVC-NCMMS161F04&quot;,&quot;title&quot;:&quot;16MP H.265 MULTI-SENSOR NETWORK CAMERA&quot;,&quot;subtitle2&quot;:&quot;24/7 Color 360° Multi-Directional&quot;,&quot;certs&quot;:[{&quot;label&quot;:&quot;NDAA COMPLIANT&quot;},{&quot;label&quot;:&quot;CE&quot;},{&quot;label&quot;:&quot;FCC&quot;}],&quot;bullets&quot;:[&quot;4MP x 4ch Multi-directional, each sensor manually adjustable&quot;,&quot;Max. resolution: 2688x1520&quot;,&quot;Built-in microSD card slot, up to 512GB&quot;],&quot;dims&quot;:[{&quot;label&quot;:&quot;Diameter&quot;,&quot;value&quot;:&quot;Ø7.87in (Ø200mm)&quot;},{&quot;label&quot;:&quot;Height&quot;,&quot;value&quot;:&quot;3.46in (88mm)&quot;}],&quot;accessories&quot;:[{&quot;imgId&quot;:&quot;acc0&quot;,&quot;code&quot;:&quot;AVM-MMS-CVR-M1&quot;,&quot;desc&quot;:&quot;TOP COVER&quot;},{&quot;imgId&quot;:&quot;acc1&quot;,&quot;code&quot;:&quot;AVM-DUAL-WMT-L1&quot;,&quot;desc&quot;:&quot;WALL MOUNT&quot;}],&quot;specCats&quot;:[{&quot;label&quot;:&quot;VIDEO&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;Image Sensor&quot;,&quot;value&quot;:&quot;1/2.7\&quot; Progressive CMOS&quot;},{&quot;name&quot;:&quot;Max. Resolution&quot;,&quot;value&quot;:&quot;2688x1520&quot;}]},{&quot;label&quot;:&quot;LENS&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;Focal Length&quot;,&quot;value&quot;:&quot;2.8mm&quot;}]}]}},&quot;showP1&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true},&quot;showP2&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true}}"></script>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:860,&quot;height&quot;:1100},&quot;sheet&quot;:{&quot;editor&quot;:null,&quot;default&quot;:{&quot;model&quot;:&quot;AVC-NCMMS161F04&quot;,&quot;title&quot;:&quot;16MP H.265 MULTI-SENSOR NETWORK CAMERA&quot;,&quot;subtitle2&quot;:&quot;24/7 Color 360° Multi-Directional&quot;,&quot;certImgs&quot;:[],&quot;bullets&quot;:[&quot;4MP x 4ch Multi-directional, each sensor manually adjustable&quot;,&quot;Max. resolution: 2688x1520&quot;,&quot;Built-in microSD card slot, up to 512GB&quot;],&quot;dimDir&quot;:&quot;row&quot;,&quot;dim2&quot;:true,&quot;accessories&quot;:[{&quot;imgId&quot;:&quot;acc0&quot;,&quot;code&quot;:&quot;AVM-MMS-CVR-M1&quot;,&quot;desc&quot;:&quot;TOP COVER&quot;},{&quot;imgId&quot;:&quot;acc1&quot;,&quot;code&quot;:&quot;AVM-DUAL-WMT-L1&quot;,&quot;desc&quot;:&quot;WALL MOUNT&quot;}],&quot;specCats&quot;:[{&quot;label&quot;:&quot;VIDEO&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;Image Sensor&quot;,&quot;value&quot;:&quot;1/2.7\&quot; Progressive CMOS&quot;},{&quot;name&quot;:&quot;Max. Resolution&quot;,&quot;value&quot;:&quot;2688x1520&quot;}]},{&quot;label&quot;:&quot;LENS&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;Focal Length&quot;,&quot;value&quot;:&quot;2.8mm&quot;}]}]}},&quot;showP1&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true},&quot;showP2&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true},&quot;specCont&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;}}"></script>
 </body>
 </html>

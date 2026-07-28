@@ -94,6 +94,9 @@ export async function extractPdf(arrayBuffer) {
       const text = left.filter((i) => !(i.x < BULX && /^[•·]$/.test(i.s.trim())))
         .map((i) => i.s.replace(/^[•·]\s*/, '')).join(' ').replace(/\s+/g, ' ').trim();
       if (!text) continue;
+      // OPTIONAL ACCESSORIES sits in the same left column below OVERVIEW — stop
+      // collecting there so its part numbers don't bleed into the last bullet.
+      if (/^OPTIONAL ACCESSORIES/i.test(text)) break;
       if (/^(OVERVIEW|DIMENSIONS|Unit ?:|Camera Dimension)/i.test(text)) continue;
       if (/avycon\.com|All rights reserved|marketing@|trademarks of AVYCON/i.test(text)) continue;
       if (text === 'AVYCON' || text === product.model || text === product.subtitle) continue;

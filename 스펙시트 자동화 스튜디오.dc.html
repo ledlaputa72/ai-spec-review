@@ -31,9 +31,10 @@
     html,body{ background:#fff !important; }
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 </helmet>
 
-<div class="app-root" style="font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif; height:100vh; display:flex; flex-direction:column; color:#1c2330; background:#eceef0; overflow:hidden;">
+<div class="app-root" ref="{{ rootRef }}" style="font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif; height:100vh; display:flex; flex-direction:column; color:#1c2330; background:#eceef0; overflow:hidden;">
 
   <!-- ============ HEADER ============ -->
   <div style="flex-shrink:0; background:#941A31; color:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 22px; height:60px; box-shadow:0 2px 12px rgba(20,30,50,.18); z-index:30;">
@@ -43,7 +44,7 @@
         <span style="width:5px; height:5px; border-radius:50%; background:#e23b52; display:inline-block;"></span>
       </div>
       <div style="width:1px; height:24px; background:rgba(255,255,255,.2);"></div>
-      <span style="font-size:14px; font-weight:600; letter-spacing:.3px; color:#d6c9cc;">Spec Sheet Studio</span>
+      <span style="font-size:14px; font-weight:600; letter-spacing:.3px; color:#ffffff;">Spec Sheet Studio</span>
     </div>
     <div style="display:flex; align-items:center; gap:12px;">
       <div style="display:flex; align-items:center; gap:7px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); border-radius:8px; padding:5px 10px;">
@@ -73,6 +74,16 @@
         </sc-if>
       </div>
       </sc-if>
+      <div style="position:relative;">
+        <button onClick="{{ onToggleLangMenu }}" title="Language" style="display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #e2d3d6; color:#941A31; border-radius:6px; padding:7px 11px; font-size:12.5px; font-weight:800; cursor:pointer; min-width:104px; justify-content:space-between;" style-hover="background:#f6edef;"><span>{{ langLabel }}</span><span style="font-size:9px; opacity:.75;">▼</span></button>
+        <sc-if value="{{ showLangMenu }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute; right:0; top:38px; min-width:132px; background:#fff; border:1px solid #d9dce1; border-radius:6px; box-shadow:0 12px 30px rgba(20,30,50,.24); padding:0; overflow:hidden; z-index:60;">
+            <sc-for list="{{ langOptions }}" as="l" hint-placeholder-count="2">
+              <button onClick="{{ l.onPick }}" style="display:block; width:100%; text-align:left; background:{{ l.bg }}; color:{{ l.color }}; border:none; border-bottom:1px solid #eceef1; padding:9px 14px; font-size:13px; font-weight:{{ l.weight }}; cursor:pointer;" style-hover="filter:brightness(.96);">{{ l.label }}</button>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
       <button onClick="{{ onToggleSettings }}" style="display:flex; align-items:center; gap:7px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); color:#e3e9f2; border-radius:8px; padding:7px 13px; font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:rgba(255,255,255,.16);">⚙ 설정</button>
     </div>
   </div>
@@ -89,7 +100,63 @@
         <span style="position:absolute; bottom:0; left:0; right:0; height:3px; background:{{ s.underline }};"></span>
       </button>
     </sc-for>
+    <div style="flex:1;"></div>
+    <div style="display:flex; align-items:center; padding-right:4px;">
+      <button onClick="{{ onOpenHelp }}" title="도움말" aria-label="도움말" style="width:34px; height:34px; border-radius:50%; background:#fff; border:1.5px solid #e3c9cf; color:#941A31; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;" style-hover="background:#f6edef; border-color:#941A31;">?</button>
+    </div>
   </div>
+
+  <!-- ============ HELP (wiki modal) ============ -->
+  <sc-if value="{{ showHelp }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ onCloseHelp }}" style="position:fixed; inset:0; background:rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; z-index:200;">
+      <div onClick="{{ stopClick }}" data-i18n-skip="true" style="width:90%; height:90%; background:#fff; border-radius:14px; box-shadow:0 30px 80px rgba(10,16,28,.4); display:flex; flex-direction:column; overflow:hidden;">
+        <div style="flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 22px; border-bottom:1px solid #e6e8ec; background:#941A31; color:#fff;">
+          <div style="display:flex; align-items:baseline; gap:10px;">
+            <span style="font-size:16px; font-weight:800;">{{ helpHeadTitle }}</span>
+            <span style="font-size:12px; color:#e2c9ce;">{{ helpHeadSub }}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:9px;">
+            <button onClick="{{ onHelpPdf }}" style="background:#fff; border:none; color:#941A31; border-radius:8px; padding:8px 14px; font-size:12.5px; font-weight:800; cursor:pointer;" style-hover="background:#f6edef;">🅿 {{ helpPdfLabel }}</button>
+            <button onClick="{{ onCloseHelp }}" title="닫기" style="width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.2); color:#fff; font-size:15px; cursor:pointer;" style-hover="background:rgba(255,255,255,.26);">✕</button>
+          </div>
+        </div>
+        <div style="flex:1; display:grid; grid-template-columns:262px 1fr; min-height:0;">
+          <div style="border-right:1px solid #e6e8ec; background:#f7f8fa; overflow:auto; padding:14px 0;">
+            <sc-for list="{{ helpNav }}" as="g" hint-placeholder-count="2">
+              <div style="padding:8px 18px 4px;">
+                <div style="font-size:10.5px; font-weight:800; color:#8b9099; letter-spacing:.6px;">{{ g.cat }}</div>
+              </div>
+              <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
+                <button onClick="{{ it.onPick }}" style="display:block; width:100%; text-align:left; background:{{ it.bg }}; border:none; border-left:3px solid {{ it.bar }}; padding:9px 18px; font-size:13px; font-weight:{{ it.weight }}; color:{{ it.color }}; cursor:pointer;" style-hover="background:#efe6e8;">{{ it.title }}</button>
+              </sc-for>
+            </sc-for>
+          </div>
+          <div class="scroll" style="overflow:auto; padding:28px 34px 44px;">
+            <div style="max-width:780px;">
+              <div style="font-size:11px; font-weight:800; color:#941A31; letter-spacing:.6px;">{{ helpCat }}</div>
+              <div style="font-size:24px; font-weight:800; color:#1c2330; margin-top:6px; letter-spacing:-.3px;">{{ helpTitle }}</div>
+              <div style="font-size:14px; color:#5e636b; line-height:1.65; margin-top:10px; text-wrap:pretty;">{{ helpIntro }}</div>
+              <div style="height:1px; background:#e6e8ec; margin:22px 0;"></div>
+              <div style="display:flex; flex-direction:column; gap:18px;">
+                <sc-for list="{{ helpBlocks }}" as="b" hint-placeholder-count="3">
+                  <div style="display:grid; grid-template-columns:34px 1fr; gap:14px; align-items:start;">
+                    <span style="width:30px; height:30px; border-radius:50%; background:#f6edef; border:1.5px solid #e3c9cf; color:#941A31; font-size:12.5px; font-weight:800; display:flex; align-items:center; justify-content:center;">{{ b.n }}</span>
+                    <div>
+                      <div style="font-size:14.5px; font-weight:800; color:#1c2330;">{{ b.title }}</div>
+                      <div style="font-size:13.5px; color:#5e636b; line-height:1.7; margin-top:5px; text-wrap:pretty;">{{ b.desc }}</div>
+                      <sc-if value="{{ b.hasTip }}" hint-placeholder-val="{{ false }}">
+                        <div style="margin-top:8px; background:#f7f8fa; border:1px solid #e6e8ec; border-radius:9px; padding:10px 13px; font-size:12.5px; color:#44474e; line-height:1.6;">{{ b.tip }}</div>
+                      </sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
 
   <!-- ============ CONTENT ============ -->
   <div class="scroll" style="flex:1; overflow:auto; position:relative;">
@@ -112,35 +179,91 @@
             <div style="font-size:22px; font-weight:800; color:#941A31; letter-spacing:-.2px;">{{ heroTitle }}</div>
             <div style="font-size:13.5px; color:#5e636b; margin-top:7px; max-width:600px; margin-left:auto; margin-right:auto; line-height:1.5;">{{ heroDesc }}</div>
           </div>
-          <div style="display:flex; gap:8px; justify-content:center; margin-bottom:16px;">
-            <button onClick="{{ onSrcXlsx }}" style="display:flex; align-items:center; gap:7px; background:{{ xlsxTabBg }}; color:{{ xlsxTabColor }}; border:1px solid #e3c9cf; border-radius:9px; padding:9px 16px; font-size:13px; font-weight:700; cursor:pointer;">📑 제조사 엑셀(.xlsx)</button>
-            <button onClick="{{ onSrcPdf }}" style="display:flex; align-items:center; gap:7px; background:{{ pdfTabBg }}; color:{{ pdfTabColor }}; border:1px solid #e3c9cf; border-radius:9px; padding:9px 16px; font-size:13px; font-weight:700; cursor:pointer;">📄 기제작 PDF 스펙시트</button>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:1020px; margin:0 auto;">
+            <div style="display:flex; flex-direction:column; gap:9px;">
+              <div>
+                <div style="display:flex; align-items:center; gap:7px; font-size:13.5px; font-weight:800; color:#941A31;">📑 제조사 엑셀(.xlsx)</div>
+                <div style="font-size:12px; color:#8b9099; margin-top:4px; line-height:1.45;">제조사 데이터시트를 올리면 CMS 카테고리·표시 순서에 맞춰 자동 정렬됩니다.</div>
+              </div>
+              <div onClick="{{ onPickXlsx }}" onDragOver="{{ onDragOverXlsx }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDropXlsx }}" style="border:2px dashed {{ xlsxBorder }}; border-radius:14px; background:{{ xlsxBg }}; padding:34px 20px; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; transition:.15s; flex:1;">
+                <div style="font-size:32px;">{{ xlsxIcon }}</div>
+                <div style="font-size:13.5px; font-weight:700; color:#44474e; text-align:center;">{{ xlsxTitle }}</div>
+                <div style="font-size:11.5px; color:#979ca4; text-align:center;">.xlsx · 제조사 데이터시트 양식 · 끌어다 놓거나 클릭</div>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:9px;">
+              <div>
+                <div style="display:flex; align-items:center; gap:7px; font-size:13.5px; font-weight:800; color:#941A31;">📄 기제작 PDF 스펙시트</div>
+                <div style="font-size:12px; color:#8b9099; margin-top:4px; line-height:1.45;">이미 제작된 AVYCON 스펙시트에서 스펙을 추출해 엑셀 데이터로 변환합니다.</div>
+              </div>
+              <div onClick="{{ onPickPdf }}" onDragOver="{{ onDragOverPdf }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDropPdf }}" style="border:2px dashed {{ pdfBorder }}; border-radius:14px; background:{{ pdfBg }}; padding:34px 20px; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; transition:.15s; flex:1;">
+                <div style="font-size:32px;">{{ pdfIcon }}</div>
+                <div style="font-size:13.5px; font-weight:700; color:#44474e; text-align:center;">{{ pdfTitle }}</div>
+                <div style="font-size:11.5px; color:#979ca4; text-align:center;">.pdf · AVYCON 포맷 스펙시트 · 텍스트 추출 → 엑셀 데이터</div>
+              </div>
+            </div>
           </div>
-          <div onClick="{{ onPickFile }}" onDragOver="{{ onDragOver }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDropFile }}" style="border:2px dashed {{ dropBorder }}; border-radius:14px; background:{{ dropBg }}; padding:34px; display:flex; flex-direction:column; align-items:center; gap:6px; max-width:680px; margin:0 auto; cursor:pointer; transition:.15s;">
-            <div style="font-size:34px;">{{ dropIcon }}</div>
-            <div style="font-size:14px; font-weight:700; color:#44474e;">{{ dropTitle }}</div>
-            <div style="font-size:12px; color:#979ca4;">{{ dropHint }}</div>
-            <sc-if value="{{ hasImportError }}" hint-placeholder-val="{{ true }}"><div style="font-size:11.5px; color:#c0564f; font-weight:600; margin-top:4px;">{{ importError }}</div></sc-if>
-          </div>
+          <sc-if value="{{ hasImportError }}" hint-placeholder-val="{{ true }}"><div style="max-width:1020px; margin:10px auto 0; font-size:11.5px; color:#c0564f; font-weight:600; text-align:center;">{{ importError }}</div></sc-if>
           <sc-if value="{{ hasSession }}" hint-placeholder-val="{{ true }}">
             <div style="max-width:680px; margin:14px auto 0; display:flex; justify-content:center;">
               <button onClick="{{ onContinue }}" style="background:#941A31; color:#fff; border:none; border-radius:9px; padding:10px 20px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:#a8243a;">↻ 저장된 작업 이어서 하기</button>
             </div>
           </sc-if>
-          <div style="display:flex; align-items:center; gap:12px; margin:26px auto 14px; max-width:680px;">
-            <div style="flex:1; height:1px; background:#d9dce1;"></div>
-            <span style="font-size:11px; color:#979ca4; letter-spacing:1px;">샘플 데이터로 시작</span>
-            <div style="flex:1; height:1px; background:#d9dce1;"></div>
-          </div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:680px; margin:0 auto;">
-            <sc-for list="{{ sampleCards }}" as="c" hint-placeholder-count="2">
-              <button onClick="{{ c.onLoad }}" style="text-align:left; background:#fff; border:1.5px solid #dde0e5; border-radius:12px; padding:18px; cursor:pointer; transition:.15s;" style-hover="border-color:#941A31; box-shadow:0 6px 18px rgba(31,45,68,.1);">
-                <div style="font-size:11px; font-weight:700; color:#e23b52; letter-spacing:.5px;">SAMPLE</div>
-                <div style="font-size:17px; font-weight:800; color:#941A31; margin-top:5px;">{{ c.model }}</div>
-                <div style="font-size:12px; color:#5e636b; margin-top:4px; line-height:1.4;">{{ c.title }}</div>
-                <div style="font-size:11px; color:#979ca4; margin-top:10px;">{{ c.count }}개 스펙 필드 →</div>
-              </button>
-            </sc-for>
+          <div style="max-width:1020px; margin:30px auto 0;">
+            <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:11px;">
+              <div>
+                <div style="font-size:15px; font-weight:800; color:#1c2330;">제품 작업 목록</div>
+                <div style="font-size:12px; color:#8b9099; margin-top:3px;">지금까지 불러오거나 작업한 제품입니다. 행을 열면 해당 데이터로 바로 이어서 진행합니다.</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex; align-items:center; gap:7px; margin-right:2px;">
+                    <span style="font-size:12px; font-weight:700; color:#1c2330;">{{ selCount }}개 선택</span>
+                    <button onClick="{{ onAskDup }}" style="background:#fff; border:1px solid #d9dce1; color:#1c2330; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="border-color:#941A31; color:#941A31;">⧉ 복제</button>
+                    <button onClick="{{ onAskDel }}" style="background:#fff; border:1px solid #e3c9cf; color:#941A31; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#f6edef;">🗑 삭제</button>
+                  </div>
+                </sc-if>
+                <input value="{{ workQuery }}" onChange="{{ onWorkQuery }}" placeholder="모델명 검색" style="background:#fff; border:1px solid #d9dce1; border-radius:8px; padding:8px 11px; font-size:12.5px; color:#1c2330; outline:none; width:190px; font-family:inherit;" />
+                <span style="font-size:11.5px; font-weight:700; color:#941A31; background:#f6edef; border:1px solid #e3c9cf; border-radius:20px; padding:6px 12px; white-space:nowrap;">{{ workCount }}개 제품</span>
+              </div>
+            </div>
+            <div style="background:#fff; border:1px solid #e0e3e7; border-radius:12px; overflow:hidden;">
+              <div style="display:grid; grid-template-columns:34px 1.15fr 2fr 0.7fr 0.7fr 0.9fr 0.75fr; gap:12px; padding:11px 16px; background:#f5f6f8; border-bottom:1px solid #e6e8ec; font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.4px; align-items:center;">
+                <input type="checkbox" checked="{{ allSel }}" onChange="{{ onToggleAll }}" style="width:15px; height:15px; accent-color:#941A31; cursor:pointer;" />
+                <span>모델명</span><span>제품명</span><span style="text-align:right;">스펙 필드</span><span>소스</span><span>상태</span><span style="text-align:right;">작업</span>
+              </div>
+              <sc-for list="{{ workRows }}" as="r" hint-placeholder-count="2">
+                <div onClick="{{ r.onLoad }}" style="display:grid; grid-template-columns:34px 1.15fr 2fr 0.7fr 0.7fr 0.9fr 0.75fr; gap:12px; align-items:center; padding:12px 16px; border-bottom:1px solid #f0f1f4; cursor:pointer; transition:.12s; background:{{ r.rowBg }};" style-hover="background:#faf6f7;">
+                  <input type="checkbox" checked="{{ r.sel }}" onChange="{{ r.onSel }}" onClick="{{ r.stop }}" style="width:15px; height:15px; accent-color:#941A31; cursor:pointer;" />
+                  <span style="font-size:13.5px; font-weight:800; color:#941A31;">{{ r.model }}</span>
+                  <span style="font-size:12.5px; color:#5e636b; line-height:1.35;">{{ r.title }}</span>
+                  <span style="font-size:12.5px; color:#44474e; text-align:right; font-variant-numeric:tabular-nums;">{{ r.count }}</span>
+                  <span style="font-size:10.5px; font-weight:700; color:{{ r.srcColor }}; background:{{ r.srcBg }}; border-radius:5px; padding:3px 7px; justify-self:start;">{{ r.src }}</span>
+                  <span style="font-size:11.5px; color:{{ r.stColor }}; font-weight:600;">{{ r.status }}</span>
+                  <span style="font-size:12px; font-weight:700; color:#941A31; text-align:right;">열기 →</span>
+                </div>
+              </sc-for>
+              <sc-if value="{{ noWorkRows }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:26px 16px; text-align:center; font-size:12.5px; color:#979ca4;">일치하는 제품이 없습니다.</div>
+              </sc-if>
+            </div>
+            <sc-if value="{{ showConfirm }}" hint-placeholder-val="{{ false }}">
+              <div onClick="{{ onCancelConfirm }}" style="position:fixed; inset:0; background:rgba(20,26,38,.42); display:flex; align-items:center; justify-content:center; z-index:120;">
+                <div onClick="{{ stopClick }}" style="background:#fff; border-radius:14px; box-shadow:0 22px 60px rgba(20,30,50,.3); padding:24px; width:392px;">
+                  <div style="font-size:16px; font-weight:800; color:#1c2330;">{{ confirmTitle }}</div>
+                  <div style="font-size:13px; color:#5e636b; margin-top:8px; line-height:1.55;">{{ confirmDesc }}</div>
+                  <div style="background:#f5f6f8; border-radius:9px; padding:10px 12px; margin-top:12px; max-height:132px; overflow:auto; display:flex; flex-direction:column; gap:5px;">
+                    <sc-for list="{{ confirmItems }}" as="c" hint-placeholder-count="1">
+                      <span style="font-size:12.5px; font-weight:700; color:#941A31;">{{ c.model }}</span>
+                    </sc-for>
+                  </div>
+                  <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:18px;">
+                    <button onClick="{{ onCancelConfirm }}" style="background:#fff; border:1px solid #d9dce1; color:#44474e; border-radius:8px; padding:9px 16px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:#f5f6f8;">취소</button>
+                    <button onClick="{{ onConfirm }}" style="background:{{ confirmBtnBg }}; border:none; color:#fff; border-radius:8px; padding:9px 18px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="filter:brightness(1.08);">{{ confirmBtn }}</button>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
           </div>
         </sc-if>
 
@@ -158,6 +281,7 @@
               <span style="font-size:12px; font-weight:700; color:#941A31; background:#f6edef; border:1px solid #e3c9cf; border-radius:20px; padding:6px 13px;">✓ {{ mapMatched }}개 매핑됨</span>
               <sc-if value="{{ hasUnmapped }}" hint-placeholder-val="{{ true }}"><button onClick="{{ onToggleUnmapped }}" style="font-size:12px; font-weight:700; color:#941A31; background:#f6edef; border:1px solid #e3c9cf; border-radius:20px; padding:6px 13px; cursor:pointer; display:flex; align-items:center; gap:6px;" style-hover="background:#efdfe2;">⚠ {{ mapUnmappedCount }}개 미매핑 · 연결하기</button></sc-if>
               <sc-if value="{{ fromPdf }}" hint-placeholder-val="{{ true }}"><button onClick="{{ onExportRawXlsx }}" style="background:#941A31; border:none; color:#fff; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#a8243a;">▦ 엑셀로 내보내기</button></sc-if>
+              <button onClick="{{ onScanRules }}" title="새 데이터에서 규칙 후보 검출" style="background:#fff; border:1px solid #e3c9cf; color:#941A31; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#f6edef;">🔍 새 규칙 후보 검사<sc-if value="{{ hasScanBadge }}" hint-placeholder-val="{{ true }}"><span style="margin-left:6px; background:#941A31; color:#fff; border-radius:10px; padding:1px 7px; font-size:10.5px;">{{ scanBadge }}</span></sc-if></button>
               <button onClick="{{ onReportMapping }}" style="background:#fff; border:1px solid #d9dce1; color:#941A31; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="border-color:#941A31;">📄 리포트 보기</button>
               <button onClick="{{ onResetImport }}" style="background:#fff; border:1px solid #d9dce1; color:#5e636b; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:600; cursor:pointer;">다른 파일</button>
             </div>
@@ -174,9 +298,9 @@
                   <div>
                     <div style="background:#eceef1; padding:6px 15px; font-size:11px; font-weight:700; color:#5b6068; letter-spacing:.4px; position:sticky; top:0;">{{ sec.section }}</div>
                     <sc-for list="{{ sec.fields }}" as="f" hint-placeholder-count="3">
-                      <div style="padding:7px 15px; border-bottom:1px solid #eef0f2; display:grid; grid-template-columns:42% 58%; gap:8px;">
-                        <span style="font-size:11px; color:#5b6068; font-weight:600;">{{ f.name }}</span>
-                        <span style="font-size:11px; color:#979ca4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ f.value }}</span>
+                      <div onClick="{{ f.onClick }}" style="padding:7px 15px; border-bottom:1px solid #eef0f2; display:grid; grid-template-columns:42% 58%; gap:8px; cursor:{{ f.cursor }};">
+                        <span style="font-size:11px; color:{{ f.nameColor }}; font-weight:600;">{{ f.name }}</span>
+                        <span style="font-size:11px; color:{{ f.valColor }}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ f.value }}</span>
                       </div>
                     </sc-for>
                   </div>
@@ -195,7 +319,7 @@
                   <div>
                     <div style="background:#eceef1; padding:6px 15px; font-size:11px; font-weight:800; color:#941A31; letter-spacing:.5px; position:sticky; top:0; border-bottom:1px solid #e6e8ec;">{{ cat.category }}</div>
                     <sc-for list="{{ cat.fields }}" as="f" hint-placeholder-count="3">
-                      <div style="padding:8px 15px; border-bottom:1px solid #eef0f2; display:grid; grid-template-columns:38% 62%; gap:10px; align-items:start;">
+                      <div onClick="{{ f.onClick }}" style="padding:8px 15px; border-bottom:1px solid #eef0f2; display:grid; grid-template-columns:38% 62%; gap:10px; align-items:start; cursor:pointer;" style-hover="background:#faf3f4;">
                         <div>
                           <div style="font-size:11.5px; color:#941A31; font-weight:700;">{{ f.name }}</div>
                           <sc-if value="{{ f.renamed }}" hint-placeholder-val="{{ true }}"><div style="font-size:9.5px; color:#a9b2c1; margin-top:1px;">← {{ f.source }}</div></sc-if>
@@ -226,7 +350,7 @@
                 </div>
                 <div style="padding:16px 18px; display:flex; flex-direction:column; gap:10px;">
                   <sc-for list="{{ unmappedList }}" as="u" hint-placeholder-count="5">
-                    <div style="background:#fbf4f5; border:1px solid #ecd8dc; border-radius:9px; padding:11px 13px;">
+                    <div style="background:{{ u.cardBg }}; border:1px solid {{ u.cardBorder }}; border-radius:9px; padding:11px 13px;">
                       <div style="font-size:12.5px; font-weight:700; color:#44474e;">{{ u.source }}</div>
                       <div style="font-size:10.5px; color:#979ca4; margin:3px 0 9px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ u.value }}</div>
                       <select value="{{ u.current }}" onChange="{{ u.onAssign }}" style="width:100%; font-size:11.5px; border:1px solid #d9dce1; border-radius:7px; padding:7px 9px; color:#44474e; background:#fff; cursor:pointer;">
@@ -236,6 +360,50 @@
                       </select>
                     </div>
                   </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- mapped-field connection editor -->
+          <sc-if value="{{ mapEditActive }}" hint-placeholder-val="{{ true }}">
+            <div style="position:fixed; inset:0; z-index:46; display:flex; justify-content:flex-end;">
+              <div onClick="{{ onCloseMapEdit }}" style="position:absolute; inset:0; background:rgba(20,30,50,.35);"></div>
+              <div class="scroll" style="position:relative; width:440px; max-width:92vw; background:#fff; height:100%; overflow:auto; box-shadow:-8px 0 30px rgba(20,30,50,.2); animation:pop .2s ease;">
+                <div style="padding:18px 20px; border-bottom:1px solid #eceef1; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:#fff; z-index:5;">
+                  <div>
+                    <div style="font-size:15px; font-weight:800; color:#941A31;">매핑 연결 확인 · 수정</div>
+                    <div style="font-size:11px; color:#8b9099; margin-top:2px;">연결된 원본 필드를 확인하고 다른 필드로 바꾸거나 해제하세요</div>
+                  </div>
+                  <button onClick="{{ onCloseMapEdit }}" style="width:30px; height:30px; border:1px solid #e6e8ec; background:#f5f6f8; border-radius:8px; cursor:pointer; font-size:16px; color:#5e636b;">×</button>
+                </div>
+                <div style="padding:18px 20px; display:flex; flex-direction:column; gap:14px;">
+                  <div style="background:#faf3f4; border:1px solid #ecd8dc; border-radius:10px; padding:13px 15px;">
+                    <div style="font-size:10px; font-weight:800; color:#b58; letter-spacing:.5px; text-transform:uppercase;">CMS 필드</div>
+                    <div style="font-size:14px; font-weight:800; color:#941A31; margin-top:3px;">{{ mapEditData.name }}</div>
+                    <div style="font-size:11px; color:#8b9099; margin-top:2px;">{{ mapEditData.category }}</div>
+                  </div>
+                  <div style="background:#f5f6f8; border:1px solid #e6e8ec; border-radius:10px; padding:13px 15px;">
+                    <div style="font-size:10px; font-weight:800; color:#8b9099; letter-spacing:.5px; text-transform:uppercase;">현재 연결된 원본 필드</div>
+                    <div style="font-size:13px; font-weight:700; color:#44474e; margin-top:3px;">{{ mapEditData.source }}</div>
+                    <div style="font-size:11px; color:#7c828b; margin-top:4px; line-height:1.4; white-space:pre-line;">{{ mapEditData.value }}</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px; font-weight:700; color:#5e636b; margin-bottom:6px;">연결 변경</div>
+                    <select value="{{ mapEditData.current }}" onChange="{{ mapEditData.onRemap }}" style="width:100%; font-size:11.5px; border:1px solid #d9dce1; border-radius:7px; padding:8px 10px; color:#44474e; background:#fff; cursor:pointer;">
+                      <sc-for list="{{ mapEditData.options }}" as="o" hint-placeholder-count="4">
+                        <option value="{{ o.value }}">{{ o.label }}</option>
+                      </sc-for>
+                    </select>
+                    <div style="font-size:10px; color:#a9b2c1; margin-top:6px; line-height:1.4;">다른 원본 필드를 선택하면 이 CMS 항목에 연결되고 기존 연결은 해제됩니다.</div>
+                  </div>
+                  <sc-if value="{{ mapEditData.canDisconnect }}" hint-placeholder-val="{{ true }}">
+                    <div style="border-top:1px solid #eef0f2; padding-top:14px; margin-top:2px;">
+                      <div style="font-size:11px; font-weight:700; color:#5e636b; margin-bottom:7px;">연결 해제</div>
+                      <button onClick="{{ mapEditData.onDisconnect }}" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:#fff; color:#c8102e; border:1.5px solid #edc6cc; border-radius:8px; padding:10px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#fdeef0; border-color:#e0a4ac;">✕ 연결 해제 → 미매핑으로 이동</button>
+                      <div style="font-size:10px; color:#a9b2c1; margin-top:6px; line-height:1.4;">이 CMS 항목의 연결을 끊고 해당 원본 필드를 미매핑 목록으로 되돌립니다.</div>
+                    </div>
+                  </sc-if>
                 </div>
               </div>
             </div>
@@ -268,6 +436,7 @@
           </sc-for>
           <div style="flex:1;"></div>
           <div style="display:flex; gap:8px; align-items:center;">
+            <button onClick="{{ onScanRules }}" title="새 데이터에서 규칙 후보 검출" style="background:#fff; color:#941A31; border:1px solid #e3c9cf; border-radius:8px; padding:9px 14px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#f6edef;">🔍 새 규칙 후보<sc-if value="{{ hasScanBadge }}" hint-placeholder-val="{{ true }}"><span style="margin-left:6px; background:#941A31; color:#fff; border-radius:10px; padding:1px 7px; font-size:10.5px;">{{ scanBadge }}</span></sc-if></button>
             <button onClick="{{ onReportReview }}" style="background:#fff; color:#941A31; border:1px solid #d9dce1; border-radius:8px; padding:9px 14px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="border-color:#941A31;">📄 리포트 보기</button>
             <button onClick="{{ onAcceptAll }}" style="background:#f6edef; color:#941A31; border:1px solid #e3c9cf; border-radius:8px; padding:9px 14px; font-size:12px; font-weight:700; cursor:pointer;">전체 승인</button>
             <button onClick="{{ onRejectAll }}" style="background:#fff; color:#5e636b; border:1px solid #d9dce1; border-radius:8px; padding:9px 14px; font-size:12px; font-weight:700; cursor:pointer;">전체 해제</button>
@@ -538,6 +707,44 @@
         </div>
         <div style="height:1px; background:#e6e8ec;"></div>
 
+        <!-- CMS table tab -->
+        <sc-if value="{{ settingsCms }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:18px 20px;">
+            <div style="font-size:12.5px; color:#5e636b; line-height:1.5; margin-bottom:14px;">매핑·정렬의 기준이 되는 <b style="color:#941A31;">CMS 데이터 필드 테이블</b>입니다. 새 테이블을 업로드하면 이후 모든 매핑·정렬·레이아웃이 그 필드 정의를 기준으로 동작합니다.</div>
+
+            <div style="background:#f6f7f9; border:1px solid #e6e8ec; border-radius:10px; padding:14px 15px; margin-bottom:14px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+                <span style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.4px; text-transform:uppercase;">현재 기준 테이블</span>
+                <span style="font-size:10.5px; font-weight:700; color:#fff; background:{{ cmsSourceBadgeBg }}; border-radius:20px; padding:3px 10px;">{{ cmsSourceLabel }}</span>
+              </div>
+              <div style="display:flex; gap:20px;">
+                <div><div style="font-size:20px; font-weight:800; color:#941A31;">{{ cmsScopeCount }}</div><div style="font-size:10.5px; color:#8b9099;">제품군(Scope)</div></div>
+                <div><div style="font-size:20px; font-weight:800; color:#941A31;">{{ cmsFieldCount }}</div><div style="font-size:10.5px; color:#8b9099;">데이터 필드</div></div>
+              </div>
+              <div style="font-size:10.5px; color:#a2a7af; margin-top:9px; line-height:1.4;">{{ cmsScopesText }}</div>
+            </div>
+
+            <div style="display:flex; gap:8px;">
+              <button onClick="{{ onUploadCms }}" style="flex:1; display:flex; align-items:center; justify-content:center; gap:8px; background:#941A31; color:#fff; border:none; border-radius:9px; padding:11px 14px; font-size:12.5px; font-weight:800; cursor:pointer;" style-hover="background:#7c1329;">⬆ CMS 테이블 업로드</button>
+              <sc-if value="{{ cmsIsUpload }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ onResetCms }}" style="background:#fff; color:#5e636b; border:1px solid #d9dce1; border-radius:9px; padding:11px 14px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#f5f6f8;">기본값 복원</button>
+              </sc-if>
+            </div>
+
+            <sc-if value="{{ cmsBusy }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px; color:#941A31; margin-top:10px;">⏳ CMS 테이블 분석 중…</div></sc-if>
+            <sc-if value="{{ hasCmsNote }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px; color:#2f7d3a; background:#eef7ef; border:1px solid #cfe6d2; border-radius:8px; padding:9px 11px; margin-top:10px; line-height:1.45;">{{ cmsNote }}</div></sc-if>
+            <sc-if value="{{ hasCmsError }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px; color:#c8102e; background:#fdeef0; border:1px solid #f0cdd2; border-radius:8px; padding:9px 11px; margin-top:10px; line-height:1.45;">{{ cmsError }}</div></sc-if>
+
+            <div style="margin-top:16px; border-top:1px solid #eef0f2; padding-top:14px;">
+              <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.4px; text-transform:uppercase; margin-bottom:7px;">지원 형식</div>
+              <div style="font-size:11px; color:#6b7079; line-height:1.6;">
+                <b style="color:#44474e;">Excel(.xlsx)</b> — 열: <code style="background:#f0f1f3; padding:1px 5px; border-radius:4px;">Scope</code> · <code style="background:#f0f1f3; padding:1px 5px; border-radius:4px;">Category</code> · <code style="background:#f0f1f3; padding:1px 5px; border-radius:4px;">Field</code>(키) · <code style="background:#f0f1f3; padding:1px 5px; border-radius:4px;">Name</code>(표시명) · <code style="background:#f0f1f3; padding:1px 5px; border-radius:4px;">Order</code> · <code style="background:#f0f1f3; padding:1px 5px; border-radius:4px;">SpecSheet</code>(Y/N, 선택). 헤더 행 자동 인식.<br/>
+                <b style="color:#44474e;">JSON</b> — 내보내기와 동일한 <code style="background:#f0f1f3; padding:1px 5px; border-radius:4px;">{ scopes, byScope }</code> 구조.
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
         <!-- order tab -->
         <sc-if value="{{ settingsOrder }}" hint-placeholder-val="{{ true }}">
           <div style="padding:18px 20px;">
@@ -558,7 +765,7 @@
         <!-- rules tab -->
         <sc-if value="{{ settingsRules }}" hint-placeholder-val="{{ true }}">
           <div style="padding:18px 20px;">
-            <div style="font-size:12.5px; color:#5e636b; line-height:1.5; margin-bottom:14px;">AI 검수 규칙입니다. 끄면 해당 유형의 수정 제안이 검수 결과에서 제외됩니다.</div>
+            <div style="font-size:12.5px; color:#5e636b; line-height:1.5; margin-bottom:14px;">기본 내장 검수 규칙 <b style="color:#941A31;">{{ builtinCount }}종</b>입니다. 끄면 해당 유형의 수정 제안이 검수 결과에서 제외됩니다. 새로 발견한 오류는 <b style="color:#941A31;">규칙 라이브러리</b> 탭에서 추가하세요.</div>
             <div style="display:flex; flex-direction:column; gap:7px;">
               <sc-for list="{{ ruleCatalog }}" as="r" hint-placeholder-count="10">
                 <div style="display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:center; background:#f6f7f9; border:1px solid #e6e8ec; border-radius:8px; padding:9px 12px;">
@@ -572,6 +779,134 @@
             </div>
           </div>
         </sc-if>
+
+        <!-- rule library tab -->
+        <sc-if value="{{ settingsLib }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:18px 20px;">
+            <div style="font-size:12.5px; color:#5e636b; line-height:1.55; margin-bottom:14px;">새로 들어온 데이터·기제작 스펙에서 발견한 오류를 규칙으로 누적하는 <b style="color:#941A31;">사용자 규칙 라이브러리</b>입니다. 내장 규칙과 별도로 저장되며 엑셀·CSV로 내보낼 수 있습니다.</div>
+
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:#f7f1f2; border:1px solid #e6dcde; border-radius:11px; padding:13px 15px; margin-bottom:14px;">
+              <div style="flex:1 1 130px; min-width:120px;">
+                <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.4px; white-space:nowrap;">누적 사용자 규칙</div>
+                <div style="font-size:20px; font-weight:800; color:#941A31; margin-top:2px;">{{ libCount }}건</div>
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:7px; justify-content:flex-end;">
+                <button onClick="{{ onScanRules }}" style="background:#941A31; color:#fff; border:none; border-radius:8px; padding:8px 13px; font-size:12px; font-weight:700; cursor:pointer;">🔍 새 규칙 후보 검사</button>
+                <button onClick="{{ onExportLibXlsx }}" style="background:#fff; color:#941A31; border:1px solid #e3c9cf; border-radius:8px; padding:8px 13px; font-size:12px; font-weight:700; cursor:pointer;">⬇ 엑셀</button>
+                <button onClick="{{ onExportLibCsv }}" style="background:#fff; color:#941A31; border:1px solid #e3c9cf; border-radius:8px; padding:8px 13px; font-size:12px; font-weight:700; cursor:pointer;">⬇ CSV</button>
+                <button onClick="{{ onImportLib }}" style="background:#fff; color:#5e636b; border:1px solid #d9dce1; border-radius:8px; padding:8px 13px; font-size:12px; font-weight:600; cursor:pointer;">⬆ 가져오기</button>
+              </div>
+            </div>
+            <sc-if value="{{ hasLibMsg }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:11.5px; color:#941A31; background:#f6edef; border:1px solid #e3c9cf; border-radius:8px; padding:8px 11px; margin-bottom:12px;">{{ libMsg }}</div>
+            </sc-if>
+
+            <!-- manual add -->
+            <div style="border:1px solid #e6e8ec; border-radius:11px; padding:13px 15px; margin-bottom:16px;">
+              <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.4px; text-transform:uppercase; margin-bottom:10px;">규칙 직접 추가</div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-bottom:9px;">
+                <input value="{{ nrFind }}" onChange="{{ onNrFind }}" placeholder="찾을 문자열 (예: 12V DC)" style="border:1px solid #d9dce1; border-radius:7px; padding:8px 10px; font-size:12px; font-family:inherit; color:#1f2433;" />
+                <input value="{{ nrRepl }}" onChange="{{ onNrRepl }}" placeholder="바꿀 문자열 (비우면 삭제)" style="border:1px solid #d9dce1; border-radius:7px; padding:8px 10px; font-size:12px; font-family:inherit; color:#1f2433;" />
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-bottom:9px;">
+                <input value="{{ nrNote }}" onChange="{{ onNrNote }}" placeholder="규칙 설명 (선택)" style="border:1px solid #d9dce1; border-radius:7px; padding:8px 10px; font-size:12px; font-family:inherit; color:#1f2433;" />
+                <input value="{{ nrScope }}" onChange="{{ onNrScope }}" placeholder="적용 필드 (선택, 예: dimension)" style="border:1px solid #d9dce1; border-radius:7px; padding:8px 10px; font-size:12px; font-family:inherit; color:#1f2433;" />
+              </div>
+              <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap;">
+                <select value="{{ nrCat }}" onChange="{{ onNrCat }}" style="border:1px solid #d9dce1; border-radius:7px; padding:8px 10px; font-size:12px; font-family:inherit; color:#1f2433; background:#fff;">
+                  <option value="표기">표기</option>
+                  <option value="단위">단위</option>
+                  <option value="오타">오타</option>
+                  <option value="표준">표준</option>
+                  <option value="문법">문법</option>
+                </select>
+                <button onClick="{{ onNrRegex }}" style="background:{{ nrRegexBg }}; color:{{ nrRegexColor }}; border:1px solid #d9dce1; border-radius:7px; padding:8px 12px; font-size:11.5px; font-weight:700; cursor:pointer;">정규식</button>
+                <button onClick="{{ onNrCi }}" style="background:{{ nrCiBg }}; color:{{ nrCiColor }}; border:1px solid #d9dce1; border-radius:7px; padding:8px 12px; font-size:11.5px; font-weight:700; cursor:pointer;">대소문자 무시</button>
+                <div style="flex:1;"></div>
+                <button onClick="{{ onAddRule }}" style="background:#941A31; color:#fff; border:none; border-radius:8px; padding:9px 16px; font-size:12px; font-weight:800; cursor:pointer;">+ 규칙 추가</button>
+              </div>
+            </div>
+
+            <sc-if value="{{ noLibRules }}" hint-placeholder-val="{{ true }}">
+              <div style="text-align:center; padding:26px 16px; color:#8b9099; font-size:12.5px; line-height:1.6; background:#f6f7f9; border:1px dashed #d9dce1; border-radius:11px;">아직 누적된 사용자 규칙이 없습니다.<br />데이터를 불러온 뒤 <b style="color:#941A31;">새 규칙 후보 검사</b>를 실행하세요.</div>
+            </sc-if>
+            <sc-if value="{{ hasLibRules }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex; flex-direction:column; gap:7px;">
+                <sc-for list="{{ libRules }}" as="r" hint-placeholder-count="3">
+                  <div style="display:grid; grid-template-columns:auto 1fr auto auto; gap:10px; align-items:center; background:#f6f7f9; border:1px solid #e6e8ec; border-radius:8px; padding:9px 12px;">
+                    <span style="font-size:9.5px; font-weight:700; color:#fff; background:{{ r.color }}; border-radius:4px; padding:2px 6px; white-space:nowrap;">{{ r.cat }}</span>
+                    <div style="min-width:0;">
+                      <div style="font-size:12px; color:#44474e;">{{ r.note }}</div>
+                      <div style="font-size:11px; color:#8b9099; margin-top:3px; font-family:ui-monospace,monospace;">{{ r.find }} → {{ r.repl }}</div>
+                      <div style="font-size:10px; color:#a6abb3; margin-top:2px;">{{ r.scopeLabel }} · {{ r.meta }}</div>
+                    </div>
+                    <button onClick="{{ r.onToggle }}" style="border:none; cursor:pointer; border-radius:16px; width:42px; height:23px; position:relative; background:{{ r.toggleBg }};">
+                      <span style="position:absolute; top:2.5px; left:{{ r.knobLeft }}; width:18px; height:18px; border-radius:50%; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.25);"></span>
+                    </button>
+                    <button onClick="{{ r.onDelete }}" title="삭제" style="background:#fff; border:1px solid #e3c9cf; color:#941A31; border-radius:7px; width:26px; height:26px; font-size:13px; cursor:pointer;">×</button>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:flex; gap:8px; margin-top:12px; justify-content:flex-end;">
+                <sc-if value="{{ hasDismissed }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ onRestoreDismissed }}" style="background:#fff; border:1px solid #d9dce1; color:#5e636b; border-radius:8px; padding:8px 13px; font-size:11.5px; font-weight:600; cursor:pointer;">제외 목록 초기화 ({{ dismissedCount }})</button>
+                </sc-if>
+                <button onClick="{{ onClearLib }}" style="background:#fff; border:1px solid #e3c9cf; color:#941A31; border-radius:8px; padding:8px 13px; font-size:11.5px; font-weight:700; cursor:pointer;">전체 비우기</button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ NEW RULE CANDIDATES ============ -->
+  <sc-if value="{{ showCands }}" hint-placeholder-val="{{ true }}">
+    <div style="position:fixed; inset:0; z-index:70; display:flex; align-items:center; justify-content:center;">
+      <div onClick="{{ onCloseCands }}" style="position:absolute; inset:0; background:rgba(20,28,44,.5);"></div>
+      <div style="position:relative; z-index:2; width:min(760px,94vw); max-height:86vh; display:flex; flex-direction:column; background:#fff; border-radius:14px; box-shadow:0 22px 60px rgba(0,0,0,.35); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid #eceef1;">
+          <div>
+            <div style="font-size:16px; font-weight:800; color:#1f2433;">새 규칙 후보 <span style="color:#941A31;">{{ candCount }}건</span></div>
+            <div style="font-size:11.5px; color:#8b9099; margin-top:3px;">현재 규칙으로 잡히지 않은 패턴입니다 · 검사 대상 {{ candSrc }}개 값</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <sc-if value="{{ hasCands }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ onAdoptAll }}" style="background:#941A31; color:#fff; border:none; border-radius:8px; padding:8px 14px; font-size:12px; font-weight:700; cursor:pointer;">전체 규칙으로 추가</button>
+            </sc-if>
+            <button onClick="{{ onCloseCands }}" style="background:#f0f1f3; border:none; color:#5e636b; border-radius:8px; width:32px; height:32px; font-size:16px; cursor:pointer;">×</button>
+          </div>
+        </div>
+        <div class="scroll" style="flex:1; overflow:auto; padding:16px 20px;">
+          <sc-if value="{{ noCands }}" hint-placeholder-val="{{ true }}">
+            <div style="text-align:center; padding:34px 16px; color:#8b9099; font-size:12.5px; line-height:1.6;">검출된 새 패턴이 없습니다.<br />현재 규칙 라이브러리가 이 데이터를 모두 커버합니다.</div>
+          </sc-if>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <sc-for list="{{ candList }}" as="c" hint-placeholder-count="4">
+              <div style="border:1px solid #e6e8ec; border-radius:10px; padding:11px 13px;">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:7px;">
+                  <span style="font-size:9.5px; font-weight:700; color:#fff; background:{{ c.color }}; border-radius:4px; padding:2px 6px;">{{ c.cat }}</span>
+                  <span style="font-size:12.5px; font-weight:700; color:#1f2433;">{{ c.note }}</span>
+                  <span style="font-size:10px; font-weight:700; color:#5e636b; background:#f0f1f3; border-radius:4px; padding:2px 6px;">{{ c.kindLabel }}</span>
+                  <span style="font-size:10.5px; color:#8b9099;">{{ c.count }}</span>
+                  <div style="flex:1;"></div>
+                  <button onClick="{{ c.onAdopt }}" style="background:#941A31; color:#fff; border:none; border-radius:7px; padding:6px 12px; font-size:11.5px; font-weight:700; cursor:pointer;">규칙 추가</button>
+                  <button onClick="{{ c.onDismiss }}" style="background:#fff; border:1px solid #d9dce1; color:#5e636b; border-radius:7px; padding:6px 11px; font-size:11.5px; font-weight:600; cursor:pointer;">제외</button>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:6px 14px; margin-bottom:6px;">
+                  <sc-for list="{{ c.examples }}" as="e" hint-placeholder-count="2">
+                    <div style="font-size:11.5px; font-family:ui-monospace,monospace; display:flex; align-items:center; gap:5px;">
+                      <span style="background:#fbe9ec; color:#941A31; text-decoration:line-through; padding:1px 5px; border-radius:4px;">{{ e.before }}</span>
+                      <span style="color:#a6abb3;">→</span>
+                      <span style="background:#e8f3ec; color:#1f6b3f; padding:1px 5px; border-radius:4px;">{{ e.after }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="font-size:10.5px; color:#8b9099; line-height:1.5;">규칙: <code style="background:#f0f1f3; padding:1px 4px; border-radius:3px;">{{ c.find }}</code> → <code style="background:#f0f1f3; padding:1px 4px; border-radius:3px;">{{ c.repl }}</code> · 필드: {{ c.fields }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
       </div>
     </div>
   </sc-if>
@@ -588,7 +923,8 @@
       <div class="reports-toolbar" style="position:relative; z-index:2; background:#1f2433; color:#fff; display:flex; align-items:center; justify-content:space-between; padding:11px 20px; box-shadow:0 2px 10px rgba(0,0,0,.25);">
         <div style="font-size:14px; font-weight:700;">문서 리포트 미리보기 <span style="font-size:12px; color:#aab2c4; font-weight:500;">· 전체 단계 · US Letter</span></div>
         <div style="display:flex; align-items:center; gap:9px;">
-          <button onClick="{{ onPrintReport }}" style="background:#fff; color:#1f2433; border:none; border-radius:8px; padding:8px 16px; font-size:12.5px; font-weight:700; cursor:pointer;">🖨 인쇄 · PDF로 저장</button>
+          <button onClick="{{ onPrintReport }}" style="background:rgba(255,255,255,.14); color:#fff; border:none; border-radius:8px; padding:8px 15px; font-size:12.5px; font-weight:700; cursor:pointer;" style-hover="background:rgba(255,255,255,.24);">🖨 인쇄</button>
+          <button onClick="{{ onSavePdf }}" style="background:#fff; color:#941A31; border:none; border-radius:8px; padding:8px 15px; font-size:12.5px; font-weight:800; cursor:pointer;" style-hover="background:#f3e7ea;">⬇ PDF로 저장</button>
           <button onClick="{{ onCloseReports }}" style="background:rgba(255,255,255,.12); color:#fff; border:none; border-radius:8px; width:34px; height:34px; font-size:17px; cursor:pointer;">×</button>
         </div>
       </div>
@@ -754,12 +1090,18 @@
         <!-- REPORT 3 — SPEC SHEET (AI 검수본) -->
         <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
           <div style="width:816px; font-size:13px; font-weight:800; color:#941A31; padding:4px 0;">STEP 3 · 스펙시트 — 수정버전 (AI 검수 · CMS 정렬·매핑 반영)</div>
-          <dc-import name="SpecSheet" sheet="{{ sheetReviewed }}" show-p1="{{ true }}" show-p2="{{ true }}" hint-size="816px,1100px"></dc-import>
+          <dc-import name="SpecSheet" sheet="{{ sheetReviewed }}" show-p1="{{ true }}" show-p2="{{ false }}" hint-size="816px,1100px"></dc-import>
+          <sc-for list="{{ specPagesReviewed }}" as="sp" hint-placeholder-count="1">
+            <dc-import name="SpecSheet" sheet="{{ sp.sheet }}" show-p1="{{ false }}" show-p2="{{ true }}" spec-cont="{{ sp.cont }}" hint-size="816px,1100px"></dc-import>
+          </sc-for>
         </div>
         <!-- REPORT 3B — SPEC SHEET (원본) -->
         <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
           <div style="width:816px; font-size:13px; font-weight:800; color:#6b6b6b; padding:4px 0;">STEP 3 · 스펙시트 — 기존버전 (중국/PDF 원본 데이터)</div>
-          <dc-import name="SpecSheet" sheet="{{ sheetRaw }}" show-p1="{{ true }}" show-p2="{{ true }}" hint-size="816px,1100px"></dc-import>
+          <dc-import name="SpecSheet" sheet="{{ sheetRaw }}" show-p1="{{ true }}" show-p2="{{ false }}" hint-size="816px,1100px"></dc-import>
+          <sc-for list="{{ specPagesRaw }}" as="sp" hint-placeholder-count="1">
+            <dc-import name="SpecSheet" sheet="{{ sp.sheet }}" show-p1="{{ false }}" show-p2="{{ true }}" spec-cont="{{ sp.cont }}" hint-size="816px,1100px"></dc-import>
+          </sc-for>
         </div>
 
       </div>
@@ -774,12 +1116,15 @@ class Component extends DCLogic {
     ready:false, loaded:false, step:1, scope:'Camera', activeSample:null,
     raw:null, assignments:{}, reviewAccept:{}, overrides:{},
     meta:{model:'', subtitle:''}, bullets:[], dims:[], certs:{}, accessories:[],
-    pageView:'both', zoom:0.66, zoom4:0.5, fitMode:null, dimCount:1, dimLayout:'column', showSettings:false, settingsTab:'order',
+    pageView:'both', zoom:0.66, zoom4:0.5, fitMode:null, dimCount:1, dimLayout:'column', showSettings:false, settingsTab:'cms',
+    cmsSource:'default', cmsBusy:false, cmsNote:'', cmsError:'', defaultCms:null,
     customOrder:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false,
     importing:false, importError:'', dragOver:false, importNote:'', importSource:'xlsx',
     showReports:false, reportFocus:'mapping', showExport:false, exportMsg:'', savedToast:'', hasSession:false,
     reviewFilter:null, expandedReviews:{}, sheetVersion:'reviewed', applyReview:true, applyCms:true,
-    cms:null, samples:null, qc:null
+    customRules:[], dismissedCands:{}, cands:[], showCands:false, candScanned:false, candSrc:0,
+    newRule:{find:'',repl:'',cat:'표기',note:'',ci:false,regex:false,scope:''}, libMsg:'',
+    cms:null, samples:null, qc:null, lang:'ko'
   };
 
   CERTS = [
@@ -804,10 +1149,19 @@ class Component extends DCLogic {
       const src = await fetch('./data/qc_engine.js').then(r=>r.text());
       const url = URL.createObjectURL(new Blob([src],{type:'text/javascript'}));
       const qc = await import(url);
+      try{ const isrc=await fetch('./i18n.js').then(r=>r.text()); const iurl=URL.createObjectURL(new Blob([isrc],{type:'text/javascript'})); this._i18n=await import(iurl); }catch(e){ console.warn('i18n load failed', e); }
       let hasSession=false; try{ hasSession=!!localStorage.getItem('specstudio:session'); }catch(e){}
-      this.setState({cms, samples, qc, ready:true, hasSession});
+      let lang='ko'; try{ lang=localStorage.getItem('specstudio:lang')||'ko'; }catch(e){}
+      const {lib, dismissed}=this._loadRuleLib(qc);
+      this._sampleIds=(samples||[]).map(s=>s.id);
+      this.setState({cms, defaultCms:cms, samples, qc, ready:true, hasSession, lang, customRules:lib, dismissedCands:dismissed, workHist:this._loadHist()});
     }catch(e){ console.error('load error', e); this.setState({ready:true}); }
   }
+  _applyLang(){ try{ if(!this._i18n||!this._rootEl) return; if(this.state.lang!=='en') return; if(this._mo) this._mo.disconnect(); this._i18n.translateTree(this._rootEl, 'en'); if(this._mo) this._mo.observe(this._rootEl,{subtree:true,childList:true,characterData:true}); }catch(e){} }
+  _setupObserver(){ if(this._mo||!this._rootEl) return; this._mo=new MutationObserver(()=>{ clearTimeout(this._moT); this._moT=setTimeout(()=>this._applyLang(), 30); }); if(this.state.lang==='en') this._mo.observe(this._rootEl,{subtree:true,childList:true,characterData:true}); }
+  componentDidUpdate(){ this._applyLang(); }
+  toggleLang(){ const lang=this.state.lang==='en'?'ko':'en'; try{ localStorage.setItem('specstudio:lang', lang); }catch(e){} if(lang!=='en' && this._mo){ this._mo.disconnect(); } this.setState({lang}, ()=>{ if(lang==='en'){ this._setupObserver(); this._applyLang(); } else { this._restoreKo(); } }); }
+  _restoreKo(){ try{ if(this._mo) this._mo.disconnect(); if(this._i18n && this._rootEl && this._i18n.restoreTree) this._i18n.restoreTree(this._rootEl); }catch(e){} }
 
   norm(s){ return String(s||'').toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]/g,''); }
 
@@ -826,33 +1180,57 @@ class Component extends DCLogic {
     const byNorm={}, byKey={};
     allFields.forEach(f=>{ byNorm[this.norm(f.name)]=f; byKey[f.field]=f; });
     const valueByField={}; const customRows=[]; const used=new Set();
-    const A=this.state.assignments; const pendingSrc=[];
-    // pass 1 — explicit assignment + exact/alias match
+    const A=this.state.assignments;
+    const AUTO=0.58, SUGGEST=0.34; const pend=[]; const unmapped=[];
+    // Resolve every source to a target field by priority; a higher-priority claim
+    // displaces a lower one, and the displaced source falls back to the unmapped list
+    // so no source is ever silently lost.
+    // prio: 3 = explicit user assignment, 2 = alias/name exact, 1 = fuzzy auto
+    const claimant={};            // field -> {sp, prio, guess, score}
+    const displaced=[];           // sources bumped out of a field
+    const forcedUnmap=[];         // sources the user explicitly set to "미지정"
+    const fuzzySrc=[];            // sources needing fuzzy resolution
+    const claim=(sp, field, prio, guess, score)=>{
+      const cur=claimant[field];
+      if(!cur){ claimant[field]={sp,prio,guess,score}; return; }
+      if(prio>cur.prio){ displaced.push(claimant[field].sp); claimant[field]={sp,prio,guess,score}; }
+      else displaced.push(sp);
+    };
+    const explicitList=[], aliasList=[];
     raw.specs.forEach(sp=>{
       const asn=A[sp.name];
       if(asn==='__skip__') return;
       if(asn==='__custom__'){ customRows.push({name:sp.name,value:sp.value,category:sp.section}); return; }
-      let key=null;
-      if(asn && byKey[asn]) key=asn;
-      else if(!asn){ const h=byNorm[this.norm(sp.name)]||byKey[this.ALIAS[this.norm(sp.name)]||'']; if(h) key=h.field; }
-      if(key && byKey[key] && !used.has(key)){ valueByField[key]={value:sp.value, source:sp.name}; used.add(key); }
-      else pendingSrc.push(sp);
+      if(asn && byKey[asn]){ explicitList.push(sp); return; }
+      if(asn===''){ forcedUnmap.push(sp); return; }
+      const h=byNorm[this.norm(sp.name)]||byKey[this.ALIAS[this.norm(sp.name)]||''];
+      if(h){ sp.__aliasField=h.field; aliasList.push(sp); return; }
+      fuzzySrc.push(sp);
     });
-    // pass 2 — fuzzy / similarity match for the rest
-    const AUTO=0.58, SUGGEST=0.34; const pend=[]; const unmapped=[];
-    pendingSrc.forEach(sp=>{
-      const asn=A[sp.name];
-      if(asn && byKey[asn]){ valueByField[asn]={value:sp.value,source:sp.name}; used.add(asn); return; }
-      if(asn===''){ unmapped.push({name:sp.name,value:sp.value,section:sp.section,current:'',suggestionField:null,suggestionLabel:null,score:0,guess:false}); return; }
-      const best=this._bestMatch(sp, allFields, used);
-      if(best && best.score>=AUTO){
-        valueByField[best.field]={value:sp.value,source:sp.name,guess:true,score:best.score}; used.add(best.field);
+    explicitList.forEach(sp=>claim(sp, A[sp.name], 3, false, 1));
+    aliasList.forEach(sp=>claim(sp, sp.__aliasField, 2, false, 1));
+    // fuzzy — only onto still-free fields
+    fuzzySrc.forEach(sp=>{
+      const usedNow=new Set(Object.keys(claimant));
+      const best=this._bestMatch(sp, allFields, usedNow);
+      if(best && best.score>=AUTO && !usedNow.has(best.field)){
+        claim(sp, best.field, 1, true, best.score);
         pend.push({name:sp.name,value:sp.value,section:sp.section,current:best.field,suggestionField:best.field,suggestionLabel:best.name,score:best.score,guess:true});
       } else {
         const s=(best&&best.score>=SUGGEST)?best:null;
         unmapped.push({name:sp.name,value:sp.value,section:sp.section,current:'',suggestionField:s?s.field:null,suggestionLabel:s?s.name:null,score:s?s.score:0,guess:false});
       }
     });
+    // materialize claimed fields
+    Object.keys(claimant).forEach(field=>{ const d=claimant[field]; valueByField[field]={value:d.sp.value,source:d.sp.name,guess:!!d.guess,score:d.score||0}; used.add(field); });
+    // displaced sources → unmapped, suggesting the field they were bumped from
+    displaced.forEach(sp=>{
+      const want=A[sp.name]&&byKey[A[sp.name]]?A[sp.name]:sp.__aliasField;
+      const f=want?byKey[want]:null;
+      unmapped.push({name:sp.name,value:sp.value,section:sp.section,current:'',suggestionField:f?f.field:null,suggestionLabel:f?f.name:null,score:f?0.9:0,guess:false});
+    });
+    // explicitly-unmapped sources
+    forcedUnmap.forEach(sp=>unmapped.push({name:sp.name,value:sp.value,section:sp.section,current:'',suggestionField:null,suggestionLabel:null,score:0,guess:false}));
     const orderedCats=cats.map(c=>{
       const fields=c.fields.map(f=>{const v=valueByField[f.field]; if(!v) return null; return {field:f.field,name:f.name,value:v.value,source:v.source,guess:!!v.guess};}).filter(Boolean);
       customRows.filter(cr=>cr.category===c.category).forEach(cr=>fields.push({field:'__custom_'+cr.name,name:cr.name,value:cr.value,source:cr.name}));
@@ -994,14 +1372,277 @@ class Component extends DCLogic {
     return {model, title, subtitle2, certImgs, certTexts, aiBadge, aiOn, bullets:this.state.bullets, dims:this.state.dims, accessories, specCats, dim2, dimDir, dimSlotFlex};
   }
 
+  // Split spec categories into US-Letter page slices so the table flows across pages
+  // instead of overflowing the footer. Row heights are estimated from text length
+  // (value column ≈ 522px @ 9.3px ≈ 70 chars/line); a category continued on the next
+  // page repeats its gray label bar at the same table start position.
+  computeSpecPages(specCats){
+    const budget=856;           // usable table height above the footer line
+    const headPx=11;            // gray category bar
+    const rowPx=f=>6+13.2*Math.max(1, Math.ceil(String(f.value||'').length/70), Math.ceil(String(f.name||'').length/24));
+    const pages=[]; let cur=[]; let u=0;
+    const push=()=>{ if(cur.length){ pages.push(cur); cur=[]; u=0; } };
+    (specCats||[]).forEach(cat=>{
+      const fields=cat.fields||[]; const n=fields.length; let ri=0;
+      if(n===0){ if(cur.length && u+headPx>budget) push(); cur.push({label:cat.label, fields:[]}); u+=headPx; return; }
+      while(ri<n){
+        if(cur.length && u+headPx+rowPx(fields[ri])>budget) push();
+        const grp={label:cat.label, fields:[]}; cur.push(grp); u+=headPx;
+        while(ri<n && u+rowPx(fields[ri])<=budget){ grp.fields.push(fields[ri]); u+=rowPx(fields[ri]); ri++; }
+        if(grp.fields.length===0){ grp.fields.push(fields[ri]); u+=rowPx(fields[ri]); ri++; }
+        if(ri<n) push();
+      }
+    });
+    push();
+    return pages.length?pages:[[]];
+  }
+
   // actions
   loadSample(id){
     const s=this.state.samples.find(x=>x.id===id); if(!s) return;
     this._loadProduct(s, id);
   }
+  duplicateSelected(ids){
+    this.setState(st=>{
+      const list=st.samples||[]; const out=[];
+      list.forEach(s=>{
+        out.push(s);
+        if(ids.includes(s.id)){
+          let n=2, base=s.model;
+          while(list.find(x=>x.model===base+' (복사본 '+n+')')) n++;
+          const copy=JSON.parse(JSON.stringify(s));
+          copy.id=s.id+'-copy-'+Date.now()+'-'+n;
+          copy.model=base+' (복사본 '+n+')';
+          if((this._sampleIds||[]).includes(s.id)) this._sampleIds=[...(this._sampleIds||[]), copy.id];
+          out.push(copy);
+        }
+      });
+      return {samples:out, workSel:{}, workConfirm:null};
+    });
+  }
+  deleteSelected(ids){
+    const h=Object.assign({}, this.state.workHist||{});
+    ids.forEach(id=>{ delete h[id]; });
+    try{ localStorage.setItem('specstudio:workhist', JSON.stringify(h)); }catch(e){}
+    this.setState(st=>({samples:(st.samples||[]).filter(s=>!ids.includes(s.id)), workSel:{}, workConfirm:null, workHist:h}));
+  }
+  T(ko, en){ return this.state.lang==='en' ? en : ko; }
+  HELP(){
+    const T=(k,e)=>this.T(k,e);
+    return this._HELP_KO().map(g=>({
+      cat:T(g.cat, g.catEn),
+      items:g.items.map(it=>({
+        id:it.id, title:T(it.title, it.titleEn), intro:T(it.intro, it.introEn),
+        blocks:it.blocks.map(b=>({n:b.n, title:T(b.title, b.titleEn), desc:T(b.desc, b.descEn), tip:b.tip?T(b.tip, b.tipEn):''})),
+      })),
+    }));
+  }
+  _HELP_KO(){
+    return [
+      { cat:'기능 설명', catEn:'Features', items:[
+        { id:'f1', title:'스튜디오 개요', titleEn:'Studio overview',
+          intro:'제조사 원본 데이터를 AVYCON 공식 스펙시트로 바꾸는 4단계 파이프라인입니다. 가져오기 → AI 검수 → 레이아웃 → 편집 순으로 진행되며, 각 단계의 결과는 브라우저에 자동 저장됩니다.',
+          introEn:'A four-step pipeline that turns raw manufacturer data into an official AVYCON spec sheet: import → AI review → layout → edit. Each step is saved automatically in the browser.', blocks:[
+          {n:'1', title:'Step 1 · 가져오기 · 매핑', titleEn:'Step 1 · Import & map', desc:'제조사 엑셀 또는 기제작 PDF에서 스펙을 읽어 CMS 필드 체계에 매핑하고 표시 순서대로 정렬합니다.', descEn:'Reads specs from a manufacturer Excel or an existing PDF, maps them to the CMS field taxonomy and sorts them by display order.'},
+          {n:'2', title:'Step 2 · AI 검수', titleEn:'Step 2 · AI review', desc:'표기 규칙 39종과 사용자 규칙을 적용해 단위·기호·용어·오타를 교정하고, 필요하면 AI 심화 검수로 규칙이 놓친 항목을 추가 제안합니다.', descEn:'Applies 39 built-in notation rules plus your own to fix units, symbols, terminology and typos; the deep AI review can suggest what the rules missed.'},
+          {n:'3', title:'Step 3 · 레이아웃', titleEn:'Step 3 · Layout', desc:'US Letter 2페이지 스펙시트를 생성합니다. 카테고리 분량에 따라 페이지가 자동 분할되고, 원본/수정본을 비교할 수 있습니다.', descEn:'Builds the two-page US Letter spec sheet, splitting pages automatically by category volume, with original vs. revised comparison.'},
+          {n:'4', title:'Step 4 · 에디터', titleEn:'Step 4 · Editor', desc:'모델명·서브타이틀·오버뷰·치수·인증·액세서리를 직접 수정하고, 제품 사진과 치수 도면을 끌어다 놓습니다.', descEn:'Edit model, subtitles, overview, dimensions, certifications and accessories, and drop in product photos and dimension drawings.'},
+        ]},
+        { id:'f2', title:'데이터 가져오기', titleEn:'Data import',
+          intro:'좌측은 제조사 엑셀, 우측은 기제작 PDF 전용 드롭 영역입니다. 원하는 영역에 파일을 놓으면 해당 방식으로 처리됩니다.',
+          introEn:'The left zone takes a manufacturer Excel, the right zone an existing PDF spec sheet. Drop a file on the zone that matches how it should be processed.', blocks:[
+          {n:'1', title:'제조사 엑셀(.xlsx)', titleEn:'Manufacturer Excel (.xlsx)', desc:'A열 항목명 · B열 값 구조를 읽어 제품 단위로 분리합니다. 시트가 여러 개면 첫 시트를 불러오고 나머지는 작업 목록에 남습니다.', descEn:'Reads the column A label / column B value structure and splits it per product. With several sheets the first is loaded and the rest stay in the work list.'},
+          {n:'2', title:'기제작 PDF 스펙시트', titleEn:'Existing PDF spec sheet', desc:'이미 제작된 AVYCON 스펙시트에서 텍스트를 추출해 엑셀 데이터 포맷으로 변환합니다. 제조사 엑셀이 없는 제품에 사용합니다.', descEn:'Extracts text from an already-made AVYCON spec sheet and converts it to the Excel data format — for products with no manufacturer Excel.', tip:'추출 결과는 “엑셀로 내보내기”로 저장해 원본 데이터로 보관할 수 있습니다.', tipEn:'Save the extraction with “Export Excel” to keep it as source data.'},
+          {n:'3', title:'CMS 매핑 기준', titleEn:'CMS mapping reference', desc:'설정에서 업로드한 CMS 필드 테이블(MappingData)이 카테고리·표시 순서·필드명의 기준이 됩니다.', descEn:'The CMS field table (MappingData) uploaded in Settings defines categories, display order and field names.'},
+        ]},
+        { id:'f3', title:'검수 규칙 엔진', titleEn:'Review rule engine',
+          intro:'기본 규칙 39종에 사용자 규칙을 얹어 동작합니다. 규칙은 항목별로 켜고 끌 수 있으며, 적용 결과는 검수 리포트에 전후 비교로 남습니다.',
+          introEn:'39 built-in rules plus your own. Each rule can be toggled, and every applied change is kept as a before/after entry in the review report.', blocks:[
+          {n:'1', title:'기본 규칙', titleEn:'Built-in rules', desc:'단위·기호 간격, UL 전압 표기, microSD·PoE·IEC 62676-4 DORI 등 CCTV 표준 용어, 오타·문법을 다룹니다.', descEn:'Unit and symbol spacing, UL voltage notation, CCTV standard terms (microSD, PoE, IEC 62676-4 DORI), typos and grammar.'},
+          {n:'2', title:'규칙 후보 검사', titleEn:'Rule candidate scan', desc:'Step 1·2의 “새 규칙 후보 검사”가 현재 규칙으로 잡히지 않는 패턴을 찾아 유형별로 묶어 제안합니다.', descEn:'The scan in Steps 1 and 2 finds patterns the current rules miss and proposes them grouped by type.'},
+          {n:'3', title:'규칙 라이브러리', titleEn:'Rule library', desc:'설정 → 규칙 라이브러리에서 찾기/바꾸기 문자열, 정규식, 대소문자 무시, 적용 필드를 직접 등록합니다. 기본 규칙은 변경되지 않습니다.', descEn:'In Settings → Rule library you register find/replace strings, regex, case-insensitive flags and field scope. Built-in rules are never modified.'},
+          {n:'4', title:'규칙 공유', titleEn:'Rule sharing', desc:'규칙 세트를 엑셀·CSV로 내보내고 가져올 수 있어 팀 간 표기 기준을 통일할 수 있습니다.', descEn:'Export and import rule sets as Excel or CSV so the whole team writes to the same notation standard.'},
+        ]},
+        { id:'f4', title:'스펙시트 · 이미지 슬롯', titleEn:'Spec sheet & image slots',
+          intro:'스펙시트는 US Letter 세로 2페이지 고정 레이아웃이며, 이미지 영역은 드롭 슬롯으로 되어 있습니다.',
+          introEn:'The spec sheet is a fixed two-page US Letter portrait layout; every image area is a drop slot.', blocks:[
+          {n:'1', title:'제품 사진', titleEn:'Product photo', desc:'슬롯에 이미지를 끌어다 놓으면 자동 저장됩니다. 더블클릭하면 확대·이동으로 크롭을 조정할 수 있습니다.', descEn:'Drop an image on the slot and it is saved automatically. Double-click to zoom and pan the crop.'},
+          {n:'2', title:'치수 도면', titleEn:'Dimension drawing', desc:'SVG·PNG 도면을 지원하며, 도면 1~2개와 상하/좌우 배치를 선택할 수 있습니다.', descEn:'Supports SVG and PNG drawings; choose one or two drawings, stacked or side by side.'},
+          {n:'3', title:'인증 · 액세서리', titleEn:'Certifications & accessories', desc:'NDAA·CE·FCC 등 인증 아이콘을 선택하고, 옵션 액세서리 사진과 코드·설명을 넣습니다.', descEn:'Pick certification icons (NDAA, CE, FCC…) and add optional-accessory photos with codes and descriptions.'},
+        ]},
+        { id:'f5', title:'내보내기', titleEn:'Export',
+          intro:'전체 단계 문서를 네 가지 형식으로 내보냅니다. 사진과 치수 도면은 내보내기 직전 고해상도로 구워져 포함됩니다.',
+          introEn:'Export the whole pipeline in four formats. Photos and dimension drawings are baked at high resolution right before export.', blocks:[
+          {n:'1', title:'PDF', titleEn:'PDF', desc:'스펙시트와 검수 리포트를 Letter 규격으로 저장합니다. 실패 시 인쇄 창으로 대체됩니다.', descEn:'Saves the spec sheet and review report at Letter size, falling back to the print window if generation fails.'},
+          {n:'2', title:'Word · PowerPoint', titleEn:'Word & PowerPoint', desc:'문서·발표용으로 단계별 결과를 정리해 내보냅니다.', descEn:'Exports the step-by-step results for documents and presentations.'},
+          {n:'3', title:'Excel', titleEn:'Excel', desc:'매핑 결과와 최종 값을 데이터 형태로 저장합니다. 원본 데이터 백업에 사용합니다.', descEn:'Saves mapping results and final values as data — useful as a source-data backup.'},
+        ]},
+      ]},
+      { cat:'사용 설명', catEn:'How to use', items:[
+        { id:'u1', title:'시작하기', titleEn:'Getting started',
+          intro:'홈 화면 아래 “제품 작업 목록”에서 이전 작업을 이어가거나, 상단 드롭 영역에 새 파일을 놓아 시작합니다.',
+          introEn:'Continue earlier work from the “Product work list” below, or drop a new file on the zones above.', blocks:[
+          {n:'1', title:'작업 목록에서 열기', titleEn:'Open from the work list', desc:'행을 클릭하면 해당 제품 데이터로 Step 1이 열립니다. 상태 열에서 작업·저장 이력을 확인할 수 있습니다.', descEn:'Click a row to open Step 1 with that product. The status column shows whether it was worked on or saved.'},
+          {n:'2', title:'복제 · 삭제', titleEn:'Duplicate & delete', desc:'제품명 앞 체크박스로 선택한 뒤 복제 또는 삭제합니다. 두 동작 모두 확인 창을 거칩니다.', descEn:'Select rows with the checkboxes, then duplicate or delete. Both actions ask for confirmation first.'},
+          {n:'3', title:'이어서 하기', titleEn:'Resume saved work', desc:'저장된 작업이 있으면 “저장된 작업 이어서 하기” 버튼이 나타납니다.', descEn:'If a saved session exists, the “Resume saved work” button appears.'},
+        ]},
+        { id:'u2', title:'Step 1 · 가져오기와 매핑', titleEn:'Step 1 · Import and map',
+          intro:'원본 값이 CMS 필드에 어떻게 연결되었는지 확인하고, 잘못 연결된 항목을 고치는 단계입니다.',
+          introEn:'Check how raw values were linked to CMS fields and correct any wrong links.', blocks:[
+          {n:'1', title:'파일 놓기', titleEn:'Drop the file', desc:'엑셀은 왼쪽, PDF는 오른쪽 영역에 놓습니다. 영역을 클릭해 파일을 선택해도 됩니다.', descEn:'Excel goes on the left zone, PDF on the right. You can also click a zone to browse.'},
+          {n:'2', title:'매핑 확인', titleEn:'Check the mapping', desc:'“n개 매핑됨” 배지와 미매핑 배지를 눌러 연결 상태를 확인합니다. 미매핑 항목은 추천 필드에서 골라 연결합니다.', descEn:'Use the “mapped” and “unmapped” badges to inspect links, and connect unmapped items from the suggested fields.'},
+          {n:'3', title:'규칙 후보 검사', titleEn:'Scan for rule candidates', desc:'새 데이터에서 반복되는 표기 문제를 찾아 규칙으로 등록할 수 있습니다.', descEn:'Find repeated notation problems in the new data and register them as rules.'},
+          {n:'4', title:'다음 단계', titleEn:'Next step', desc:'“AI 검수로 진행”을 누르면 Step 2로 넘어갑니다.', descEn:'Press “Proceed to AI review” to move on to Step 2.'},
+        ]},
+        { id:'u3', title:'Step 2 · 검수', titleEn:'Step 2 · Review',
+          intro:'검출된 수정 제안을 하나씩 확인하고 반영 여부를 결정합니다.',
+          introEn:'Go through the detected suggestions and decide which ones to apply.', blocks:[
+          {n:'1', title:'제안 검토', titleEn:'Review suggestions', desc:'유형별로 묶인 제안을 펼쳐 전·후 값을 비교합니다. 토글을 끄면 해당 제안은 반영되지 않습니다.', descEn:'Expand each type to compare before and after values; switch a toggle off to exclude that change.'},
+          {n:'2', title:'AI 심화 검수', titleEn:'Deep AI review', desc:'규칙이 놓친 항목을 추가로 제안받습니다. 결과는 동일하게 항목별로 승인·제외합니다.', descEn:'Get extra suggestions for what the rules missed, approved or excluded item by item.'},
+          {n:'3', title:'리포트 확인', titleEn:'Check the report', desc:'“리포트 보기”에서 검출 내역과 최종 값을 한 화면에서 확인할 수 있습니다.', descEn:'“View report” shows detections and final values on one screen.'},
+        ]},
+        { id:'u4', title:'Step 3 · 레이아웃', titleEn:'Step 3 · Layout',
+          intro:'생성된 스펙시트를 확인하고 출력 버전과 카테고리 순서를 조정합니다.',
+          introEn:'Inspect the generated spec sheet and adjust the output version and category order.', blocks:[
+          {n:'1', title:'출력 버전 선택', titleEn:'Choose the output version', desc:'수정버전과 기존버전을 전환해 검수 반영 전후를 비교합니다.', descEn:'Switch between revised and original to compare before and after review.'},
+          {n:'2', title:'표시 순서 조정', titleEn:'Adjust display order', desc:'설정 → 표시 순서에서 카테고리를 위아래로 옮기면 레이아웃에 즉시 반영됩니다.', descEn:'Move categories up or down in Settings → Display order and the layout updates instantly.'},
+        ]},
+        { id:'u5', title:'Step 4 · 편집과 이미지', titleEn:'Step 4 · Editing and images',
+          intro:'최종 값과 이미지를 넣어 스펙시트를 완성합니다.',
+          introEn:'Finish the spec sheet with final values and imagery.', blocks:[
+          {n:'1', title:'텍스트 수정', titleEn:'Edit text', desc:'모델명·서브타이틀·오버뷰·치수 수치를 오른쪽 패널에서 수정하면 왼쪽 미리보기에 즉시 반영됩니다.', descEn:'Edit model, subtitles, overview and dimension values in the right panel; the left preview updates live.'},
+          {n:'2', title:'이미지 넣기', titleEn:'Add images', desc:'왼쪽 미리보기의 사진·도면·액세서리 칸에 이미지를 직접 끌어다 놓습니다. 드롭한 이미지는 자동 저장됩니다.', descEn:'Drag images onto the photo, drawing and accessory cells in the left preview. Dropped images are saved automatically.', tip:'슬롯을 더블클릭하면 확대·이동으로 크롭을 조정할 수 있습니다.', tipEn:'Double-click a slot to zoom and pan the crop.'},
+          {n:'3', title:'저장', titleEn:'Save', desc:'상단 “저장”을 누르면 현재 작업이 브라우저에 저장되고, 작업 목록 상태가 “저장됨”으로 바뀝니다.', descEn:'“Save” at the top stores the current work in the browser and marks the row as saved in the work list.'},
+        ]},
+        { id:'u6', title:'내보내기와 공유', titleEn:'Export and sharing',
+          intro:'완성된 결과를 파일로 저장하거나 규칙을 팀과 공유합니다.',
+          introEn:'Save the finished result as files, or share your rules with the team.', blocks:[
+          {n:'1', title:'문서 내보내기', titleEn:'Export documents', desc:'상단 “공유 · 내보내기”에서 PDF·Word·PowerPoint·Excel을 선택합니다.', descEn:'Pick PDF, Word, PowerPoint or Excel from “Share · Export” at the top.'},
+          {n:'2', title:'도움말 PDF', titleEn:'Help PDF', desc:'도움말 창 우측 상단의 “전체 도움말 PDF”로 이 문서 전체를 인쇄·저장할 수 있습니다.', descEn:'“Full help PDF” at the top right of this window prints or saves the entire help document.'},
+          {n:'3', title:'규칙 공유', titleEn:'Share rules', desc:'설정 → 규칙 라이브러리에서 규칙 세트를 내보내 팀원이 가져오게 합니다.', descEn:'Export a rule set from Settings → Rule library and have teammates import it.'},
+        ]},
+      ]},
+    ];
+  }
+  _helpFlat(){ const out=[]; this.HELP().forEach(g=>g.items.forEach(it=>out.push(Object.assign({cat:g.cat}, it)))); return out; }
+  async helpPdf(){
+    const esc=(s)=>String(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    const body=this.HELP().map((g,gi)=>
+      '<h1'+(gi>0?' data-page-break="1"':'')+'>'+esc(g.cat)+'</h1>'+g.items.map(it=>
+        '<section><h2>'+esc(it.title)+'</h2><p class="intro">'+esc(it.intro)+'</p><div class="rule"></div>'+
+        it.blocks.map(b=>'<div class="b"><span class="n">'+esc(b.n)+'</span><div><div class="bt">'+esc(b.title)+'</div><div class="bd">'+esc(b.desc)+'</div>'+(b.tip?'<div class="tip">'+esc(b.tip)+'</div>':'')+'</div></div>').join('')+
+        '</section>').join('')
+    ).join('');
+    const css="@page{size:letter;margin:16mm 15mm;}*{box-sizing:border-box;}"
+      +"body{font-family:'Pretendard',-apple-system,sans-serif;color:#1c2330;margin:0;}"
+      +".cover{border-bottom:3px solid #941A31;padding-bottom:14px;margin-bottom:20px;}"
+      +".cover .t{font-size:26px;font-weight:800;color:#941A31;}.cover .s{font-size:13px;color:#5e636b;margin-top:6px;}"
+      +"h1{font-size:19px;color:#941A31;border-bottom:1px solid #e3c9cf;padding-bottom:6px;margin:26px 0 12px;page-break-after:avoid;}"
+      +"section{page-break-inside:avoid;margin-bottom:24px;}"
+      +"h2{font-size:15px;margin:0 0 5px;}p.intro{font-size:12px;color:#5e636b;line-height:1.6;margin:0 0 10px;}"
+      +".rule{height:1px;background:#e6e8ec;margin:0 0 12px;}"
+      +".b{display:flex;gap:10px;margin-bottom:8px;}"
+      +".n{flex:none;width:20px;height:20px;border-radius:50%;background:#f6edef;border:1px solid #e3c9cf;color:#941A31;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;}"
+      +".bt{font-size:12.5px;font-weight:700;}.bd{font-size:12px;color:#5e636b;line-height:1.6;}"
+      +".tip{margin-top:4px;background:#f7f8fa;border:1px solid #e6e8ec;border-radius:6px;padding:6px 9px;font-size:11.5px;color:#44474e;}";
+    const cover='<div class="cover"><div class="t">'+esc(this.T('Spec Sheet Studio 도움말','Spec Sheet Studio Help'))+'</div>'
+      +'<div class="s">'+esc(this.T('기능 설명 · 사용 설명 · AVYCON 제품 스펙시트 자동화','Features · How-to · AVYCON spec-sheet automation'))+'</div></div>';
+    const file=this.T('SpecSheetStudio_도움말.pdf','SpecSheetStudio_Help.pdf');
+    // Render the wiki into an off-screen Letter-width sheet and let html2pdf
+    // paginate it — no browser print dialog involved.
+    if(window.html2pdf){
+      this.setState({savedToast:this.T('도움말 PDF 생성 중…','Building help PDF…')});
+      const W=816, H=1056, M=54, CH=H-M*2;
+      const holder=document.createElement('div');
+      holder.style.cssText='position:fixed; left:0; top:0; z-index:-1; width:'+W+'px; background:#fff;';
+      holder.innerHTML='<style>'+css.replace(/@page[^}]*}/,'')+'</style>'
+        +'<div class="doc" style="width:'+(W-120)+'px; background:#fff;">'+cover+body+'</div>';
+      document.body.appendChild(holder);
+      const doc=holder.querySelector('.doc');
+      try{
+        if(document.fonts&&document.fonts.ready) await document.fonts.ready;
+        await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+        // keep headings/sections whole: push anything straddling a page edge down
+        // real pagination: flow the blocks into page-sized bands one by one, so a
+        // heading or paragraph is never sliced across a page edge
+        const blocks=[...doc.children];
+        const pageEls=[]; let band=null;
+        const newPage=()=>{
+          const pg=document.createElement('div');
+          pg.style.cssText='width:'+W+'px; height:'+H+'px; background:#fff; overflow:hidden; position:relative;';
+          const bd=document.createElement('div');
+          bd.style.cssText='position:absolute; left:60px; top:'+M+'px; width:'+(W-120)+'px; height:'+CH+'px; overflow:hidden;';
+          pg.appendChild(bd); holder.appendChild(pg); pageEls.push(pg); band=bd; return bd;
+        };
+        newPage();
+        for(const b of blocks){
+          const clone=b.cloneNode(true);
+          if(clone.getAttribute && clone.getAttribute('data-page-break') && band.children.length){
+            newPage(); clone.style.marginTop='0';
+          }
+          band.appendChild(clone);
+          if(band.scrollHeight>CH && band.children.length>1){
+            band.removeChild(clone);
+            newPage();
+            band.appendChild(clone);
+            if(clone.style) clone.style.marginTop='0';
+          }
+        }
+        // a heading left alone at the foot of a page moves down with its section
+        for(let i=0;i<pageEls.length;i++){
+          const bd=pageEls[i].firstChild;
+          const lastEl=bd.lastElementChild;
+          if(lastEl && /^H[12]$/.test(lastEl.tagName) && i+1<pageEls.length){
+            const next=pageEls[i+1].firstChild;
+            const prevMt=lastEl.style.marginTop;
+            lastEl.style.marginTop='0';
+            next.insertBefore(lastEl, next.firstChild);
+            if(next.scrollHeight>CH){ lastEl.style.marginTop=prevMt; bd.appendChild(lastEl); }
+          }
+        }
+        doc.style.display='none';
+        await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+        const h2c={scale:2, backgroundColor:'#ffffff', useCORS:true, logging:false, width:W, height:H, windowWidth:W, scrollX:0, scrollY:0, x:0, y:0};
+        let pdf=null;
+        for(const pg of pageEls){
+          if(!pdf){
+            pdf=await window.html2pdf().set({ margin:0, image:{type:'jpeg',quality:0.96}, html2canvas:h2c,
+              jsPDF:{unit:'px', format:[W,H], orientation:'portrait', compress:true} }).from(pg).toPdf().get('pdf');
+          } else {
+            const cv=await window.html2pdf().set({html2canvas:h2c}).from(pg).toCanvas().get('canvas');
+            pdf.addPage([W,H],'portrait');
+            pdf.addImage(cv.toDataURL('image/jpeg',0.96),'JPEG',0,0,W,H);
+          }
+        }
+        pdf.save(file);
+        this.setState({savedToast:this.T('도움말 PDF를 저장했습니다.','Help PDF saved.')});
+        return;
+      }catch(e){ console.error('help pdf failed', e); }
+      finally{ holder.remove(); }
+    }
+    const w=window.open('','_blank','width=900,height=1000');
+    if(!w){ this.setState({savedToast:'팝업이 차단되었습니다. 팝업을 허용해 주세요.'}); return; }
+    w.document.open();
+    w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>Spec Sheet Studio Help</title>'
+      +'<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">'
+      +'<style>'+css+'</style></head><body>'+cover+body+'</body></html>');
+    w.document.close();
+    const go=()=>setTimeout(()=>{ try{ w.focus(); w.print(); }catch(e){} }, 500);
+    if(w.document.readyState==='complete') go(); else w.onload=go;
+  }
+  _loadHist(){ try{ return JSON.parse(localStorage.getItem('specstudio:workhist')||'{}')||{}; }catch(e){ return {}; } }
+  _touchHist(id, saved){
+    if(!id) return;
+    const h=Object.assign({}, this.state.workHist||{});
+    const d=new Date(), date=(d.getMonth()+1)+'/'+d.getDate();
+    h[id]={ date, saved: saved || !!(h[id]&&h[id].saved) };
+    try{ localStorage.setItem('specstudio:workhist', JSON.stringify(h)); }catch(e){}
+    this.setState({workHist:h});
+  }
   _loadProduct(s, id){
+    this._touchHist(id||s.id, false);
     const qc=this.state.qc;
-    const bullets=(s.overview||'').split(/\n+/).map(l=>l.replace(/^[•\-\u2022\u00b7]\s*/,'').trim()).filter(Boolean).map(l=>qc.runQC(l,'Overview',[]).result);
+    const bullets=(s.overview||'').split(/\n+/).map(l=>l.replace(/^[•\-\u2022\u00b7]\s*/,'').replace(/\s*OPTIONAL ACCESSORIES.*$/i,'').trim()).filter(Boolean).map(l=>qc.runQC(l,'Overview',[]).result);
     const dimSpec=s.specs.find(x=>/dimension/i.test(x.name));
     const wSpec=s.specs.find(x=>/weight/i.test(x.name));
     const dims=[];
@@ -1011,6 +1652,83 @@ class Component extends DCLogic {
     const certs=(s.certs&&Object.keys(s.certs).length)?{...s.certs}:{ndaa:true,ce:true,fcc:true};
     const accessories=Array.from({length:4},(_,i)=>({imgId:'acc'+i, code:'', desc:''}));
     this.setState({raw:s, activeSample:id||s.id, loaded:true, step:1, assignments:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories});
+  }
+  // ── CMS field-table import (defines mapping/ordering taxonomy) ────────────
+  pickCms(){
+    const inp=document.createElement('input');
+    inp.type='file'; inp.accept='.xlsx,.json,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    inp.onchange=()=>{ if(inp.files&&inp.files[0]) this.importCms(inp.files[0]); };
+    inp.click();
+  }
+  resetCms(){
+    if(!this.state.defaultCms) return;
+    this.setState({cms:this.state.defaultCms, cmsSource:'default', cmsNote:'기본 내장 CMS 테이블로 복원했습니다.', cmsError:'', customOrder:{}});
+  }
+  _validateCms(o){
+    if(!o||!Array.isArray(o.scopes)||!o.byScope) throw new Error('scopes / byScope 구조가 아닙니다.');
+    let fields=0;
+    o.scopes.forEach(s=>{ const cats=o.byScope[s]; if(!Array.isArray(cats)) throw new Error(s+' 제품군의 카테고리 배열이 없습니다.');
+      cats.forEach(c=>{ if(!c.category||!Array.isArray(c.fields)) throw new Error(s+' 의 카테고리 형식이 올바르지 않습니다.'); fields+=c.fields.length; }); });
+    if(!o.scopes.length||!fields) throw new Error('필드가 비어 있습니다.');
+    return fields;
+  }
+  // Build the {scopes, byScope} taxonomy from a flat CMS spreadsheet.
+  _cmsFromRows(rows){
+    // find header row
+    const norm=s=>String(s||'').toLowerCase().replace(/[^a-z]/g,'');
+    let hi=-1, col={};
+    for(let i=0;i<Math.min(rows.length,15);i++){
+      const r=rows[i].map(norm);
+      const find=(...keys)=>r.findIndex(c=>keys.some(k=>c===k||c.includes(k)));
+      const ci={scope:find('scope','productscope','productgroup'), category:find('category','cat','group','section'),
+        field:find('field','fieldkey','key','fieldid','columnname'), name:find('name','displayname','label','fieldname'),
+        order:find('order','ordernumber','seq','sort'), spec:find('specsheet','specsheetdisplay','onspecsheet','showonspec')};
+      if(ci.category>=0 && (ci.field>=0||ci.name>=0)){ hi=i; col=ci; break; }
+    }
+    if(hi<0) throw new Error('헤더(Scope/Category/Field/Name/Order)를 찾지 못했습니다.');
+    const scopes=[]; const byScope={}; let curScope=null;
+    const trueish=v=>{ const t=String(v||'').toLowerCase().trim(); return t==='y'||t==='yes'||t==='true'||t==='1'||t==='o'||t==='표시'; };
+    for(let i=hi+1;i<rows.length;i++){
+      const r=rows[i]; const g=idx=>idx>=0?String(r[idx]==null?'':r[idx]).trim():'';
+      let scope=g(col.scope); const category=g(col.category);
+      let field=g(col.field); let name=g(col.name);
+      if(col.scope>=0 && scope) curScope=scope; scope=curScope||(scopes[0]||'Default');
+      if(!category && !field && !name) continue;
+      if(!name && field) name=field.replace(/_/g,' ').replace(/\b\w/g,m=>m.toUpperCase());
+      if(!field && name) field=this.norm(name);
+      if(!field) continue;
+      if(!byScope[scope]){ byScope[scope]=[]; scopes.push(scope); }
+      let cat=byScope[scope].find(c=>c.category===category);
+      if(!cat){ cat={category:category||'General', specSheet: col.spec<0?true:false, fields:[]}; byScope[scope].push(cat); }
+      const on=col.spec>=0?trueish(g(col.spec)):true;
+      if(on) cat.specSheet=true;
+      const order=col.order>=0?(parseInt(g(col.order),10)||9999):(cat.fields.length+1);
+      cat.fields.push({field, name, order});
+    }
+    if(!scopes.length) throw new Error('데이터 행을 찾지 못했습니다.');
+    // sort fields by order within each category
+    scopes.forEach(s=>byScope[s].forEach(c=>c.fields.sort((a,b)=>a.order-b.order)));
+    return {scopes, byScope};
+  }
+  async importCms(file){
+    if(!file) return;
+    this.setState({cmsBusy:true, cmsError:'', cmsNote:''});
+    try{
+      let cms;
+      if(/\.json$/i.test(file.name)||file.type==='application/json'){
+        cms=JSON.parse(await file.text());
+      } else if(/\.xlsx$/i.test(file.name)||/spreadsheet/.test(file.type)){
+        const XLSX=await import('https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs');
+        const wb=XLSX.read(await file.arrayBuffer(), {type:'array'});
+        const ws=wb.Sheets[wb.SheetNames[0]];
+        const rows=XLSX.utils.sheet_to_json(ws, {header:1, defval:'', blankrows:false});
+        cms=this._cmsFromRows(rows);
+      } else { throw new Error('.xlsx 또는 .json 파일을 넣어주세요.'); }
+      const fields=this._validateCms(cms);
+      const scope=cms.scopes.includes(this.state.scope)?this.state.scope:cms.scopes[0];
+      this.setState({cms, cmsSource:'upload', scope, customOrder:{}, assignments:{}, cmsBusy:false,
+        cmsNote:'✓ CMS 테이블 적용됨 — 제품군 '+cms.scopes.length+'개 · 필드 '+fields+'개. 이후 매핑·정렬이 이 테이블 기준으로 동작합니다.'});
+    }catch(e){ console.error('cms import failed', e); this.setState({cmsBusy:false, cmsError:'CMS 테이블을 읽지 못했습니다: '+(e.message||e)}); }
   }
   // ── Excel (.xlsx) import ──────────────────────────────────────────────
   _structifySheet(ws, name, XLSX){
@@ -1110,6 +1828,7 @@ class Component extends DCLogic {
       localStorage.setItem('specstudio:session', JSON.stringify(data));
       const t=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
       this.setState({savedToast:'✓ 저장됨 · '+t, hasSession:true});
+      this._touchHist(s.activeSample||(s.raw&&s.raw.id), true);
       clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
     }catch(e){ console.error(e); this.setState({savedToast:'저장 실패 (용량 초과?)'}); }
   }
@@ -1123,7 +1842,194 @@ class Component extends DCLogic {
   }
 
   exportPdf(){
-    this.setState({showReports:true, showExport:false}, ()=>{ setTimeout(()=>{ try{ window.print(); }catch(e){ console.error(e); } }, 600); });
+    this.setState({showReports:true, showExport:false}, ()=>{ setTimeout(()=>this.savePdf(), 500); });
+  }
+
+  // Collect the rendered report pages into an isolated, correctly-sized document.
+  _collectReportPages(){ return [...document.querySelectorAll('.reports-panel .report-page, .reports-panel [data-screen-label^="SpecSheet"]')]; }
+  _printCss(){
+    return "@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');"
+      +"*{box-sizing:border-box;}"
+      +"html,body{margin:0;padding:0;background:#fff;font-family:'Pretendard',-apple-system,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;}"
+      +"@page{size:letter;margin:0;}"
+      +".report-page{box-shadow:none!important;margin:0 auto!important;page-break-after:always;break-after:page;}"
+      +".report-page:last-child{page-break-after:auto;break-after:auto;}";
+  }
+  // 인쇄: open a clean, chrome-free window containing only the report pages and print it.
+  // Build an export-ready static clone of a page: inject plain <img> for shadow-DOM
+  // image-slots (invisible when serialized) and strip editor-only (X) controls.
+  SLOT_SEL='image-slot, vector-slot';
+  // blob:/object URLs die in a print window and often fail inside html2canvas'
+  // cloned document — bake every slot image down to a data URL first.
+  async _dataUrl(url){
+    if(!url || /^data:/.test(url)) return url||'';
+    this._duCache=this._duCache||{};
+    if(this._duCache[url]) return this._duCache[url];
+    try{
+      const b=await (await fetch(url)).blob();
+      const du=await new Promise((res,rej)=>{ const f=new FileReader(); f.onload=()=>res(f.result); f.onerror=rej; f.readAsDataURL(b); });
+      this._duCache[url]=du; return du;
+    }catch(e){ console.warn('slot image inline failed', url, e); return url; }
+  }
+  _rasterSvg(url, bw, bh){
+    return new Promise(res=>{
+      const img=new Image();
+      img.decoding='sync';
+      img.onload=()=>{
+        try{
+          const iw=img.naturalWidth||bw||600, ih=img.naturalHeight||bh||400;
+          const S=3, cw=Math.max(1,Math.round((bw||iw)*S)), ch=Math.max(1,Math.round((bh||ih)*S));
+          const cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
+          const ctx=cv.getContext('2d');
+          const r=Math.min(cw/iw, ch/ih), dw=iw*r, dh=ih*r;
+          ctx.drawImage(img, (cw-dw)/2, (ch-dh)/2, dw, dh);
+          res(cv.toDataURL('image/png'));
+        }catch(e){ console.warn('svg raster failed', e); res(url); }
+      };
+      img.onerror=()=>res(url);
+      img.src=url;
+    });
+  }
+  // Live slot -> static <img> markup (data URL + the slot's current framing).
+  // image-slot paints into shadow DOM, so neither outerHTML nor html2canvas can
+  // see it; vector-slot paints in light DOM but via a blob: URL.
+  // A viewBox-only SVG has no intrinsic size: pin explicit px dimensions so the
+  // browser rasterizes it crisply at the size we actually draw it.
+  _svgAtSize(url, w, h){
+    try{
+      let src;
+      if(/^data:image\/svg\+xml;base64,/i.test(url)) src=atob(url.replace(/^data:[^,]+,/,''));
+      else if(/^data:image\/svg/i.test(url)) src=decodeURIComponent(url.replace(/^data:[^,]+,/,''));
+      else return url;
+      src=src.replace(/<svg\b[^>]*>/i, (tag)=>tag
+        .replace(/\swidth\s*=\s*(".*?"|'.*?')/i,'').replace(/\sheight\s*=\s*(".*?"|'.*?')/i,'')
+        .replace(/^<svg/i,'<svg width="'+w+'" height="'+h+'"'));
+      return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(src);
+    }catch(e){ return url; }
+  }
+  _loadImg(src){
+    return new Promise(res=>{ const i=new Image(); i.crossOrigin='anonymous'; i.onload=()=>res(i); i.onerror=()=>res(null); i.src=src; });
+  }
+  // Flatten a live slot (shadow-DOM image or blob-URL SVG, with its current crop /
+  // framing) into ONE opaque PNG the size of the slot box. Rasterizers choke on
+  // shadow DOM, blob URLs, `inset` shorthand and negative-offset transforms — a
+  // single plain <img> at 100%×100% survives all of them.
+  async _slotPng(sl){
+    const shadowImg=sl.shadowRoot&&sl.shadowRoot.querySelector('img[part="image"]');
+    const im=shadowImg||sl.querySelector('img');
+    if(!im) return '';
+    const raw=im.currentSrc||im.getAttribute('src')||'';
+    if(!raw || getComputedStyle(im).display==='none') return '';
+    const sr=sl.getBoundingClientRect(), ir=im.getBoundingClientRect();
+    if(!sr.width||!sr.height||!ir.width||!ir.height) return '';
+    let src=await this._dataUrl(raw);
+    if(!src) return '';
+    const S=3, cw=Math.max(1,Math.round(sr.width*S)), ch=Math.max(1,Math.round(sr.height*S));
+    const dw=Math.max(1,Math.round(ir.width*S)), dh=Math.max(1,Math.round(ir.height*S));
+    if(/^data:image\/svg/i.test(src)) src=this._svgAtSize(src, dw, dh);
+    const img=await this._loadImg(src);
+    if(!img) return '';
+    try{
+      const cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
+      const ctx=cv.getContext('2d');
+      ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,cw,ch);
+      ctx.drawImage(img, Math.round((ir.left-sr.left)*S), Math.round((ir.top-sr.top)*S), dw, dh);
+      return cv.toDataURL('image/png');
+    }catch(e){ console.warn('slot raster failed', e); return ''; }
+  }
+  // html2canvas builds its image cache while cloning — anything injected during
+  // onclone never loads. So swap each live slot for a plain, already-decoded <img>
+  // BEFORE rasterizing, then put the slots back.
+  async _swapSlotsForExport(){
+    const shots=[];
+    for(const sl of [...document.querySelectorAll(this.SLOT_SEL)]){
+      const png=await this._slotPng(sl);
+      const cs=getComputedStyle(sl);
+      const ph=document.createElement(png?'img':'div');
+      if(png) ph.src=png;
+      ph.setAttribute('data-export-shot','');
+      ph.style.cssText='display:block; object-fit:fill;'
+        +'width:'+sl.offsetWidth+'px; height:'+sl.offsetHeight+'px;'
+        +'position:'+cs.position+'; left:'+cs.left+'; top:'+cs.top+'; right:'+cs.right+'; bottom:'+cs.bottom+';'
+        +'margin:'+cs.margin+'; z-index:'+cs.zIndex+'; grid-area:'+cs.gridArea+';'
+        +'align-self:'+cs.alignSelf+'; justify-self:'+cs.justifySelf+'; flex:'+cs.flex+';';
+      sl.parentNode.insertBefore(ph, sl);
+      const prevDisp=sl.style.display;
+      sl.style.display='none';
+      shots.push({sl, ph, prevDisp});
+      if(png && ph.decode) { try{ await ph.decode(); }catch(e){} }
+    }
+    return ()=>shots.forEach(s=>{ try{ s.ph.remove(); s.sl.style.display=s.prevDisp; }catch(e){} });
+  }
+  _exportClone(node){
+    const c=node.cloneNode(true);
+    c.style.margin='0'; c.style.boxShadow='none'; c.style.transform='none';
+    c.querySelectorAll('button[title="제거"], [data-export-hide]').forEach(b=>b.remove());
+    c.querySelectorAll(this.SLOT_SEL).forEach(sl=>sl.remove());
+    return c;
+  }
+  async printReport(){
+    const pages=this._collectReportPages();
+    if(!pages.length){ try{ window.print(); }catch(e){} return; }
+    const base=location.href.replace(/[^/]*$/,'');
+    const restore=await this._swapSlotsForExport();
+    const w=window.open('','_blank','width=900,height=1000');
+    if(!w){ restore(); this.setState({savedToast:'팝업이 차단되었습니다. 팝업을 허용해 주세요.'}); return; }
+    const html=pages.map(p=>this._exportClone(p).outerHTML).join('');
+    restore();
+    w.document.open();
+    w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><base href="'+base+'"><title>Spec Sheet Report</title><style>'+this._printCss()+'</style></head><body>'+html+'</body></html>');
+    w.document.close();
+    const go=()=>{ setTimeout(()=>{ try{ w.focus(); w.print(); }catch(e){} }, 450); };
+    if(w.document.readyState==='complete') go(); else w.onload=go;
+  }
+  // PDF로 저장: move each live page off-screen to (0,0) (preserving web-component render
+  // + avoiding the panel's scroll/zoom crop), inject plain <img> for shadow-DOM image-slots
+  // and hide editor-only (X) buttons via onclone, rasterize, then restore the node.
+  async savePdf(){
+    const pages=this._collectReportPages();
+    if(!pages.length){ this.printReport(); return; }
+    if(!window.html2pdf){ this.printReport(); return; }
+    this.setState({savedToast:'PDF 생성 중…'});
+    const W=816, H=1056;
+    const host=document.createElement('div');
+    host.style.cssText='position:fixed; left:0; top:0; z-index:-1; margin:0; padding:0; background:#fff; width:'+W+'px; overflow:hidden;';
+    document.body.appendChild(host);
+    const onclone=(doc)=>{
+      // editor-only controls must not appear in the export
+      doc.querySelectorAll('button[title="제거"], [data-export-hide]').forEach(b=>{ b.style.display='none'; });
+    };
+    let restore=()=>{};
+    try{
+      // flatten slots in the LIVE dom first — images injected during onclone are
+      // never loaded by html2canvas and come out blank.
+      restore=await this._swapSlotsForExport();
+      if(document.fonts&&document.fonts.ready) await document.fonts.ready;
+      let pdf=null;
+      const h2cOpt={scale:2, useCORS:true, backgroundColor:'#ffffff', logging:false, width:W, height:H, windowWidth:W, scrollX:0, scrollY:0, x:0, y:0, onclone};
+      for(let i=0;i<pages.length;i++){
+        const node=pages[i], parent=node.parentNode, next=node.nextSibling;
+        node.style.margin='0'; node.style.boxShadow='none'; node.style.transform='none';
+        host.appendChild(node);
+        await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+        try{
+          if(!pdf){
+            pdf=await window.html2pdf().set({ margin:0, image:{type:'jpeg',quality:0.95}, html2canvas:h2cOpt,
+              jsPDF:{unit:'px', format:[W,H], orientation:'portrait', compress:true} }).from(node).toPdf().get('pdf');
+          } else {
+            const cv=await window.html2pdf().set({html2canvas:h2cOpt}).from(node).toCanvas().get('canvas');
+            pdf.addPage([W,H],'portrait');
+            pdf.addImage(cv.toDataURL('image/jpeg',0.95),'JPEG',0,0,W,H);
+          }
+        } finally {
+          node.style.margin=''; node.style.boxShadow=''; node.style.transform='';
+          if(next) parent.insertBefore(node, next); else parent.appendChild(node);
+        }
+      }
+      pdf.save((this.reportData().model||'AVYCON')+'_spec_report.pdf');
+      this.setState({savedToast:'PDF로 저장했습니다.'});
+    }catch(e){ console.error(e); restore(); this.setState({savedToast:'PDF 생성 실패 — 인쇄로 저장해 주세요.'}); this.printReport(); }
+    finally{ restore(); host.remove(); }
   }
 
   async exportRawXlsx(){
@@ -1230,6 +2136,13 @@ class Component extends DCLogic {
   goStep(n){ if(n>1 && !this.state.loaded) return; this.setState({step:n}); }
   onScope(e){ this.setState({scope:e.target.value}); }
   assign(name,val){ const a={...this.state.assignments}; if(val==='') delete a[name]; else a[name]=val; this.setState({assignments:a}); }
+  remapField(cmsField, curSource, val){
+    const a={...this.state.assignments};
+    if(val==='__disconnect__'){ if(curSource) a[curSource]=''; }
+    else if(val===''){ /* no change */ }
+    else { if(curSource && curSource!==val) delete a[curSource]; a[val]=cmsField; }
+    this.setState({assignments:a, mapEdit:null});
+  }
   toggleReview(key){ const a={...this.state.reviewAccept}; a[key]=!(a[key]!==false); this.setState({reviewAccept:a}); }
   setReviewFilter(cat){ this.setState(s=>({reviewFilter: s.reviewFilter===cat?null:cat})); }
   toggleExpand(key){ this.setState(s=>({expandedReviews:{...s.expandedReviews,[key]:!s.expandedReviews[key]}})); }
@@ -1301,6 +2214,161 @@ class Component extends DCLogic {
     this.setState(s=>({customOrder:{...s.customOrder,[this.state.scope]:arr}}));
   }
   toggleRule(id){ this.setState(s=>({disabledRules:{...s.disabledRules,[id]:!s.disabledRules[id]}})); }
+
+  // ── AI 규칙 라이브러리 (누적 사용자 규칙) ────────────────────────────────
+  RULE_LIB_KEY='specstudio:rulelib';
+  _toast(msg){ this.setState({savedToast:msg}); clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600); }
+  _loadRuleLib(qc){
+    let lib=[], dismissed={};
+    try{ const j=JSON.parse(localStorage.getItem(this.RULE_LIB_KEY)||'{}'); lib=Array.isArray(j.rules)?j.rules:[]; dismissed=j.dismissed||{}; }catch(e){}
+    try{ if(qc&&qc.setCustomRules) qc.setCustomRules(lib); }catch(e){ console.warn('custom rules', e); }
+    return {lib, dismissed};
+  }
+  _commitLib(lib, dismissed, extra){
+    const qc=this.state.qc;
+    try{ if(qc&&qc.setCustomRules) qc.setCustomRules(lib); }catch(e){}
+    const dis=dismissed||this.state.dismissedCands;
+    try{ localStorage.setItem(this.RULE_LIB_KEY, JSON.stringify({v:1, rules:lib, dismissed:dis, saved:new Date().toISOString()})); }catch(e){}
+    this.setState({customRules:lib, dismissedCands:dis, ...(extra||{})});
+  }
+  _qcItems(){
+    const qc=this.state.qc, raw=this.state.raw; if(!qc||!raw) return [];
+    const disabled=Object.keys(this.state.disabledRules).filter(k=>this.state.disabledRules[k]);
+    const items=[];
+    const push=(field,section,value)=>{ if(value==null||value==='') return;
+      items.push({field, section, value:qc.runQC(String(value), field, disabled).result}); };
+    push('Model','기본 정보',raw.model); push('Subtitle','기본 정보',raw.subtitle);
+    (raw.overview||'').split(/\n+/).forEach((l,i)=>push('Overview '+(i+1),'개요',l.replace(/^[•\-\u2022\u00b7]\s*/,'').trim()));
+    (raw.specs||[]).forEach(sp=>push(sp.name, sp.section||'', sp.value));
+    return items;
+  }
+  scanNewRules(){
+    const qc=this.state.qc;
+    if(!qc||!qc.scanCandidates){ this._toast('검수 엔진을 불러오는 중입니다.'); return; }
+    if(!this.state.raw){ this._toast('먼저 데이터를 불러오세요.'); return; }
+    const items=this._qcItems();
+    const dismissed=Object.keys(this.state.dismissedCands).filter(k=>this.state.dismissedCands[k]);
+    const cands=qc.scanCandidates(items, {dismissed, customRules:this.state.customRules});
+    this.setState({cands, showCands:true, candScanned:true, candSrc:items.length});
+  }
+  closeCands(){ this.setState({showCands:false}); }
+  _mkRule(c){
+    return {id:'u_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), cat:c.cat, note:c.note,
+      find:c.find, repl:c.repl, regex:c.regex!==false, ci:false, scope:c.scope||'', src:c.src||'후보 검출',
+      added:new Date().toISOString().slice(0,10)};
+  }
+  adoptCandidate(key){
+    const c=this.state.cands.find(x=>x.key===key); if(!c) return;
+    const lib=[...this.state.customRules, this._mkRule(c)];
+    this._commitLib(lib, null, {cands:this.state.cands.filter(x=>x.key!==key)});
+    this._toast('✓ 규칙 라이브러리에 추가됨 ('+lib.length+'건)');
+  }
+  adoptAllCandidates(){
+    const cs=this.state.cands; if(!cs.length) return;
+    const lib=[...this.state.customRules, ...cs.map(c=>this._mkRule(c))];
+    this._commitLib(lib, null, {cands:[]});
+    this._toast('✓ '+cs.length+'건을 규칙으로 추가했습니다');
+  }
+  dismissCandidate(key){
+    const d={...this.state.dismissedCands, [key]:true};
+    this._commitLib(this.state.customRules, d, {cands:this.state.cands.filter(x=>x.key!==key)});
+  }
+  restoreDismissed(){ this._commitLib(this.state.customRules, {}, {}); this._toast('제외 목록을 초기화했습니다. 다시 검사하세요.'); }
+  setNewRule(k,v){ this.setState(s=>({newRule:{...s.newRule,[k]:v}, libMsg:''})); }
+  addManualRule(){
+    const n=this.state.newRule;
+    const find=(n.find||'').trim();
+    if(!find){ this.setState({libMsg:'찾을 문자열을 입력하세요.'}); return; }
+    if(n.regex){ try{ new RegExp(find); }catch(e){ this.setState({libMsg:'정규식이 올바르지 않습니다: '+e.message}); return; } }
+    const rule=this._mkRule({cat:n.cat, note:(n.note||'').trim()||('사용자 규칙: '+find+' → '+(n.repl||'(삭제)')), find, repl:n.repl||'', src:'직접 등록'});
+    rule.regex=!!n.regex; rule.ci=!!n.ci; rule.scope=(n.scope||'').trim();
+    const lib=[...this.state.customRules, rule];
+    this._commitLib(lib, null, {newRule:{find:'',repl:'',cat:'표기',note:'',ci:false,regex:false,scope:''}, libMsg:''});
+    this._toast('✓ 규칙을 추가했습니다 (총 '+lib.length+'건)');
+  }
+  deleteCustomRule(id){ this._commitLib(this.state.customRules.filter(r=>r.id!==id), null, {}); }
+  clearRuleLib(){
+    if(!this.state.customRules.length) return;
+    this._commitLib([], null, {}); this._toast('규칙 라이브러리를 비웠습니다.');
+  }
+  _libAoa(){
+    const aoa=[['ID','유형','설명','찾을 문자열','바꿀 문자열','정규식','대소문자무시','적용 필드','출처','추가일','사용중']];
+    this.state.customRules.forEach(r=>aoa.push([r.id, r.cat, r.note, r.find, r.repl, r.regex?'Y':'N', r.ci?'Y':'N', r.scope||'전체', r.src||'', r.added||'', this.state.disabledRules[r.id]?'N':'Y']));
+    return aoa;
+  }
+  async exportRuleLib(){
+    if(!this.state.customRules.length){ this.setState({libMsg:'내보낼 사용자 규칙이 없습니다.'}); return; }
+    this.setState({libMsg:'엑셀 생성 중…'});
+    try{
+      const XLSX=await import('https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs');
+      const ws=XLSX.utils.aoa_to_sheet(this._libAoa());
+      ws['!cols']=[{wch:16},{wch:8},{wch:42},{wch:26},{wch:26},{wch:9},{wch:12},{wch:16},{wch:12},{wch:12},{wch:8}];
+      const base=(this.state.qc&&this.state.qc.RULE_CATALOG)||[];
+      const baoa=[['ID','유형','설명','사용중']];
+      base.forEach(r=>baoa.push([r.id, r.cat, r.note, this.state.disabledRules[r.id]?'N':'Y']));
+      const ws2=XLSX.utils.aoa_to_sheet(baoa); ws2['!cols']=[{wch:16},{wch:8},{wch:46},{wch:8}];
+      const wb=XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Custom Rules');
+      XLSX.utils.book_append_sheet(wb, ws2, 'Built-in Rules');
+      XLSX.writeFile(wb, 'AI검수_규칙라이브러리_'+new Date().toISOString().slice(0,10)+'.xlsx');
+      this.setState({libMsg:'✓ 엑셀 다운로드됨'});
+    }catch(e){ console.error(e); this.setState({libMsg:'엑셀 실패: '+(e.message||e)}); }
+  }
+  exportRuleLibCsv(){
+    if(!this.state.customRules.length){ this.setState({libMsg:'내보낼 사용자 규칙이 없습니다.'}); return; }
+    const q=v=>{ const s=String(v==null?'':v); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+    const csv='\uFEFF'+this._libAoa().map(r=>r.map(q).join(',')).join('\r\n');
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+    a.download='AI검수_규칙라이브러리_'+new Date().toISOString().slice(0,10)+'.csv';
+    a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+    this.setState({libMsg:'✓ CSV 다운로드됨'});
+  }
+  pickRuleLib(){
+    const inp=document.createElement('input');
+    inp.type='file'; inp.accept='.xlsx,.csv,.json';
+    inp.onchange=()=>{ if(inp.files&&inp.files[0]) this.importRuleLib(inp.files[0]); };
+    inp.click();
+  }
+  async importRuleLib(file){
+    this.setState({libMsg:'규칙 파일 읽는 중…'});
+    try{
+      let rows=[];
+      if(/\.json$/i.test(file.name)){
+        const j=JSON.parse(await file.text());
+        rows=(Array.isArray(j)?j:(j.rules||[])).map(r=>[r.id,r.cat,r.note,r.find,r.repl,r.regex?'Y':'N',r.ci?'Y':'N',r.scope,r.src,r.added]);
+      } else if(/\.csv$/i.test(file.name)){
+        const txt=(await file.text()).replace(/^\uFEFF/,'');
+        rows=txt.split(/\r?\n/).filter(Boolean).map(line=>{
+          const out=[]; let cur='', inQ=false;
+          for(let i=0;i<line.length;i++){ const ch=line[i];
+            if(inQ){ if(ch==='"'){ if(line[i+1]==='"'){cur+='"';i++;} else inQ=false; } else cur+=ch; }
+            else if(ch==='"') inQ=true; else if(ch===','){ out.push(cur); cur=''; } else cur+=ch; }
+          out.push(cur); return out;
+        });
+      } else {
+        const XLSX=await import('https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs');
+        const wb=XLSX.read(await file.arrayBuffer(),{type:'array'});
+        const ws=wb.Sheets[wb.SheetNames[0]];
+        rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',blankrows:false});
+      }
+      const hdr=(rows[0]||[]).join('|');
+      const body=/찾을|find/i.test(hdr)?rows.slice(1):rows;
+      const add=[];
+      body.forEach(r=>{
+        const find=String(r[3]==null?'':r[3]).trim(); if(!find) return;
+        add.push({id:String(r[0]||('u_'+Math.random().toString(36).slice(2,8))), cat:String(r[1]||'표기'),
+          note:String(r[2]||find), find, repl:String(r[4]==null?'':r[4]),
+          regex:/^y|true/i.test(String(r[5]||'')), ci:/^y|true/i.test(String(r[6]||'')),
+          scope:(String(r[7]||'')==='전체'?'':String(r[7]||'')), src:String(r[8]||'파일 가져오기'),
+          added:String(r[9]||new Date().toISOString().slice(0,10))});
+      });
+      if(!add.length) throw new Error('규칙 행을 찾지 못했습니다. (찾을 문자열 열 필요)');
+      const have=new Set(this.state.customRules.map(r=>r.find+'\u0000'+r.repl));
+      const merged=[...this.state.customRules, ...add.filter(r=>!have.has(r.find+'\u0000'+r.repl))];
+      this._commitLib(merged, null, {libMsg:'✓ '+(merged.length-this.state.customRules.length)+'건 추가 (총 '+merged.length+'건)'});
+    }catch(e){ console.error(e); this.setState({libMsg:'가져오기 실패: '+(e.message||e)}); }
+  }
   toggleSettings(){ this.setState(s=>({showSettings:!s.showSettings})); }
   toggleUnmapped(){ this.setState(s=>({showUnmapped:!s.showUnmapped})); }
   async aiReview(){
@@ -1350,6 +2418,14 @@ class Component extends DCLogic {
       fitHeightBg:st.fitMode==='height'?'#941A31':'#fff', fitHeightColor:st.fitMode==='height'?'#fff':'#44474e',
       fitPageBg:st.fitMode==='page'?'#941A31':'#fff', fitPageColor:st.fitMode==='page'?'#fff':'#44474e',
       sheetHostRef:(el)=>{ if(el) this._sheetHost=el; },
+      rootRef:(el)=>{ if(el){ this._rootEl=el; this._setupObserver(); this._applyLang(); } },
+      lang:st.lang, langLabel:st.lang==='en'?'English':'한국어',
+      showLangMenu:!!st.langMenu, onToggleLangMenu:()=>this.setState({langMenu:!this.state.langMenu}),
+      langOptions:[{code:'ko',label:'한국어'},{code:'en',label:'English'}].map(o=>({
+        label:o.label, bg: st.lang===o.code?'#941A31':'#fff', color: st.lang===o.code?'#fff':'#1c2330',
+        weight: st.lang===o.code?'700':'500',
+        onPick:()=>{ this.setState({langMenu:false}); if(this.state.lang!==o.code) this.toggleLang(); },
+      })),
     };
     // share / export (header)
     out.canShare=st.loaded;
@@ -1358,27 +2434,99 @@ class Component extends DCLogic {
     out.onSave=()=>this.saveSession(); out.savedToast=st.savedToast; out.hasToast=!!st.savedToast;
     out.hasSession=st.hasSession; out.onContinue=()=>this.restoreSession();
 
+    // help wiki
+    const flat=this._helpFlat();
+    const hid=st.helpPage||flat[0].id;
+    const cur=flat.find(p=>p.id===hid)||flat[0];
+    out.showHelp=!!st.showHelp;
+    out.onOpenHelp=()=>this.setState({showHelp:true, helpPage:st.helpPage||flat[0].id});
+    out.onCloseHelp=()=>this.setState({showHelp:false});
+    out.onHelpPdf=()=>this.helpPdf();
+    out.helpNav=this.HELP().map(g=>({ cat:g.cat, items:g.items.map(it=>({
+      title:it.title,
+      bg: it.id===cur.id?'#f6edef':'transparent',
+      bar: it.id===cur.id?'#941A31':'transparent',
+      color: it.id===cur.id?'#941A31':'#44474e',
+      weight: it.id===cur.id?'800':'500',
+      onPick:()=>this.setState({helpPage:it.id}),
+    })) }));
+    out.helpHeadTitle=this.T('Spec Sheet Studio 도움말','Spec Sheet Studio Help');
+    out.helpHeadSub=this.T('기능 설명 · 사용 설명 위키','Features · How-to wiki');
+    out.helpPdfLabel=this.T('전체 도움말 PDF','Full help PDF');
+    out.helpCat=cur.cat; out.helpTitle=cur.title; out.helpIntro=cur.intro;
+    out.helpBlocks=cur.blocks.map(b=>({n:b.n, title:b.title, desc:b.desc, tip:b.tip||'', hasTip:!!b.tip}));
+
     // import dropzone + source tabs
     const pdfMode=st.importSource==='pdf';
     out.srcXlsx=!pdfMode; out.srcPdf=pdfMode;
     out.onSrcXlsx=()=>this.setSource('xlsx'); out.onSrcPdf=()=>this.setSource('pdf');
     out.xlsxTabBg=pdfMode?'#fff':'#941A31'; out.xlsxTabColor=pdfMode?'#5e636b':'#fff';
     out.pdfTabBg=pdfMode?'#941A31':'#fff'; out.pdfTabColor=pdfMode?'#fff':'#5e636b';
-    out.onPickFile=()=> pdfMode?this.pickPdf():this.pickFile();
-    out.onDragOver=(e)=>this.onDragOver(e);
-    out.onDragLeave=(e)=>this.onDragLeave(e);
-    out.onDropFile=(e)=>this.onDropFile(e);
-    out.dropBorder=st.dragOver?'#941A31':'#bcc7d6';
-    out.dropBg=st.dragOver?'#fbf4f5':'#fff';
-    out.dropIcon=st.importing?'⏳':(pdfMode?'📄':'📑');
-    out.dropTitle=st.importing?(pdfMode?'PDF 추출 중…':'엑셀 분석 중…'):(st.dragOver?'여기에 놓으세요':(pdfMode?'기제작 PDF 스펙시트를 끌어다 놓기':'제조사 엑셀을 끌어다 놓기'));
-    out.dropHint=pdfMode?'.pdf · AVYCON 포맷 스펙시트 · 텍스트 추출 → 엑셀 데이터로 변환':'.xlsx · 제조사 데이터시트 양식 · 끌어다 놓거나 클릭';
-    out.heroTitle=pdfMode?'기제작 PDF 스펙시트 가져오기':'중국 데이터 가져오기';
-    out.heroDesc=pdfMode?'이미 수동 제작된 AVYCON 스펙시트 PDF에서 스펙을 추출해 엑셀 데이터 포맷으로 변환합니다. 이후 AI 검수·레이아웃 단계로 그대로 진행됩니다. (중국 엑셀이 없는 제품용)':'제조사 엑셀(.xlsx)을 업로드하면 CMS의 카테고리·표시 순서에 맞춰 자동 정렬됩니다. 아래 샘플로 바로 체험할 수도 있습니다.';
+    const overX=st.dragOver==='xlsx', overP=st.dragOver==='pdf';
+    const busyX=st.importing&&st.importSource!=='pdf', busyP=st.importing&&st.importSource==='pdf';
+    out.onPickXlsx=()=>{ this.setState({importSource:'xlsx', importError:''}); this.pickFile(); };
+    out.onPickPdf=()=>{ this.setState({importSource:'pdf', importError:''}); this.pickPdf(); };
+    out.onDragOverXlsx=(e)=>{ e.preventDefault(); if(st.dragOver!=='xlsx') this.setState({dragOver:'xlsx'}); };
+    out.onDragOverPdf=(e)=>{ e.preventDefault(); if(st.dragOver!=='pdf') this.setState({dragOver:'pdf'}); };
+    out.onDragLeave=(e)=>{ e.preventDefault(); this.setState({dragOver:false}); };
+    out.onDropXlsx=(e)=>{ e.preventDefault(); this.setState({dragOver:false, importSource:'xlsx', importError:''});
+      const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; if(f) this._routeFile(f); };
+    out.onDropPdf=(e)=>{ e.preventDefault(); this.setState({dragOver:false, importSource:'pdf', importError:''});
+      const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+      if(!f) return;
+      if(/\.pdf$/i.test(f.name)||f.type==='application/pdf') this.importPdf(f);
+      else this.setState({importError:'PDF 파일만 이 영역에 놓을 수 있습니다.'}); };
+    out.xlsxBorder=overX?'#941A31':'#bcc7d6'; out.xlsxBg=overX?'#fbf4f5':'#fff';
+    out.pdfBorder=overP?'#941A31':'#bcc7d6'; out.pdfBg=overP?'#fbf4f5':'#fff';
+    out.xlsxIcon=busyX?'⏳':'📑'; out.pdfIcon=busyP?'⏳':'📄';
+    out.xlsxTitle=busyX?'엑셀 분석 중…':(overX?'여기에 놓으세요':'제조사 엑셀을 끌어다 놓기');
+    out.pdfTitle=busyP?'PDF 추출 중…':(overP?'여기에 놓으세요':'기제작 PDF 스펙시트를 끌어다 놓기');
+    out.heroTitle='제품 데이터 가져오기';
+    out.heroDesc='제조사 엑셀 또는 기제작 PDF 스펙시트를 각 영역에 끌어다 놓으면 CMS 카테고리·표시 순서에 맞춰 자동 정렬되고, AI 검수·레이아웃 단계로 이어집니다.';
     out.importError=st.importError; out.hasImportError=!!st.importError;
 
     // sample cards
-    out.sampleCards=(st.samples||[]).map(s=>({id:s.id,model:s.model,title:s.subtitle,count:s.specs.length,onLoad:()=>this.loadSample(s.id)}));
+    const hist=st.workHist||{};
+    const q=(st.workQuery||'').trim().toLowerCase();
+    const all=(st.samples||[]).map(s=>{
+      const h=hist[s.id]||null;
+      const isSample=(this._sampleIds||[]).includes(s.id);
+      const src=s.fromPdf?'PDF':(isSample?'샘플':'엑셀');
+      return {
+        id:s.id, model:s.model, title:s.subtitle, count:s.specs.length, src,
+        srcColor: s.fromPdf?'#8a5a12':(isSample?'#941A31':'#3a6b46'),
+        srcBg: s.fromPdf?'#fbf1de':(isSample?'#f6edef':'#e9f3ec'),
+        status: h?(h.saved?('저장됨 · '+h.date):('작업함 · '+h.date)):'미작업',
+        stColor: h?(h.saved?'#3a6b46':'#5e636b'):'#a8adb5',
+        onLoad:()=>this.loadSample(s.id),
+      };
+    });
+    const rows=(q?all.filter(r=>(r.model+' '+(r.title||'')).toLowerCase().includes(q)):all).map(r=>Object.assign(r,{
+      sel: !!(st.workSel||{})[r.id],
+      rowBg: (st.workSel||{})[r.id] ? '#faf6f7' : '#fff',
+      stop:(e)=>e.stopPropagation(),
+      onSel:(e)=>{ e.stopPropagation(); const s=Object.assign({}, this.state.workSel||{}); if(s[r.id]) delete s[r.id]; else s[r.id]=true; this.setState({workSel:s}); },
+    }));
+    out.workRows=rows; out.noWorkRows=rows.length===0; out.workCount=all.length;
+    out.workQuery=st.workQuery||''; out.onWorkQuery=(e)=>this.setState({workQuery:e.target.value});
+    const selIds=Object.keys(st.workSel||{}).filter(k=>(st.workSel||{})[k]);
+    out.selCount=selIds.length; out.hasSel=selIds.length>0;
+    out.allSel=rows.length>0 && rows.every(r=>r.sel);
+    out.onToggleAll=(e)=>{ e.stopPropagation(); const on=rows.length>0 && !rows.every(r=>r.sel); const s={}; if(on) rows.forEach(r=>{ s[r.id]=true; }); this.setState({workSel:s}); };
+    out.onAskDup=()=>this.setState({workConfirm:'dup'});
+    out.onAskDel=()=>this.setState({workConfirm:'del'});
+    out.onCancelConfirm=()=>this.setState({workConfirm:null});
+    out.stopClick=(e)=>e.stopPropagation();
+    out.showConfirm=!!st.workConfirm;
+    const selItems=(st.samples||[]).filter(s=>selIds.includes(s.id));
+    out.confirmItems=selItems.map(s=>({model:s.model}));
+    out.confirmTitle=st.workConfirm==='del'?'선택한 제품을 삭제할까요?':'선택한 제품을 복제할까요?';
+    out.confirmDesc=st.workConfirm==='del'
+      ? selIds.length+'개 제품을 목록에서 제거합니다. 이 작업은 되돌릴 수 없습니다.'
+      : selIds.length+'개 제품을 같은 데이터로 복사해 목록에 추가합니다.';
+    out.confirmBtn=st.workConfirm==='del'?'삭제':'복제';
+    out.confirmBtnBg=st.workConfirm==='del'?'#c0392b':'#941A31';
+    out.onConfirm=()=>{ if(st.workConfirm==='del') this.deleteSelected(selIds); else this.duplicateSelected(selIds); };
 
     if(st.loaded){
       const m=this.buildMapping();
@@ -1387,18 +2535,40 @@ class Component extends DCLogic {
       out.hasUnmapped=m.reviewCount>0;
       // raw sections
       const secMap={}; const secOrder=[];
-      st.raw.specs.forEach(sp=>{ if(!secMap[sp.section]){secMap[sp.section]=[];secOrder.push(sp.section);} secMap[sp.section].push({name:sp.name,value:sp.value}); });
+      const unmappedNames=new Set(m.unmapped.map(u=>u.name));
+      st.raw.specs.forEach(sp=>{ if(!secMap[sp.section]){secMap[sp.section]=[];secOrder.push(sp.section);}
+        const un=unmappedNames.has(sp.name);
+        secMap[sp.section].push({name:sp.name,value:sp.value,unmapped:un,
+          nameColor:un?'#d02d43':'#5b6068', valColor:un?'#e2687a':'#979ca4',
+          cursor:un?'pointer':'default',
+          onClick:un?(()=>this.setState({showUnmapped:true,focusUnmapped:sp.name})):(()=>{})}); });
       out.rawSections=secOrder.map(s=>({section:s||'—',fields:secMap[s]}));
       // mapped cats
-      out.mappedCats=m.orderedCats.map(c=>({category:c.category, fields:c.fields.map(f=>({name:f.name,source:f.source,value:f.value,guess:!!f.guess,renamed:this.norm(f.name)!==this.norm(f.source||'')}))}));
+      out.mappedCats=m.orderedCats.map(c=>({category:c.category, fields:c.fields.map(f=>({field:f.field,name:f.name,source:f.source,value:f.value,guess:!!f.guess,renamed:this.norm(f.name)!==this.norm(f.source||''),
+        onClick:()=>this.setState({mapEdit:{field:f.field,name:f.name,category:c.category,source:f.source||'',value:f.value}})}))}));
+      // mapped-field connection editor
+      const me=st.mapEdit;
+      out.mapEditActive=!!me;
+      if(me){
+        const srcOpts=st.raw.specs.map(sp=>({value:sp.name,label:sp.name+' — '+String(sp.value).slice(0,44)}));
+        out.mapEditData={ field:me.field, name:me.name, category:me.category, source:me.source||'(연결 안 됨)', value:me.value,
+          isCustom:String(me.field).indexOf('__custom_')===0,
+          options:[...(me.source?[]:[{value:'',label:'— 연결할 원본 필드 선택 —'}]), ...srcOpts],
+          current:me.source||'', canDisconnect:!!me.source,
+          onRemap:(e)=>this.remapField(me.field, me.source, e.target.value),
+          onDisconnect:()=>this.remapField(me.field, me.source, '__disconnect__') };
+      }
+      out.onCloseMapEdit=()=>this.setState({mapEdit:null});
       // unmapped list options
       const fieldOpts=m.allFields.map(f=>({value:f.field,label:f.category+' › '+f.name}));
       out.unmappedList=m.unmapped.map(u=>{
-        const sug=u.suggestionField?[{value:u.suggestionField,label:'★ 추천: '+u.suggestionLabel+' ('+Math.round((u.score||0)*100)+'%)'}]:[];
+        const sug=u.suggestionField?[{value:'__suggest__',label:'★ 추천: '+u.suggestionLabel+' ('+Math.round((u.score||0)*100)+'%)'}]:[];
+        const hl=st.focusUnmapped===u.name;
         return {source:u.name,value:u.value,section:u.section,current:u.current||'',
+          cardBg:hl?'#fff4d6':'#fbf4f5', cardBorder:hl?'#e6b84a':'#ecd8dc',
           badge:u.guess?'추정':(u.suggestionField?'추천':'미매핑'), badgeColor:u.guess?'#c2700a':(u.suggestionField?'#2f6fb0':'#9aa0aa'),
           options:[{value:'',label:'— 미지정 —'},...sug,{value:'__skip__',label:'사용 안 함'},{value:'__custom__',label:'사용자 정의로 추가'},...fieldOpts],
-          onAssign:(e)=>this.assign(u.name,e.target.value)};
+          onAssign:(e)=>{ let v=e.target.value; if(v==='__suggest__') v=u.suggestionField; this.assign(u.name,v); }};
       });
       out.onResetImport=()=>this.resetImport();
       out.onToStep2=()=>this.goStep(2);
@@ -1487,7 +2657,7 @@ class Component extends DCLogic {
 
       // reports overlay data
       const rep=this.reportData();
-      out.showReports=st.showReports; out.onCloseReports=()=>this.closeReports(); out.onPrintReport=()=>{ try{window.print();}catch(e){} };
+      out.showReports=st.showReports; out.onCloseReports=()=>this.closeReports(); out.onPrintReport=()=>this.printReport(); out.onSavePdf=()=>this.savePdf();
       out.repModel=rep.model; out.repTitle=rep.title; out.repScope=rep.scope; out.repDate=rep.date;
       out.repMapMatched=rep.mapping.matched; out.repMapTotal=rep.mapping.total; out.repMapUnmappedN=rep.mapping.unmapped.length;
       out.repReviewTotal=rep.review.total; out.repReviewApplied=rep.review.applied;
@@ -1518,15 +2688,69 @@ class Component extends DCLogic {
       out.repFocusMap=st.reportFocus==='mapping'||st.reportFocus==='all';
       out.sheetReviewed=this.computeSheet({review:st.applyReview, cms:st.applyCms});
       out.sheetRaw=this.computeSheet({review:false, cms:false});
+      const mkPages=(sh)=>{ const arr=this.computeSpecPages(sh.specCats); return arr.map((cats,i)=>({sheet:{...sh, specCats:cats}, cont: arr.length>1?('('+(i+1)+' / '+arr.length+')'):''})); };
+      out.specPagesReviewed=mkPages(out.sheetReviewed);
+      out.specPagesRaw=mkPages(out.sheetRaw);
     }
 
     // settings
-    out.settingsTab=st.settingsTab; out.settingsOrder=st.settingsTab==='order'; out.settingsRules=st.settingsTab==='rules';
-    out.settingsTabs=[{key:'order',label:'표시 순서'},{key:'rules',label:'검수 규칙'}].map(t=>({label:t.label,
+    out.settingsTab=st.settingsTab; out.settingsOrder=st.settingsTab==='order'; out.settingsRules=st.settingsTab==='rules'; out.settingsCms=st.settingsTab==='cms'; out.settingsLib=st.settingsTab==='lib';
+    out.settingsTabs=[{key:'cms',label:'CMS 테이블'},{key:'order',label:'표시 순서'},{key:'rules',label:'검수 규칙'},{key:'lib',label:'규칙 라이브러리'}].map(t=>({label:t.label,
       bg:st.settingsTab===t.key?'#941A31':'#eceef1', color:st.settingsTab===t.key?'#fff':'#5e636b', onClick:()=>this.setState({settingsTab:t.key})}));
+    // CMS table status + upload
+    const cms=st.cms; const scopeList=cms?cms.scopes:[];
+    out.cmsScopeCount=scopeList.length;
+    out.cmsFieldCount=cms?scopeList.reduce((n,s)=>n+(cms.byScope[s]||[]).reduce((m,c)=>m+(c.fields||[]).length,0),0):0;
+    out.cmsSourceLabel=st.cmsSource==='upload'?'업로드한 CMS 테이블':'기본 내장 CMS 테이블';
+    out.cmsSourceBadgeBg=st.cmsSource==='upload'?'#2f7d3a':'#9aa0aa';
+    out.cmsIsUpload=st.cmsSource==='upload';
+    out.cmsScopesText=scopeList.join(', ');
+    out.onUploadCms=()=>this.pickCms();
+    out.onResetCms=()=>this.resetCms();
+    out.cmsBusy=st.cmsBusy; out.cmsNote=st.cmsNote; out.hasCmsNote=!!st.cmsNote; out.cmsError=st.cmsError; out.hasCmsError=!!st.cmsError;
     out.orderCats=this.scopeCats().map((c,i)=>({name:c.category,num:i+1,onUp:()=>this.moveCat(c.category,-1),onDown:()=>this.moveCat(c.category,1)}));
     out.ruleCatalog=(st.qc?st.qc.RULE_CATALOG:[]).map(r=>{const off=!!st.disabledRules[r.id]; return {id:r.id,cat:r.cat,note:r.note,color:this.CAT_COLOR[r.cat]||'#666',
       toggleBg:off?'#c9ccd2':'#941A31', knobLeft:off?'2.5px':'21px', onToggle:()=>this.toggleRule(r.id)};});
+    out.builtinCount=(st.qc?st.qc.RULE_CATALOG.length:0);
+
+    // 규칙 라이브러리 (누적 사용자 규칙)
+    out.libCount=st.customRules.length; out.hasLibRules=st.customRules.length>0; out.noLibRules=st.customRules.length===0;
+    out.libRules=st.customRules.map(r=>{const off=!!st.disabledRules[r.id]; return {
+      id:r.id, cat:r.cat, note:r.note, find:r.find, repl:r.repl||'(삭제)', color:this.CAT_COLOR[r.cat]||'#666',
+      scopeLabel:r.scope?('필드: '+r.scope):'전체 필드', meta:(r.src||'')+' · '+(r.added||''),
+      toggleBg:off?'#c9ccd2':'#941A31', knobLeft:off?'2.5px':'21px',
+      onToggle:()=>this.toggleRule(r.id), onDelete:()=>this.deleteCustomRule(r.id)};});
+    out.libMsg=st.libMsg; out.hasLibMsg=!!st.libMsg;
+    out.onExportLibXlsx=()=>this.exportRuleLib(); out.onExportLibCsv=()=>this.exportRuleLibCsv();
+    out.onImportLib=()=>this.pickRuleLib(); out.onClearLib=()=>this.clearRuleLib();
+    out.onRestoreDismissed=()=>this.restoreDismissed();
+    out.dismissedCount=Object.keys(st.dismissedCands).filter(k=>st.dismissedCands[k]).length;
+    out.hasDismissed=out.dismissedCount>0;
+    const nr=st.newRule;
+    out.nrFind=nr.find; out.nrRepl=nr.repl; out.nrNote=nr.note; out.nrScope=nr.scope; out.nrCat=nr.cat;
+    out.onNrFind=e=>this.setNewRule('find', e.target.value);
+    out.onNrRepl=e=>this.setNewRule('repl', e.target.value);
+    out.onNrNote=e=>this.setNewRule('note', e.target.value);
+    out.onNrScope=e=>this.setNewRule('scope', e.target.value);
+    out.onNrCat=e=>this.setNewRule('cat', e.target.value);
+    out.nrRegexBg=nr.regex?'#941A31':'#fff'; out.nrRegexColor=nr.regex?'#fff':'#5e636b';
+    out.nrCiBg=nr.ci?'#941A31':'#fff'; out.nrCiColor=nr.ci?'#fff':'#5e636b';
+    out.onNrRegex=()=>this.setNewRule('regex', !nr.regex);
+    out.onNrCi=()=>this.setNewRule('ci', !nr.ci);
+    out.onAddRule=()=>this.addManualRule();
+
+    // 새 규칙 후보 검사
+    out.onScanRules=()=>this.scanNewRules(); out.showCands=st.showCands; out.onCloseCands=()=>this.closeCands();
+    out.candCount=st.cands.length; out.hasCands=st.cands.length>0; out.noCands=st.cands.length===0;
+    out.candScanned=st.candScanned; out.candSrc=st.candSrc;
+    out.candList=st.cands.map(c=>({key:c.key, cat:c.cat, note:c.note, find:c.find, repl:c.repl||'(삭제)',
+      color:this.CAT_COLOR[c.cat]||'#666', count:c.count+'곳', fields:c.fields.slice(0,3).join(', '),
+      kindLabel:c.regex?'패턴 규칙':'문자열 규칙',
+      examples:(c.examples||[]).map(e=>({before:e.before, after:e.after===''?'(삭제)':e.after})),
+      onAdopt:()=>this.adoptCandidate(c.key), onDismiss:()=>this.dismissCandidate(c.key)}));
+    out.onAdoptAll=()=>this.adoptAllCandidates();
+    out.scanBadge=st.candScanned?(st.cands.length?String(st.cands.length):'0'):'';
+    out.hasScanBadge=st.candScanned&&st.cands.length>0;
 
     return out;
   }
