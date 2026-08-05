@@ -42,6 +42,9 @@ Claude Design 산출물 JS를 로컬에서 직접 고친 부분 → **재export 
   model=`model_number_sku`, 제품 타이틀(subtitle)=`product_summary`, overview=`detailed_description`,
   카테고리=`main_category`/`sub_category`. 그 밖 필드는 참조용(Wix CMS)이라 스펙시트에서 제외.
   또 `_catScope`는 **camera를 network보다 먼저** 검사(`Network_Camera`가 Networking으로 오판되던 것 수정).
+- **PDF 저장 페이지 크기 = US Letter** (`savePdf`/도움말 PDF의 jsPDF 옵션, 2026-08):
+  jsPDF `unit:'px'`가 px→pt를 96/72로 잘못 환산해 페이지가 **15.11×19.56in**(=letter×1.333)으로 나옴.
+  두 jsPDF 초기화에 **`hotfixes:['px_scaling']`** 추가 → 612×792pt(8.5×11in)로 정확. (좌표/W·H 변경 없음)
 
 ## 배포
 - GitHub: `ledlaputa72/ai-spec-review` (Public)
