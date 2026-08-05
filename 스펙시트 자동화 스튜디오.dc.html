@@ -1888,6 +1888,8 @@ class Component extends DCLogic {
   // CMS field keys exactly, so specs resolve by direct lookup — no fuzzy matching.
   BULK_META=['_draftDate','_publishDate','_publishStatus','_createdDate','_updatedDate','_owner','_id','Title','title'];
   BULK_CORE=['product_id','product_name','model_number_sku','main_category','sub_category','product_status'];
+  // 스펙시트 테이블에 실제로 들어가는 CMS 필드 = Order 48(imaging_device)~484(power_saving). 그 밖은 참조용(Wix CMS).
+  BULK_SPEC_MIN=48; BULK_SPEC_MAX=484;
   _sheetScope(name){
     const n=String(name||'').toLowerCase();
     if(/analog/.test(n)) return 'Camera';
@@ -1899,9 +1901,9 @@ class Component extends DCLogic {
   }
   _catScope(mainCat){
     const n=String(mainCat||'').toLowerCase();
+    if(/camera/.test(n)) return 'Camera';           // "Network_Camera"/"HD_Analog_Camera"도 카메라 → network보다 먼저 검사
     if(/recorder|nvr|dvr/.test(n)) return 'Recorder';
     if(/network|switch|poe/.test(n)) return 'Networking';
-    if(/camera/.test(n)) return 'Camera';
     return null;
   }
   // field key → {name, category} for a scope, from the loaded CMS taxonomy
@@ -1909,7 +1911,7 @@ class Component extends DCLogic {
     const idx={};
     const cms=this.state.cms; if(!cms) return idx;
     const scopes=cms.byScope[scope]?[scope]:(cms.scopes||[]);
-    scopes.forEach(sc=>(cms.byScope[sc]||[]).forEach(c=>c.fields.forEach(f=>{ if(!idx[f.field]) idx[f.field]={name:f.name, category:c.category}; })));
+    scopes.forEach(sc=>(cms.byScope[sc]||[]).forEach(c=>c.fields.forEach(f=>{ if(!idx[f.field]) idx[f.field]={name:f.name, category:c.category, order:f.order}; })));
     return idx;
   }
   pickBulk(){
@@ -1956,25 +1958,27 @@ class Component extends DCLogic {
     const scope=sheet.scope||this._catScope(mainCat)||this.state.scope||'Camera';
     const idx=this._fieldIndex(scope);
     const model=get('model_number_sku')||get('product_id')||('ROW-'+(rowIdx+1));
+    const hasCms=!!this.state.cms;
     const specs=[];
     sheet.cols.forEach(c=>{
       if(this.BULK_CORE.includes(c.h)) return;
       const v=String(r[c.i]==null?'':r[c.i]).trim();
       if(!v) return;
       const meta=idx[c.h];
+      // 스펙시트 테이블 필드만 = CMS Order 48~484. CMS 미로드 시엔 매핑된 필드로 폴백.
+      if(hasCms && (!meta || meta.order<this.BULK_SPEC_MIN || meta.order>this.BULK_SPEC_MAX)) return;
       specs.push({
         name: meta?meta.name:c.h.replace(/_/g,' ').replace(/\b\w/g,m=>m.toUpperCase()),
         value: v,
         section: meta?meta.category:'General',
       });
     });
-    return { id:model, model, subtitle:get('product_name')||model, series:'DIVERSITY', overview:'',
+    return { id:model, model, subtitle:get('product_summary')||get('product_name')||model, series:'DIVERSITY', overview:get('detailed_description')||'',
       specs, scope, fromCms:true, cmsCategory:[mainCat, get('sub_category')].filter(Boolean).join(' / '), cmsStatus:get('product_status') };
   }
   _bulkSpecCount(sheet, rowIdx){
-    const r=sheet.body[rowIdx]; let n=0;
-    sheet.cols.forEach(c=>{ if(this.BULK_CORE.includes(c.h)) return; if(String(r[c.i]==null?'':r[c.i]).trim()) n++; });
-    return n;
+    // 그리드의 "스펙 필드 수"도 실제 스펙시트 규칙(Order 48~484)과 동일하게 집계
+    return this._bulkProduct(sheet, rowIdx).specs.length;
   }
   addBulkSelection(){
     const st=this.state, sheet=(st.bulkData||{})[st.bulkSheet];

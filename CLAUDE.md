@@ -37,6 +37,11 @@ Claude Design 산출물 JS를 로컬에서 직접 고친 부분 → **재export 
   패치: 배열을 파싱해 각 토큰(Camera/Recorder/…)별 제품군에 필드 배치, `"All"`=전 제품군 공통,
   scope 미지정 행은 제외(Wix 시스템 잡필드 자동 제거). 카테고리는 **최소 Order number 순**, 필드는 order 순 정렬.
   → **가장 좋은 해법은 Claude Design 원본에도 동일 수정**을 넣어 export에 포함되게 하는 것.
+- **대량 CMS import 매핑 규칙** (`_bulkProduct`/`_fieldIndex`/`_catScope`/`BULK_SPEC_MIN·MAX`, 2026-08):
+  스펙시트 테이블 필드 = CMS **Order 48(imaging_device)~484(power_saving)** 만 사용. 특수 필드 매핑:
+  model=`model_number_sku`, 제품 타이틀(subtitle)=`product_summary`, overview=`detailed_description`,
+  카테고리=`main_category`/`sub_category`. 그 밖 필드는 참조용(Wix CMS)이라 스펙시트에서 제외.
+  또 `_catScope`는 **camera를 network보다 먼저** 검사(`Network_Camera`가 Networking으로 오판되던 것 수정).
 
 ## 배포
 - GitHub: `ledlaputa72/ai-spec-review` (Public)
