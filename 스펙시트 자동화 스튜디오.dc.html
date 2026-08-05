@@ -158,6 +158,64 @@
     </div>
   </sc-if>
 
+  <!-- ============ BULK CMS PICKER ============ -->
+  <sc-if value="{{ showBulk }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ onCloseBulk }}" style="position:fixed; inset:0; background:rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; z-index:180;">
+      <div onClick="{{ stopClick }}" style="width:92%; height:88%; background:#fff; border-radius:14px; box-shadow:0 30px 80px rgba(10,16,28,.4); display:flex; flex-direction:column; overflow:hidden;">
+        <div style="flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:15px 20px; background:#2f6fb0; color:#fff;">
+          <div style="display:flex; align-items:baseline; gap:10px;">
+            <span style="font-size:15.5px; font-weight:800;">대량 CMS 데이터 선택</span>
+            <span style="font-size:12px; color:#d3e3f2;">{{ bulkFileName }}</span>
+          </div>
+          <button onClick="{{ onCloseBulk }}" title="닫기" style="width:30px; height:30px; border-radius:8px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.22); color:#fff; font-size:14px; cursor:pointer;" style-hover="background:rgba(255,255,255,.3);">✕</button>
+        </div>
+        <div style="flex-shrink:0; display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:12px 20px; border-bottom:1px solid #e6e8ec; background:#f7f8fa;">
+          <select value="{{ bulkSheet }}" onChange="{{ onBulkSheet }}" style="background:#fff; border:1px solid #d9dce1; border-radius:7px; padding:7px 10px; font-size:12.5px; color:#1c2330; font-family:inherit; cursor:pointer;">
+            <sc-for list="{{ bulkSheets }}" as="s" hint-placeholder-count="3">
+              <option value="{{ s.name }}">{{ s.label }}</option>
+            </sc-for>
+          </select>
+          <span style="font-size:11px; font-weight:700; color:#2f6fb0; background:#e8f0f8; border:1px solid #cfe0ef; border-radius:20px; padding:5px 11px;">{{ bulkScopeLabel }}</span>
+          <input value="{{ bulkQuery }}" onChange="{{ onBulkQuery }}" placeholder="모델명 · 제품명 검색" style="background:#fff; border:1px solid #d9dce1; border-radius:7px; padding:7px 11px; font-size:12.5px; color:#1c2330; outline:none; width:220px; font-family:inherit;" />
+          <button onClick="{{ onBulkAll }}" style="background:#fff; border:1px solid #d9dce1; color:#1c2330; border-radius:7px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="border-color:#2f6fb0; color:#2f6fb0;">{{ bulkAllLabel }}</button>
+          <div style="flex:1;"></div>
+          <span style="font-size:12px; color:#5e636b;">총 <b style="color:#1c2330;">{{ bulkTotal }}</b>개 · 표시 {{ bulkShown }}개</span>
+          <button onClick="{{ onBulkAdd }}" style="background:{{ bulkAddBg }}; border:none; color:#fff; border-radius:8px; padding:9px 16px; font-size:12.5px; font-weight:800; cursor:{{ bulkAddCursor }};" style-hover="filter:brightness(1.07);">{{ bulkAddLabel }}</button>
+        </div>
+        <div class="scroll" style="flex:1; overflow:auto; min-height:0;">
+          <div style="min-width:1240px;">
+            <div style="display:grid; grid-template-columns:40px 190px 300px 210px 130px 100px 1fr; gap:0; position:sticky; top:0; z-index:2; background:#eef0f3; border-bottom:1px solid #d9dce1; font-size:10.5px; font-weight:800; color:#6b7079; letter-spacing:.4px;">
+              <span style="padding:9px 10px; display:flex; align-items:center; justify-content:center; border-right:1px solid #e0e3e7;"><input type="checkbox" checked="{{ bulkAllChecked }}" onChange="{{ onBulkAll }}" style="width:14px; height:14px; accent-color:#2f6fb0; cursor:pointer;" /></span>
+              <span style="padding:9px 10px; border-right:1px solid #e0e3e7;">MODEL</span>
+              <span style="padding:9px 10px; border-right:1px solid #e0e3e7;">PRODUCT NAME</span>
+              <span style="padding:9px 10px; border-right:1px solid #e0e3e7;">CATEGORY</span>
+              <span style="padding:9px 10px; border-right:1px solid #e0e3e7;">STATUS</span>
+              <span style="padding:9px 10px; border-right:1px solid #e0e3e7; text-align:right;">SPEC FIELDS</span>
+              <span style="padding:9px 10px;">{{ bulkExtraHead }}</span>
+            </div>
+            <sc-for list="{{ bulkRows }}" as="r" hint-placeholder-count="8">
+              <div onClick="{{ r.onSel }}" style="display:grid; grid-template-columns:40px 190px 300px 210px 130px 100px 1fr; gap:0; border-bottom:1px solid #f0f1f4; background:{{ r.bg }}; cursor:pointer; font-size:12px;" style-hover="background:#f3f7fb;">
+                <span style="padding:8px 10px; display:flex; align-items:center; justify-content:center; border-right:1px solid #f0f1f4;"><input type="checkbox" checked="{{ r.sel }}" onChange="{{ r.onSel }}" onClick="{{ r.stop }}" style="width:14px; height:14px; accent-color:#2f6fb0; cursor:pointer;" /></span>
+                <span style="padding:8px 10px; border-right:1px solid #f0f1f4; font-weight:800; color:#2f6fb0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.model }}</span>
+                <span style="padding:8px 10px; border-right:1px solid #f0f1f4; color:#1c2330; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.name }}</span>
+                <span style="padding:8px 10px; border-right:1px solid #f0f1f4; color:#5e636b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.cat }}</span>
+                <span style="padding:8px 10px; border-right:1px solid #f0f1f4; color:{{ r.stColor }}; font-weight:700;">{{ r.status }}</span>
+                <span style="padding:8px 10px; border-right:1px solid #f0f1f4; text-align:right; color:#44474e; font-variant-numeric:tabular-nums;">{{ r.count }}</span>
+                <span style="padding:8px 10px; color:#8b9099; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.extra }}</span>
+              </div>
+            </sc-for>
+            <sc-if value="{{ bulkEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:28px; text-align:center; font-size:12.5px; color:#979ca4;">일치하는 제품이 없습니다.</div>
+            </sc-if>
+          </div>
+        </div>
+        <sc-if value="{{ bulkNote }}" hint-placeholder-val="{{ false }}">
+          <div style="flex-shrink:0; padding:9px 20px; border-top:1px solid #e6e8ec; background:#fffdf6; font-size:11.5px; color:#8a6d1f;">{{ bulkNote }}</div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
   <!-- ============ CONTENT ============ -->
   <div class="scroll" style="flex:1; overflow:auto; position:relative;">
 
@@ -179,7 +237,7 @@
             <div style="font-size:22px; font-weight:800; color:#941A31; letter-spacing:-.2px;">{{ heroTitle }}</div>
             <div style="font-size:13.5px; color:#5e636b; margin-top:7px; max-width:600px; margin-left:auto; margin-right:auto; line-height:1.5;">{{ heroDesc }}</div>
           </div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:1020px; margin:0 auto;">
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px; max-width:1180px; margin:0 auto;">
             <div style="display:flex; flex-direction:column; gap:9px;">
               <div>
                 <div style="display:flex; align-items:center; gap:7px; font-size:13.5px; font-weight:800; color:#941A31;">📑 제조사 엑셀(.xlsx)</div>
@@ -202,8 +260,19 @@
                 <div style="font-size:11.5px; color:#979ca4; text-align:center;">.pdf · AVYCON 포맷 스펙시트 · 텍스트 추출 → 엑셀 데이터</div>
               </div>
             </div>
+            <div style="display:flex; flex-direction:column; gap:9px;">
+              <div>
+                <div style="display:flex; align-items:center; gap:7px; font-size:13.5px; font-weight:800; color:#2f6fb0;">🗂 대량 CMS 데이터 (.xlsx)</div>
+                <div style="font-size:12px; color:#8b9099; margin-top:4px; line-height:1.45;">LiveProducts 형식의 전체 제품 엑셀을 올려 원하는 제품만 골라 작업 목록에 담습니다.</div>
+              </div>
+              <div onClick="{{ onPickBulk }}" onDragOver="{{ onDragOverBulk }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDropBulk }}" style="border:2px dashed {{ bulkBorder }}; border-radius:14px; background:{{ bulkBg }}; padding:34px 20px; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; transition:.15s; flex:1;">
+                <div style="font-size:32px;">{{ bulkIcon }}</div>
+                <div style="font-size:13.5px; font-weight:700; color:#44474e; text-align:center;">{{ bulkTitle }}</div>
+                <div style="font-size:11.5px; color:#979ca4; text-align:center;">.xlsx · 1행 헤더 = CMS 필드명 · 제품 1행씩</div>
+              </div>
+            </div>
           </div>
-          <sc-if value="{{ hasImportError }}" hint-placeholder-val="{{ true }}"><div style="max-width:1020px; margin:10px auto 0; font-size:11.5px; color:#c0564f; font-weight:600; text-align:center;">{{ importError }}</div></sc-if>
+          <sc-if value="{{ hasImportError }}" hint-placeholder-val="{{ true }}"><div style="max-width:1180px; margin:10px auto 0; font-size:11.5px; color:#c0564f; font-weight:600; text-align:center;">{{ importError }}</div></sc-if>
           <sc-if value="{{ hasSession }}" hint-placeholder-val="{{ true }}">
             <div style="max-width:680px; margin:14px auto 0; display:flex; justify-content:center;">
               <button onClick="{{ onContinue }}" style="background:#941A31; color:#fff; border:none; border-radius:9px; padding:10px 20px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:#a8243a;">↻ 저장된 작업 이어서 하기</button>
@@ -224,6 +293,11 @@
                   </div>
                 </sc-if>
                 <input value="{{ workQuery }}" onChange="{{ onWorkQuery }}" placeholder="모델명 검색" style="background:#fff; border:1px solid #d9dce1; border-radius:8px; padding:8px 11px; font-size:12.5px; color:#1c2330; outline:none; width:190px; font-family:inherit;" />
+                <select value="{{ workPerPage }}" onChange="{{ onWorkPerPage }}" title="페이지당 표시" style="background:#fff; border:1px solid #d9dce1; border-radius:8px; padding:8px 9px; font-size:12.5px; color:#1c2330; outline:none; font-family:inherit; cursor:pointer;">
+                  <sc-for list="{{ perPageOptions }}" as="p" hint-placeholder-count="3">
+                    <option value="{{ p.value }}">{{ p.label }}</option>
+                  </sc-for>
+                </select>
                 <span style="font-size:11.5px; font-weight:700; color:#941A31; background:#f6edef; border:1px solid #e3c9cf; border-radius:20px; padding:6px 12px; white-space:nowrap;">{{ workCount }}개 제품</span>
               </div>
             </div>
@@ -244,7 +318,23 @@
                 </div>
               </sc-for>
               <sc-if value="{{ noWorkRows }}" hint-placeholder-val="{{ true }}">
-                <div style="padding:26px 16px; text-align:center; font-size:12.5px; color:#979ca4;">일치하는 제품이 없습니다.</div>
+                <div style="padding:34px 16px; display:flex; flex-direction:column; align-items:center; gap:7px;">
+                  <div style="font-size:26px; opacity:.5;">🗂</div>
+                  <div style="font-size:13px; font-weight:700; color:#5e636b;">{{ emptyTitle }}</div>
+                  <div style="font-size:12px; color:#979ca4; text-align:center; line-height:1.5; max-width:420px;">{{ emptyDesc }}</div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ hasPages }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 16px; background:#f9fafb; border-top:1px solid #e6e8ec;">
+                  <span style="font-size:11.5px; color:#8b9099;">{{ pageRangeText }}</span>
+                  <div style="display:flex; align-items:center; gap:5px;">
+                    <button onClick="{{ onPagePrev }}" style="background:#fff; border:1px solid #d9dce1; color:{{ prevColor }}; border-radius:7px; padding:6px 11px; font-size:12px; font-weight:700; cursor:{{ prevCursor }};" style-hover="border-color:#941A31;">‹</button>
+                    <sc-for list="{{ pageBtns }}" as="p" hint-placeholder-count="3">
+                      <button onClick="{{ p.onPick }}" style="background:{{ p.bg }}; border:1px solid {{ p.border }}; color:{{ p.color }}; border-radius:7px; min-width:31px; padding:6px 8px; font-size:12px; font-weight:{{ p.weight }}; cursor:pointer;" style-hover="border-color:#941A31;">{{ p.label }}</button>
+                    </sc-for>
+                    <button onClick="{{ onPageNext }}" style="background:#fff; border:1px solid #d9dce1; color:{{ nextColor }}; border-radius:7px; padding:6px 11px; font-size:12px; font-weight:700; cursor:{{ nextCursor }};" style-hover="border-color:#941A31;">›</button>
+                  </div>
+                </div>
               </sc-if>
             </div>
             <sc-if value="{{ showConfirm }}" hint-placeholder-val="{{ false }}">
@@ -1651,7 +1741,8 @@ class Component extends DCLogic {
     if(!dims.length) dims.push({label:'Dimensions', value:''});
     const certs=(s.certs&&Object.keys(s.certs).length)?{...s.certs}:{ndaa:true,ce:true,fcc:true};
     const accessories=Array.from({length:4},(_,i)=>({imgId:'acc'+i, code:'', desc:''}));
-    this.setState({raw:s, activeSample:id||s.id, loaded:true, step:1, assignments:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories});
+    const nextScope=(s.scope && this.state.cms && this.state.cms.byScope[s.scope]) ? s.scope : this.state.scope;
+    this.setState({raw:s, activeSample:id||s.id, scope:nextScope, loaded:true, step:1, assignments:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories});
   }
   // ── CMS field-table import (defines mapping/ordering taxonomy) ────────────
   pickCms(){
@@ -1791,6 +1882,112 @@ class Component extends DCLogic {
       this.setState(st=>({samples:[...products, ...(st.samples||[]).filter(s=>!products.find(p=>p.id===s.id))], importing:false}));
       if(extra.length) this.setState({importNote:extra.length+'개 시트가 더 있습니다 (첫 시트를 불러왔습니다).'});
     }catch(e){ console.error('xlsx import failed', e); this.setState({importing:false, importError:'엑셀을 읽지 못했습니다: '+(e.message||e)}); }
+  }
+  // ── Bulk CMS import (LiveProducts wide format) ──────────────────────────
+  // 1 header row of DB_Field_Name columns, 1 row per product. Headers match the
+  // CMS field keys exactly, so specs resolve by direct lookup — no fuzzy matching.
+  BULK_META=['_draftDate','_publishDate','_publishStatus','_createdDate','_updatedDate','_owner','_id','Title','title'];
+  BULK_CORE=['product_id','product_name','model_number_sku','main_category','sub_category','product_status'];
+  _sheetScope(name){
+    const n=String(name||'').toLowerCase();
+    if(/analog/.test(n)) return 'Camera';
+    if(/camera/.test(n)) return 'Camera';
+    if(/recorder|nvr|dvr/.test(n)) return 'Recorder';
+    if(/network|switch/.test(n)) return 'Networking';
+    if(/other|accessor/.test(n)) return 'Others';
+    return null;
+  }
+  _catScope(mainCat){
+    const n=String(mainCat||'').toLowerCase();
+    if(/recorder|nvr|dvr/.test(n)) return 'Recorder';
+    if(/network|switch|poe/.test(n)) return 'Networking';
+    if(/camera/.test(n)) return 'Camera';
+    return null;
+  }
+  // field key → {name, category} for a scope, from the loaded CMS taxonomy
+  _fieldIndex(scope){
+    const idx={};
+    const cms=this.state.cms; if(!cms) return idx;
+    const scopes=cms.byScope[scope]?[scope]:(cms.scopes||[]);
+    scopes.forEach(sc=>(cms.byScope[sc]||[]).forEach(c=>c.fields.forEach(f=>{ if(!idx[f.field]) idx[f.field]={name:f.name, category:c.category}; })));
+    return idx;
+  }
+  pickBulk(){
+    const inp=document.createElement('input');
+    inp.type='file'; inp.accept='.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    inp.onchange=()=>{ if(inp.files&&inp.files[0]) this.importBulk(inp.files[0]); };
+    inp.click();
+  }
+  async importBulk(file){
+    if(!file) return;
+    if(!/\.xlsx$/i.test(file.name)){ this.setState({importError:'.xlsx 파일을 넣어주세요.', dragOver:false}); return; }
+    this.setState({bulkBusy:true, importError:'', dragOver:false});
+    try{
+      const XLSX=await import('https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs');
+      const buf=await file.arrayBuffer();
+      const wb=XLSX.read(buf, {type:'array'});
+      const sheets={};
+      wb.SheetNames.forEach(n=>{
+        const rows=XLSX.utils.sheet_to_json(wb.Sheets[n], {header:1, blankrows:false, defval:''});
+        if(!rows.length) return;
+        const head=rows[0].map(h=>String(h==null?'':h).trim());
+        const body=rows.slice(1).filter(r=>r.some(c=>String(c==null?'':c).trim()!==''));
+        if(!body.length) return;
+        // keep only columns that carry data and aren't Wix metadata
+        const cols=head.map((h,i)=>({h, i}))
+          .filter(c=>c.h && !this.BULK_META.includes(c.h) && body.some(r=>String(r[c.i]==null?'':r[c.i]).trim()!==''));
+        sheets[n]={name:n, head, body, cols, scope:this._sheetScope(n)};
+      });
+      const names=Object.keys(sheets);
+      if(!names.length) throw new Error('제품 행을 찾지 못했습니다.');
+      const first=names.find(n=>/all\s*data/i.test(n))||names[0];
+      this.setState({
+        bulkBusy:false, showBulk:true, bulkFile:file.name, bulkData:sheets,
+        bulkSheet:first, bulkSel:{}, bulkQuery:'',
+        bulkNote: this.state.cms ? '' : 'CMS 매핑 테이블이 로드되지 않았습니다. 필드 키 기준으로는 그대로 매핑되지만, 표시명·카테고리는 필드 키로 대체됩니다.',
+      });
+    }catch(e){ console.error('bulk import failed', e); this.setState({bulkBusy:false, importError:'대량 데이터를 읽지 못했습니다: '+(e.message||e)}); }
+  }
+  // one grid row → a product object shaped exactly like the existing samples
+  _bulkProduct(sheet, rowIdx){
+    const r=sheet.body[rowIdx];
+    const get=(key)=>{ const i=sheet.head.indexOf(key); return i<0?'':String(r[i]==null?'':r[i]).trim(); };
+    const mainCat=get('main_category');
+    const scope=sheet.scope||this._catScope(mainCat)||this.state.scope||'Camera';
+    const idx=this._fieldIndex(scope);
+    const model=get('model_number_sku')||get('product_id')||('ROW-'+(rowIdx+1));
+    const specs=[];
+    sheet.cols.forEach(c=>{
+      if(this.BULK_CORE.includes(c.h)) return;
+      const v=String(r[c.i]==null?'':r[c.i]).trim();
+      if(!v) return;
+      const meta=idx[c.h];
+      specs.push({
+        name: meta?meta.name:c.h.replace(/_/g,' ').replace(/\b\w/g,m=>m.toUpperCase()),
+        value: v,
+        section: meta?meta.category:'General',
+      });
+    });
+    return { id:model, model, subtitle:get('product_name')||model, series:'DIVERSITY', overview:'',
+      specs, scope, fromCms:true, cmsCategory:[mainCat, get('sub_category')].filter(Boolean).join(' / '), cmsStatus:get('product_status') };
+  }
+  _bulkSpecCount(sheet, rowIdx){
+    const r=sheet.body[rowIdx]; let n=0;
+    sheet.cols.forEach(c=>{ if(this.BULK_CORE.includes(c.h)) return; if(String(r[c.i]==null?'':r[c.i]).trim()) n++; });
+    return n;
+  }
+  addBulkSelection(){
+    const st=this.state, sheet=(st.bulkData||{})[st.bulkSheet];
+    if(!sheet) return;
+    const keys=Object.keys(st.bulkSel||{}).filter(k=>st.bulkSel[k]);
+    if(!keys.length) return;
+    const products=keys.map(k=>this._bulkProduct(sheet, Number(k))).filter(Boolean);
+    this.setState(s=>({
+      samples:[...products, ...(s.samples||[]).filter(x=>!products.find(p=>p.id===x.id))],
+      showBulk:false, bulkSel:{},
+      savedToast:products.length+'개 제품을 작업 목록에 추가했습니다.',
+    }));
+    clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
   }
   onDragOver(e){ e.preventDefault(); if(!this.state.dragOver) this.setState({dragOver:true}); }
   onDragLeave(e){ e.preventDefault(); this.setState({dragOver:false}); }
@@ -2494,6 +2691,73 @@ class Component extends DCLogic {
       if(!f) return;
       if(/\.pdf$/i.test(f.name)||f.type==='application/pdf') this.importPdf(f);
       else this.setState({importError:'PDF 파일만 이 영역에 놓을 수 있습니다.'}); };
+    // bulk CMS entry point
+    const overB=st.dragOver==='bulk';
+    out.onPickBulk=()=>{ this.setState({importError:''}); this.pickBulk(); };
+    out.onDragOverBulk=(e)=>{ e.preventDefault(); if(st.dragOver!=='bulk') this.setState({dragOver:'bulk'}); };
+    out.onDropBulk=(e)=>{ e.preventDefault(); this.setState({dragOver:false, importError:''});
+      const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+      if(!f) return;
+      if(/\.xlsx$/i.test(f.name)) this.importBulk(f);
+      else this.setState({importError:'대량 CMS 데이터는 .xlsx 파일만 지원합니다.'}); };
+    out.bulkBorder=overB?'#2f6fb0':'#bcc7d6'; out.bulkBg=overB?'#f2f7fc':'#fff';
+    out.bulkIcon=st.bulkBusy?'⏳':'🗂';
+    out.bulkTitle=st.bulkBusy?'대량 데이터 분석 중…':(overB?'여기에 놓으세요':'전체 제품 엑셀을 끌어다 놓기');
+
+    // bulk picker grid
+    const bd=st.bulkData||{}, bsheet=bd[st.bulkSheet];
+    out.showBulk=!!st.showBulk;
+    out.bulkFileName=st.bulkFile||'';
+    out.bulkNote=st.bulkNote||'';
+    out.onCloseBulk=()=>this.setState({showBulk:false});
+    out.bulkSheets=Object.keys(bd).map(n=>({name:n, label:n+(bd[n].scope?' · '+bd[n].scope:'')+' ('+bd[n].body.length+')'}));
+    out.bulkSheet=st.bulkSheet||'';
+    out.onBulkSheet=(e)=>this.setState({bulkSheet:e.target.value, bulkSel:{}});
+    out.bulkScopeLabel=bsheet?((bsheet.scope||this.T('제품군 자동 판별','Scope: auto'))+' · '+bsheet.cols.length+this.T('개 열','cols')):'';
+    out.bulkQuery=st.bulkQuery||'';
+    out.onBulkQuery=(e)=>this.setState({bulkQuery:e.target.value});
+    out.bulkExtraHead=bsheet?bsheet.cols.filter(c=>!this.BULK_CORE.includes(c.h)).slice(0,4).map(c=>c.h).join(' · '):'';
+    let brows=[];
+    if(bsheet){
+      const bq=(st.bulkQuery||'').trim().toLowerCase();
+      const ix=(k)=>bsheet.head.indexOf(k);
+      const iModel=ix('model_number_sku'), iName=ix('product_name'), iMain=ix('main_category'), iSub=ix('sub_category'), iSt=ix('product_status'), iPid=ix('product_id');
+      const cell=(r,i)=>i<0?'':String(r[i]==null?'':r[i]).trim();
+      const extraCols=bsheet.cols.filter(c=>!this.BULK_CORE.includes(c.h)).slice(0,4);
+      bsheet.body.forEach((r,i)=>{
+        const model=cell(r,iModel)||cell(r,iPid)||('ROW-'+(i+1));
+        const name=cell(r,iName);
+        if(bq && !(model+' '+name).toLowerCase().includes(bq)) return;
+        const stx=cell(r,iSt);
+        const sel=!!(st.bulkSel||{})[i];
+        brows.push({
+          key:String(i), model, name,
+          cat:[cell(r,iMain), cell(r,iSub)].filter(Boolean).join(' / '),
+          status:stx||'—',
+          stColor:/publish|active|live/i.test(stx)?'#3a6b46':(/draft|hold/i.test(stx)?'#8a6d1f':'#8b9099'),
+          count:this._bulkSpecCount(bsheet, i),
+          // big JSON blobs stay intact in the product; the grid only previews them
+          extra:extraCols.map(c=>{ const v=cell(r,c.i); return v.length>28?v.slice(0,28)+'…':v; }).filter(Boolean).join(' · '),
+          sel, bg: sel?'#eef5fb':'#fff',
+          stop:(e)=>e.stopPropagation(),
+          onSel:(e)=>{ e.stopPropagation(); const s=Object.assign({}, this.state.bulkSel||{}); if(s[i]) delete s[i]; else s[i]=true; this.setState({bulkSel:s}); },
+        });
+      });
+    }
+    out.bulkRows=brows; out.bulkEmpty=!!bsheet && brows.length===0;
+    out.bulkTotal=bsheet?bsheet.body.length:0; out.bulkShown=brows.length;
+    const bselN=Object.keys(st.bulkSel||{}).filter(k=>(st.bulkSel||{})[k]).length;
+    out.bulkAllChecked=brows.length>0 && brows.every(r=>r.sel);
+    out.bulkAllLabel=out.bulkAllChecked?this.T('전체 해제','Clear all'):this.T('전체 선택','Select all');
+    out.onBulkAll=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation();
+      const on=!(brows.length>0 && brows.every(r=>r.sel));
+      const s=on?Object.fromEntries(brows.map(r=>[r.key,true])):{};
+      this.setState({bulkSel:s}); };
+    out.bulkAddLabel=bselN?(this.T('선택 ','Add ')+bselN+this.T('개 작업 목록에 추가',' to work list')):this.T('제품을 선택하세요','Select products');
+    out.bulkAddBg=bselN?'#2f6fb0':'#b8c2cc';
+    out.bulkAddCursor=bselN?'pointer':'default';
+    out.onBulkAdd=()=>{ if(bselN) this.addBulkSelection(); };
+
     out.xlsxBorder=overX?'#941A31':'#bcc7d6'; out.xlsxBg=overX?'#fbf4f5':'#fff';
     out.pdfBorder=overP?'#941A31':'#bcc7d6'; out.pdfBg=overP?'#fbf4f5':'#fff';
     out.xlsxIcon=busyX?'⏳':'📑'; out.pdfIcon=busyP?'⏳':'📄';
@@ -2509,24 +2773,54 @@ class Component extends DCLogic {
     const all=(st.samples||[]).map(s=>{
       const h=hist[s.id]||null;
       const isSample=(this._sampleIds||[]).includes(s.id);
-      const src=s.fromPdf?'PDF':(isSample?'샘플':'엑셀');
+      const src=s.fromCms?'CMS':(s.fromPdf?'PDF':(isSample?'샘플':'엑셀'));
       return {
         id:s.id, model:s.model, title:s.subtitle, count:s.specs.length, src,
-        srcColor: s.fromPdf?'#8a5a12':(isSample?'#941A31':'#3a6b46'),
-        srcBg: s.fromPdf?'#fbf1de':(isSample?'#f6edef':'#e9f3ec'),
+        srcColor: s.fromCms?'#2f6fb0':(s.fromPdf?'#8a5a12':(isSample?'#941A31':'#3a6b46')),
+        srcBg: s.fromCms?'#e8f0f8':(s.fromPdf?'#fbf1de':(isSample?'#f6edef':'#e9f3ec')),
         status: h?(h.saved?('저장됨 · '+h.date):('작업함 · '+h.date)):'미작업',
         stColor: h?(h.saved?'#3a6b46':'#5e636b'):'#a8adb5',
         onLoad:()=>this.loadSample(s.id),
       };
     });
-    const rows=(q?all.filter(r=>(r.model+' '+(r.title||'')).toLowerCase().includes(q)):all).map(r=>Object.assign(r,{
+    const filtered=q?all.filter(r=>(r.model+' '+(r.title||'')).toLowerCase().includes(q)):all;
+    const per=Number(st.workPerPage||20);
+    const pageCount=Math.max(1, Math.ceil(filtered.length/per));
+    const page=Math.min(Math.max(1, st.workPage||1), pageCount);
+    const rows=filtered.slice((page-1)*per, page*per).map(r=>Object.assign(r,{
       sel: !!(st.workSel||{})[r.id],
       rowBg: (st.workSel||{})[r.id] ? '#faf6f7' : '#fff',
       stop:(e)=>e.stopPropagation(),
       onSel:(e)=>{ e.stopPropagation(); const s=Object.assign({}, this.state.workSel||{}); if(s[r.id]) delete s[r.id]; else s[r.id]=true; this.setState({workSel:s}); },
     }));
     out.workRows=rows; out.noWorkRows=rows.length===0; out.workCount=all.length;
-    out.workQuery=st.workQuery||''; out.onWorkQuery=(e)=>this.setState({workQuery:e.target.value});
+    out.emptyTitle=all.length===0
+      ? this.T('작업 목록이 비어 있습니다','The work list is empty')
+      : this.T('일치하는 제품이 없습니다','No matching products');
+    out.emptyDesc=all.length===0
+      ? this.T('위 세 가지 방법 중 하나로 제품을 불러오세요. 대량 CMS 데이터를 올리면 원하는 제품만 골라 이 목록에 담을 수 있습니다.','Import products with any of the three options above. Bulk CMS data lets you pick only the products you want into this list.')
+      : this.T('검색어를 지우면 전체 목록이 다시 표시됩니다.','Clear the search to see the full list again.');
+    out.workQuery=st.workQuery||''; out.onWorkQuery=(e)=>this.setState({workQuery:e.target.value, workPage:1});
+    out.workPerPage=String(per);
+    out.perPageOptions=[20,50,100].map(n=>({value:String(n), label:n+this.T('개씩',' / page')}));
+    out.onWorkPerPage=(e)=>this.setState({workPerPage:Number(e.target.value), workPage:1});
+    out.hasPages=filtered.length>per;
+    const from=filtered.length?((page-1)*per+1):0, to=Math.min(page*per, filtered.length);
+    out.pageRangeText=from+'–'+to+' / '+filtered.length+this.T('개',' items');
+    out.onPagePrev=()=>{ if(page>1) this.setState({workPage:page-1}); };
+    out.onPageNext=()=>{ if(page<pageCount) this.setState({workPage:page+1}); };
+    out.prevColor=page>1?'#44474e':'#c6cad0'; out.prevCursor=page>1?'pointer':'default';
+    out.nextColor=page<pageCount?'#44474e':'#c6cad0'; out.nextCursor=page<pageCount?'pointer':'default';
+    // windowed page numbers with ellipsis so 15 pages don't overflow the bar
+    const nums=[];
+    for(let i=1;i<=pageCount;i++){
+      if(i===1||i===pageCount||Math.abs(i-page)<=1) nums.push(i);
+      else if(nums[nums.length-1]!=='…') nums.push('…');
+    }
+    out.pageBtns=nums.map((n,i)=>n==='…'
+      ? {label:'…', bg:'transparent', border:'transparent', color:'#a8adb5', weight:'600', onPick:()=>{}}
+      : {label:String(n), bg:n===page?'#941A31':'#fff', border:n===page?'#941A31':'#d9dce1',
+         color:n===page?'#fff':'#44474e', weight:n===page?'800':'600', onPick:()=>this.setState({workPage:n})});
     const selIds=Object.keys(st.workSel||{}).filter(k=>(st.workSel||{})[k]);
     out.selCount=selIds.length; out.hasSel=selIds.length>0;
     out.allSel=rows.length>0 && rows.every(r=>r.sel);
