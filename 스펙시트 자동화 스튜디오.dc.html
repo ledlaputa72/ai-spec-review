@@ -1686,28 +1686,46 @@ class Component extends DCLogic {
       if(ci.category>=0 && (ci.field>=0||ci.name>=0)){ hi=i; col=ci; break; }
     }
     if(hi<0) throw new Error('헤더(Scope/Category/Field/Name/Order)를 찾지 못했습니다.');
-    const scopes=[]; const byScope={}; let curScope=null;
     const trueish=v=>{ const t=String(v||'').toLowerCase().trim(); return t==='y'||t==='yes'||t==='true'||t==='1'||t==='o'||t==='표시'; };
+    // Product_Scope 셀은 JSON 배열(["Camera","Recorder"]) 또는 콤마 구분 문자열 → 토큰 배열로 파싱
+    const parseScopes=v=>{ const s=String(v==null?'':v).trim(); if(!s) return [];
+      let arr=null; try{ const j=JSON.parse(s); if(Array.isArray(j)) arr=j; }catch(e){}
+      if(!arr) arr=s.replace(/^\[|\]$/g,'').split(',').map(x=>x.replace(/^["'\s]+|["'\s]+$/g,''));
+      return arr.map(x=>String(x).trim()).filter(Boolean); };
+    // 1차: 행 수집 + 실제 제품군 목록(등장 순, "All" 제외)
+    const recs=[]; const scopeList=[]; const hasScopeCol=col.scope>=0; let rowSeq=0;
     for(let i=hi+1;i<rows.length;i++){
       const r=rows[i]; const g=idx=>idx>=0?String(r[idx]==null?'':r[idx]).trim():'';
-      let scope=g(col.scope); const category=g(col.category);
-      let field=g(col.field); let name=g(col.name);
-      if(col.scope>=0 && scope) curScope=scope; scope=curScope||(scopes[0]||'Default');
+      const category=g(col.category); let field=g(col.field); let name=g(col.name);
       if(!category && !field && !name) continue;
       if(!name && field) name=field.replace(/_/g,' ').replace(/\b\w/g,m=>m.toUpperCase());
       if(!field && name) field=this.norm(name);
       if(!field) continue;
-      if(!byScope[scope]){ byScope[scope]=[]; scopes.push(scope); }
-      let cat=byScope[scope].find(c=>c.category===category);
-      if(!cat){ cat={category:category||'General', specSheet: col.spec<0?true:false, fields:[]}; byScope[scope].push(cat); }
+      const toks=hasScopeCol?parseScopes(r[col.scope]):[];
       const on=col.spec>=0?trueish(g(col.spec)):true;
-      if(on) cat.specSheet=true;
-      const order=col.order>=0?(parseInt(g(col.order),10)||9999):(cat.fields.length+1);
-      cat.fields.push({field, name, order});
+      const order=col.order>=0?(parseInt(g(col.order),10)||9999):(++rowSeq);
+      recs.push({toks, category, field, name, on, order});
+      toks.forEach(t=>{ if(t!=='All' && !scopeList.includes(t)) scopeList.push(t); });
     }
-    if(!scopes.length) throw new Error('데이터 행을 찾지 못했습니다.');
-    // sort fields by order within each category
-    scopes.forEach(s=>byScope[s].forEach(c=>c.fields.sort((a,b)=>a.order-b.order)));
+    if(!recs.length) throw new Error('데이터 행을 찾지 못했습니다.');
+    if(!scopeList.length) scopeList.push('Default'); // scope 컬럼 없음 → 단일 제품군
+    // 2차: 각 필드를 제품군에 배치 ("All"=전 제품군 공통, scope 미지정=표시 안 함)
+    const scopes=scopeList.slice(); const byScope={}; scopes.forEach(s=>byScope[s]=[]);
+    const place=(scope,rec)=>{
+      let cat=byScope[scope].find(c=>c.category===rec.category);
+      if(!cat){ cat={category:rec.category||'General', specSheet: col.spec<0?true:false, fields:[]}; byScope[scope].push(cat); }
+      if(rec.on) cat.specSheet=true;
+      cat.fields.push({field:rec.field, name:rec.name, order:rec.order});
+    };
+    recs.forEach(rec=>{
+      const targets=(!hasScopeCol||rec.toks.includes('All'))?scopes:rec.toks;
+      targets.forEach(s=>{ if(byScope[s]) place(s,rec); });
+    });
+    // 카테고리 = 최소 Order number 순, 필드 = 카테고리 내 order 순
+    scopes.forEach(s=>{
+      byScope[s].forEach(c=>c.fields.sort((a,b)=>a.order-b.order));
+      byScope[s].sort((a,b)=>Math.min(...a.fields.map(f=>f.order)) - Math.min(...b.fields.map(f=>f.order)));
+    });
     return {scopes, byScope};
   }
   async importCms(file){
