@@ -29,6 +29,15 @@ Claude Design에서 내보낸 **정적 웹사이트**. AVYCON CCTV 제품의 스
   → 라이브에서도 AI 검수를 쓰려면 `api/ai-review.js`(Anthropic 프록시) + `ANTHROPIC_API_KEY` 서버리스 함수 추가 필요(현재 미구현).
 - 편집기 아티팩트 `.thumbnail`, `.image-slots.state.json`은 배포 불필요 → **`.gitignore`로 제외**.
 
+## ⚠️ 재export 시 재적용 필요 패치 (local-only fixes)
+Claude Design 산출물 JS를 로컬에서 직접 고친 부분 → **재export 시 사라짐**. 재export 후 diff 확인해 재적용할 것.
+- **`_cmsFromRows` — Product_Scope 배열 파싱 & 표시 순서** (커밋 `d1b4612`, 2026-08):
+  CMS 엑셀의 `Product_Scope` 컬럼은 `["Camera","Recorder"]` 같은 **JSON 배열**. 원본 코드는 이 문자열을
+  통째로 하나의 제품군으로 취급 → 가짜 제품군 ~30개 생성, 표시 순서 탭 오작동.
+  패치: 배열을 파싱해 각 토큰(Camera/Recorder/…)별 제품군에 필드 배치, `"All"`=전 제품군 공통,
+  scope 미지정 행은 제외(Wix 시스템 잡필드 자동 제거). 카테고리는 **최소 Order number 순**, 필드는 order 순 정렬.
+  → **가장 좋은 해법은 Claude Design 원본에도 동일 수정**을 넣어 export에 포함되게 하는 것.
+
 ## 배포
 - GitHub: `ledlaputa72/ai-spec-review` (Public)
 - Vercel: 저장소 Import → Framework **"Other"**(빌드/명령 비움, 환경변수 없음) → Deploy.
