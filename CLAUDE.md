@@ -45,6 +45,15 @@ Claude Design 산출물 JS를 로컬에서 직접 고친 부분 → **재export 
 - **PDF 저장 페이지 크기 = US Letter** (`savePdf`/도움말 PDF의 jsPDF 옵션, 2026-08):
   jsPDF `unit:'px'`가 px→pt를 96/72로 잘못 환산해 페이지가 **15.11×19.56in**(=letter×1.333)으로 나옴.
   두 jsPDF 초기화에 **`hotfixes:['px_scaling']`** 추가 → 612×792pt(8.5×11in)로 정확. (좌표/W·H 변경 없음)
+- **UI 기본 언어 = 영어** (`state.lang` 초기값 + init, 2026-08): 저장된 선호(`localStorage 'specstudio:lang'`) 없으면
+  `'en'`. 이전엔 `'ko'`라 시크릿모드에서 한국어로 뜨던 것 수정.
+
+## 팀 공유 작업 저장 (Vercel KV / Upstash) — 백엔드
+- 목적: **누가 저장하든 마지막 저장 상태를 모든 사용자·기기가 공유**(localStorage는 브라우저별이라 불가).
+- 서버리스 API: `api/state.js` — 제품 model별 작업문서 저장/불러오기 + work-list 인덱스 + 히스토리 로그.
+  KV 키: `sss:doc:<model>`(문서), `sss:index`(해시), `sss:history`(리스트, 최대 500). 의존성 `@upstash/redis`(`package.json`).
+- ⚠️ **Vercel 설정(1회)**: Storage → **KV(Upstash Redis) 스토어 생성 → 이 프로젝트에 Connect** → `KV_REST_API_URL`/`KV_REST_API_TOKEN` 주입 → **재배포**. 없으면 `/api/state`가 503.
+- 프론트(상단바 저장 버튼 · 히스토리 패널 · 시작 시 서버 로드)는 **Claude Design 산출물 JS에 삽입** → 재export 시 사라짐(재적용 필요). ⇒ Claude Design 원본에 넣는 게 최선.
 
 ## 배포
 - GitHub: `ledlaputa72/ai-spec-review` (Public)
