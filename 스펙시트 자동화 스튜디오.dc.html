@@ -1214,7 +1214,7 @@ class Component extends DCLogic {
     reviewFilter:null, expandedReviews:{}, sheetVersion:'reviewed', applyReview:true, applyCms:true,
     customRules:[], dismissedCands:{}, cands:[], showCands:false, candScanned:false, candSrc:0,
     newRule:{find:'',repl:'',cat:'표기',note:'',ci:false,regex:false,scope:''}, libMsg:'',
-    cms:null, samples:null, qc:null, lang:'ko'
+    cms:null, samples:null, qc:null, lang:'en'
   };
 
   CERTS = [
@@ -1241,7 +1241,7 @@ class Component extends DCLogic {
       const qc = await import(url);
       try{ const isrc=await fetch('./i18n.js').then(r=>r.text()); const iurl=URL.createObjectURL(new Blob([isrc],{type:'text/javascript'})); this._i18n=await import(iurl); }catch(e){ console.warn('i18n load failed', e); }
       let hasSession=false; try{ hasSession=!!localStorage.getItem('specstudio:session'); }catch(e){}
-      let lang='ko'; try{ lang=localStorage.getItem('specstudio:lang')||'ko'; }catch(e){}
+      let lang='en'; try{ lang=localStorage.getItem('specstudio:lang')||'en'; }catch(e){}  // 기본 영어(저장된 선호 없으면)
       const {lib, dismissed}=this._loadRuleLib(qc);
       this._sampleIds=(samples||[]).map(s=>s.id);
       this.setState({cms, defaultCms:cms, samples, qc, ready:true, hasSession, lang, customRules:lib, dismissedCands:dismissed, workHist:this._loadHist()});
