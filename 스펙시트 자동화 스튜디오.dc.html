@@ -58,7 +58,35 @@
       <sc-if value="{{ canShare }}" hint-placeholder-val="{{ true }}">
       <button onClick="{{ onSave }}" style="display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); color:#fff; border-radius:8px; padding:7px 13px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:rgba(255,255,255,.22);">💾 저장</button>
       </sc-if>
-      <button onClick="{{ onToggleHistory }}" title="저장 히스토리" style="display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); color:#e3e9f2; border-radius:8px; padding:7px 12px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:rgba(255,255,255,.16);">📜 히스토리</button>
+      <div style="position:relative;">
+        <button onClick="{{ onToggleHistory }}" title="히스토리" style="display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); color:#fff; border-radius:8px; padding:7px 13px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:rgba(255,255,255,.22);">📜 히스토리</button>
+        <sc-if value="{{ showHistory }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; right:0; top:42px; width:340px; background:#fff; border:1px solid #e0e3e7; border-radius:11px; box-shadow:0 12px 34px rgba(20,30,50,.22); z-index:70; overflow:hidden;">
+            <div style="padding:12px 14px; border-bottom:1px solid #eceef1; background:#f7f8fa;">
+              <div style="font-size:10.5px; font-weight:800; color:#8b9099; letter-spacing:.5px; margin-bottom:6px;">작업자 이름</div>
+              <input value="{{ editorName }}" onChange="{{ onEditorName }}" placeholder="이름을 입력하세요" style="width:100%; box-sizing:border-box; background:#fff; border:1px solid #d9dce1; border-radius:7px; padding:7px 10px; font-size:12.5px; color:#1c2330; outline:none; font-family:inherit;" />
+              <div style="display:flex; align-items:center; gap:6px; margin-top:8px;">
+                <span style="width:7px; height:7px; border-radius:50%; background:{{ serverDot }};"></span>
+                <span style="font-size:11px; color:#8b9099;">{{ serverLabel }}</span>
+              </div>
+            </div>
+            <div class="scroll" style="max-height:280px; overflow:auto;">
+              <sc-for list="{{ historyRows }}" as="h" hint-placeholder-count="3">
+                <div style="display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; padding:10px 14px; border-bottom:1px solid #f2f3f5;">
+                  <div style="min-width:0;">
+                    <div style="font-size:12.5px; font-weight:800; color:#941A31; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ h.model }}</div>
+                    <div style="font-size:11px; color:#8b9099; margin-top:2px;">{{ h.by }}</div>
+                  </div>
+                  <span style="font-size:11px; color:#979ca4; white-space:nowrap;">{{ h.when }}</span>
+                </div>
+              </sc-for>
+              <sc-if value="{{ noHistory }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:22px 14px; text-align:center; font-size:12px; color:#979ca4; line-height:1.5;">{{ historyEmpty }}</div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+      </div>
       <sc-if value="{{ canShare }}" hint-placeholder-val="{{ true }}">
       <div style="position:relative;">
         <button onClick="{{ onToggleExport }}" style="display:flex; align-items:center; gap:7px; background:#fff; border:none; color:#941A31; border-radius:8px; padding:7px 14px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:#f3e7ea;">⤓ 공유 · 내보내기</button>
@@ -102,26 +130,26 @@
       </button>
     </sc-for>
     <div style="flex:1;"></div>
-    <div style="display:flex; align-items:center; gap:8px; padding-right:4px;">
-      <!-- 화면 보기 툴바 (레이아웃·에디터 공통) -->
-      <sc-if value="{{ canView }}" hint-placeholder-val="{{ true }}">
-      <div style="display:flex; align-items:center; gap:5px;">
-        <div style="display:flex; background:#eceef1; border-radius:7px; padding:2px;">
+    <sc-if value="{{ canView }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; align-items:center; gap:8px; padding-right:10px;">
+        <div style="display:flex; background:#eff1f4; border-radius:7px; padding:2px;">
           <sc-for list="{{ pageTabs }}" as="p" hint-placeholder-count="3">
-            <button onClick="{{ p.onClick }}" title="{{ p.title }}" style="border:none; cursor:pointer; font-size:11.5px; font-weight:700; padding:5px 9px; border-radius:5px; background:{{ p.bg }}; color:{{ p.color }};">{{ p.label }}</button>
+            <button onClick="{{ p.onClick }}" title="{{ p.title }}" style="border:none; cursor:pointer; font-size:11.5px; font-weight:700; padding:5px 10px; border-radius:5px; background:{{ p.bg }}; color:{{ p.color }};">{{ p.label }}</button>
           </sc-for>
         </div>
-        <div style="width:1px; height:20px; background:#e0e3e7; margin:0 2px;"></div>
-        <button onClick="{{ onZoomOut }}" title="축소" aria-label="축소" style="width:28px; height:28px; border:1px solid #d9dce1; background:#fff; border-radius:6px; cursor:pointer; font-size:16px; color:#44474e; display:flex; align-items:center; justify-content:center;" style-hover="border-color:#941A31;">−</button>
-        <span style="min-width:44px; text-align:center; font-size:12px; font-weight:700; color:#44474e;">{{ zoomPct }}%</span>
-        <button onClick="{{ onZoomIn }}" title="확대" aria-label="확대" style="width:28px; height:28px; border:1px solid #d9dce1; background:#fff; border-radius:6px; cursor:pointer; font-size:15px; color:#44474e; display:flex; align-items:center; justify-content:center;" style-hover="border-color:#941A31;">＋</button>
-        <div style="width:1px; height:20px; background:#e0e3e7; margin:0 2px;"></div>
-        <button onClick="{{ onFitWidth }}" title="너비 맞춤" aria-label="너비 맞춤" style="width:28px; height:28px; border:1px solid #d9dce1; background:{{ fitWidthBg }}; color:{{ fitWidthColor }}; border-radius:6px; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center;">↔</button>
-        <button onClick="{{ onFitHeight }}" title="세로 맞춤" aria-label="세로 맞춤" style="width:28px; height:28px; border:1px solid #d9dce1; background:{{ fitHeightBg }}; color:{{ fitHeightColor }}; border-radius:6px; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center;">↕</button>
-        <button onClick="{{ onFitPage }}" title="페이지 맞춤" aria-label="페이지 맞춤" style="width:28px; height:28px; border:1px solid #d9dce1; background:{{ fitPageBg }}; color:{{ fitPageColor }}; border-radius:6px; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center;">▭</button>
+        <div style="display:flex; align-items:center; gap:2px; background:#eff1f4; border-radius:7px; padding:2px;">
+          <button onClick="{{ onZoomOut }}" title="축소" style="width:26px; height:24px; border:none; background:transparent; border-radius:5px; cursor:pointer; font-size:15px; color:#44474e; line-height:1;" style-hover="background:#fff;">−</button>
+          <span style="min-width:42px; text-align:center; font-size:11.5px; font-weight:700; color:#44474e; font-variant-numeric:tabular-nums;">{{ zoomPct }}%</span>
+          <button onClick="{{ onZoomIn }}" title="확대" style="width:26px; height:24px; border:none; background:transparent; border-radius:5px; cursor:pointer; font-size:15px; color:#44474e; line-height:1;" style-hover="background:#fff;">+</button>
+        </div>
+        <div style="display:flex; align-items:center; gap:2px; background:#eff1f4; border-radius:7px; padding:2px;">
+          <button onClick="{{ onFitWidth }}" title="너비 맞춤" style="width:28px; height:24px; border:none; background:{{ fitWidthBg }}; color:{{ fitWidthColor }}; border-radius:5px; cursor:pointer; font-size:12px;" style-hover="filter:brightness(.97);">↔</button>
+          <button onClick="{{ onFitHeight }}" title="세로 맞춤" style="width:28px; height:24px; border:none; background:{{ fitHeightBg }}; color:{{ fitHeightColor }}; border-radius:5px; cursor:pointer; font-size:12px;" style-hover="filter:brightness(.97);">↕</button>
+          <button onClick="{{ onFitPage }}" title="페이지 맞춤" style="width:28px; height:24px; border:none; background:{{ fitPageBg }}; color:{{ fitPageColor }}; border-radius:5px; cursor:pointer; font-size:12px;" style-hover="filter:brightness(.97);">▭</button>
+        </div>
       </div>
-      <div style="width:1px; height:24px; background:#e3e6ea;"></div>
-      </sc-if>
+    </sc-if>
+    <div style="display:flex; align-items:center; padding-right:4px;">
       <button onClick="{{ onOpenHelp }}" title="도움말" aria-label="도움말" style="width:34px; height:34px; border-radius:50%; background:#fff; border:1.5px solid #e3c9cf; color:#941A31; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;" style-hover="background:#f6edef; border-color:#941A31;">?</button>
     </div>
   </div>
@@ -634,8 +662,6 @@
             </sc-if>
           </div>
 
-          <!-- 페이지 보기·확대/맞춤 컨트롤은 상단 스텝바 툴바로 이동됨 -->
-
           <!-- 다음 -->
           <div style="padding:16px 18px;">
             <button onClick="{{ onToStep4 }}" style="width:100%; background:#941A31; color:#fff; border:none; border-radius:8px; padding:12px 18px; font-size:13.5px; font-weight:700; cursor:pointer;" style-hover="background:#a8243a;">사진·정보 편집 →</button>
@@ -777,37 +803,6 @@
       </div>
     </sc-if>
   </div>
-
-  <!-- ============ SAVE HISTORY ============ -->
-  <sc-if value="{{ showHistory }}" hint-placeholder-val="{{ false }}">
-    <div style="position:fixed; inset:0; z-index:195; display:flex; align-items:center; justify-content:center;">
-      <div onClick="{{ onToggleHistory }}" style="position:absolute; inset:0; background:rgba(20,30,50,.45);"></div>
-      <div style="position:relative; width:560px; max-width:92vw; max-height:80vh; background:#fff; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.35); display:flex; flex-direction:column; overflow:hidden;">
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:15px 20px; border-bottom:1px solid #eceef1;">
-          <div style="font-size:15px; font-weight:800; color:#941A31;">📜 저장 히스토리</div>
-          <button onClick="{{ onToggleHistory }}" style="width:30px; height:30px; border:1px solid #e6e8ec; background:#f5f6f8; border-radius:8px; cursor:pointer; font-size:16px; color:#5e636b;">×</button>
-        </div>
-        <div style="display:flex; align-items:center; gap:10px; padding:11px 20px; border-bottom:1px solid #f2f3f5; background:#faf9fb;">
-          <span style="font-size:12px; font-weight:700; color:#5e636b; white-space:nowrap;">작업자 이름</span>
-          <input value="{{ editorName }}" onChange="{{ onEditorName }}" placeholder="저장 기록에 표시할 이름" style="flex:1; border:1px solid #d9dce1; border-radius:7px; padding:7px 11px; font-size:12.5px; color:#1c2330; outline:none; font-family:inherit;" />
-        </div>
-        <div class="scroll" style="overflow:auto; padding:6px 10px 10px;">
-          <sc-for list="{{ historyItems }}" as="h" hint-placeholder-count="6">
-            <div style="display:flex; align-items:center; gap:12px; padding:10px 8px; border-bottom:1px solid #f2f3f5;">
-              <span style="font-size:10px; font-weight:800; color:#fff; background:{{ h.actionColor }}; border-radius:5px; padding:3px 8px; letter-spacing:.4px;">{{ h.action }}</span>
-              <div style="min-width:0; flex:1;">
-                <div style="font-size:13px; font-weight:700; color:#1c2330; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ h.model }} <span style="font-weight:500; color:#8b9099;">{{ h.title }}</span></div>
-                <div style="font-size:11px; color:#8b9099; margin-top:2px;">{{ h.when }} · {{ h.by }}</div>
-              </div>
-            </div>
-          </sc-for>
-          <sc-if value="{{ historyEmpty }}" hint-placeholder-val="{{ false }}">
-            <div style="padding:34px; text-align:center; color:#8b9099; font-size:13px;">{{ historyEmptyLabel }}</div>
-          </sc-if>
-        </div>
-      </div>
-    </div>
-  </sc-if>
 
   <!-- ============ SETTINGS DRAWER ============ -->
   <sc-if value="{{ showSettings }}" hint-placeholder-val="{{ true }}">
@@ -1239,7 +1234,6 @@ class Component extends DCLogic {
     customOrder:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false,
     importing:false, importError:'', dragOver:false, importNote:'', importSource:'xlsx',
     showReports:false, reportFocus:'mapping', showExport:false, exportMsg:'', savedToast:'', hasSession:false,
-    showHistory:false, history:[], historyLoading:false, editorName:'',
     reviewFilter:null, expandedReviews:{}, sheetVersion:'reviewed', applyReview:true, applyCms:true,
     customRules:[], dismissedCands:{}, cands:[], showCands:false, candScanned:false, candSrc:0,
     newRule:{find:'',repl:'',cat:'표기',note:'',ci:false,regex:false,scope:''}, libMsg:'',
@@ -1270,12 +1264,11 @@ class Component extends DCLogic {
       const qc = await import(url);
       try{ const isrc=await fetch('./i18n.js').then(r=>r.text()); const iurl=URL.createObjectURL(new Blob([isrc],{type:'text/javascript'})); this._i18n=await import(iurl); }catch(e){ console.warn('i18n load failed', e); }
       let hasSession=false; try{ hasSession=!!localStorage.getItem('specstudio:session'); }catch(e){}
-      let lang='en'; try{ lang=localStorage.getItem('specstudio:lang')||'en'; }catch(e){}  // 기본 영어(저장된 선호 없으면)
-      let editorName=''; try{ editorName=localStorage.getItem('specstudio:editor')||''; }catch(e){}
+      let lang='en'; try{ lang=localStorage.getItem('specstudio:lang')||'en'; }catch(e){}
+      setTimeout(()=>this.syncShared(), 0);
       const {lib, dismissed}=this._loadRuleLib(qc);
       this._sampleIds=(samples||[]).map(s=>s.id);
-      this.setState({cms, defaultCms:cms, samples, qc, ready:true, hasSession, lang, editorName, customRules:lib, dismissedCands:dismissed, workHist:this._loadHist()});
-      this._srvBootstrap();  // 서버(공유) 저장 목록 병합
+      this.setState({cms, defaultCms:cms, samples, qc, ready:true, hasSession, lang, customRules:lib, dismissedCands:dismissed, workHist:this._loadHist()});
     }catch(e){ console.error('load error', e); this.setState({ready:true}); }
   }
   _applyLang(){ try{ if(!this._i18n||!this._rootEl) return; if(this.state.lang!=='en') return; if(this._mo) this._mo.disconnect(); this._i18n.translateTree(this._rootEl, 'en'); if(this._mo) this._mo.observe(this._rootEl,{subtree:true,childList:true,characterData:true}); }catch(e){} }
@@ -1489,8 +1482,11 @@ class Component extends DCLogic {
     const dim2=this.state.dimCount>=2;
     const dimDir=this.state.dimLayout==='row'?'row':'column';
     const dimSlotFlex=this.state.dimLayout==='row'?'1 1 0':'0 0 auto';
-    const accessories=this.state.accessories.map((a,i)=>({...a, onRemove:()=>this.removeAcc(i)}));
-    return {model, title, subtitle2, certImgs, certTexts, aiBadge, aiOn, bullets:this.state.bullets, dims:this.state.dims, accessories, specCats, dim2, dimDir, dimSlotFlex};
+    // slot ids are per-product so each model remembers its own photo/drawings
+    const key=String(model||this.state.activeSample||'default').replace(/[^\w.-]+/g,'_');
+    const accessories=this.state.accessories.map((a,i)=>({...a, slotId:a.imgId+'__'+key, onRemove:()=>this.removeAcc(i)}));
+    return {model, title, subtitle2, certImgs, certTexts, aiBadge, aiOn, bullets:this.state.bullets, dims:this.state.dims, accessories, specCats, dim2, dimDir, dimSlotFlex,
+      photoSlotId:'ss_product_photo__'+key, dimSlot1Id:'ss_dims_1__'+key, dimSlot2Id:'ss_dims_2__'+key};
   }
 
   // Split spec categories into US-Letter page slices so the table flows across pages
@@ -1519,12 +1515,8 @@ class Component extends DCLogic {
   }
 
   // actions
-  async loadSample(id){
+  loadSample(id){
     const s=this.state.samples.find(x=>x.id===id); if(!s) return;
-    if(s.fromServer && (!s.specs || !s.specs.length)){
-      const doc=await this._srvLoadDoc(id);
-      if(doc && doc.raw){ this._restoreDoc(doc, id); this._touchHist(id, false); return; }
-    }
     this._loadProduct(s, id);
   }
   duplicateSelected(ids){
@@ -1764,16 +1756,7 @@ class Component extends DCLogic {
     try{ localStorage.setItem('specstudio:workhist', JSON.stringify(h)); }catch(e){}
     this.setState({workHist:h});
   }
-  // 제품 전환 시 스펙시트 이미지 슬롯(제품 사진·치수 도면·액세서리) 초기화 →
-  // 새 제품이 이전 제품의 이미지를 물려받지 않도록. (고정 id 슬롯이라 필요)
-  _clearSheetSlots(){
-    try{
-      ['ss_product_photo','acc0','acc1','acc2','acc3'].forEach(id=>{ if(window.__clearImageSlot) window.__clearImageSlot(id); });
-      ['ss_dims_1','ss_dims_2'].forEach(id=>{ if(window.__clearVectorSlot) window.__clearVectorSlot(id); });
-    }catch(e){ console.warn('clear sheet slots failed', e); }
-  }
   _loadProduct(s, id){
-    this._clearSheetSlots();
     this._touchHist(id||s.id, false);
     const qc=this.state.qc;
     const bullets=(s.overview||'').split(/\n+/).map(l=>l.replace(/^[•\-\u2022\u00b7]\s*/,'').replace(/\s*OPTIONAL ACCESSORIES.*$/i,'').trim()).filter(Boolean).map(l=>qc.runQC(l,'Overview',[]).result);
@@ -1821,46 +1804,57 @@ class Component extends DCLogic {
       if(ci.category>=0 && (ci.field>=0||ci.name>=0)){ hi=i; col=ci; break; }
     }
     if(hi<0) throw new Error('헤더(Scope/Category/Field/Name/Order)를 찾지 못했습니다.');
+    const scopes=[]; const byScope={}; let rowN=0;
     const trueish=v=>{ const t=String(v||'').toLowerCase().trim(); return t==='y'||t==='yes'||t==='true'||t==='1'||t==='o'||t==='표시'; };
-    // Product_Scope 셀은 JSON 배열(["Camera","Recorder"]) 또는 콤마 구분 문자열 → 토큰 배열로 파싱
-    const parseScopes=v=>{ const s=String(v==null?'':v).trim(); if(!s) return [];
-      let arr=null; try{ const j=JSON.parse(s); if(Array.isArray(j)) arr=j; }catch(e){}
-      if(!arr) arr=s.replace(/^\[|\]$/g,'').split(',').map(x=>x.replace(/^["'\s]+|["'\s]+$/g,''));
-      return arr.map(x=>String(x).trim()).filter(Boolean); };
-    // 1차: 행 수집 + 실제 제품군 목록(등장 순, "All" 제외)
-    const recs=[]; const scopeList=[]; const hasScopeCol=col.scope>=0; let rowSeq=0;
+    // Product_Scope holds a JSON array (["Camera","Recorder"]) — parse it into
+    // tokens, else every distinct combination invents a fake product group.
+    const parseScope=(raw)=>{
+      const s=String(raw==null?'':raw).trim();
+      if(!s) return [];
+      let toks=null;
+      if(/^\[/.test(s)){ try{ const j=JSON.parse(s); if(Array.isArray(j)) toks=j; }catch(e){} }
+      if(!toks) toks=s.replace(/^[\[\]"']+|[\[\]"']+$/g,'').split(/[,;|]/);
+      return toks.map(t=>String(t).replace(/["'\s]+/g,'')).filter(Boolean);
+    };
+    const pending=[]; const allScopes=new Set();
     for(let i=hi+1;i<rows.length;i++){
       const r=rows[i]; const g=idx=>idx>=0?String(r[idx]==null?'':r[idx]).trim():'';
-      const category=g(col.category); let field=g(col.field); let name=g(col.name);
+      const category=g(col.category);
+      let field=g(col.field); let name=g(col.name);
       if(!category && !field && !name) continue;
       if(!name && field) name=field.replace(/_/g,' ').replace(/\b\w/g,m=>m.toUpperCase());
       if(!field && name) field=this.norm(name);
       if(!field) continue;
-      const toks=hasScopeCol?parseScopes(r[col.scope]):[];
+      const toks=parseScope(g(col.scope));
+      // no scope at all = Wix system junk field, drop it
+      if(col.scope>=0 && !toks.length) continue;
+      const order=col.order>=0?(parseInt(g(col.order),10)||9999):(++rowN);
       const on=col.spec>=0?trueish(g(col.spec)):true;
-      const order=col.order>=0?(parseInt(g(col.order),10)||9999):(++rowSeq);
-      recs.push({toks, category, field, name, on, order});
-      toks.forEach(t=>{ if(t!=='All' && !scopeList.includes(t)) scopeList.push(t); });
+      toks.filter(t=>!/^all$/i.test(t)).forEach(t=>allScopes.add(t));
+      pending.push({toks, category:category||'General', field, name, order, on});
     }
-    if(!recs.length) throw new Error('데이터 행을 찾지 못했습니다.');
-    if(!scopeList.length) scopeList.push('Default'); // scope 컬럼 없음 → 단일 제품군
-    // 2차: 각 필드를 제품군에 배치 ("All"=전 제품군 공통, scope 미지정=표시 안 함)
-    const scopes=scopeList.slice(); const byScope={}; scopes.forEach(s=>byScope[s]=[]);
-    const place=(scope,rec)=>{
-      let cat=byScope[scope].find(c=>c.category===rec.category);
-      if(!cat){ cat={category:rec.category||'General', specSheet: col.spec<0?true:false, fields:[]}; byScope[scope].push(cat); }
-      if(rec.on) cat.specSheet=true;
-      cat.fields.push({field:rec.field, name:rec.name, order:rec.order});
+    if(!pending.length) throw new Error('데이터 행을 찾지 못했습니다.');
+    const scopeList=allScopes.size?[...allScopes]:['Default'];
+    const add=(scope, p)=>{
+      if(!byScope[scope]){ byScope[scope]=[]; scopes.push(scope); }
+      let cat=byScope[scope].find(c=>c.category===p.category);
+      if(!cat){ cat={category:p.category, specSheet:false, fields:[]}; byScope[scope].push(cat); }
+      if(p.on) cat.specSheet=true;
+      cat.fields.push({field:p.field, name:p.name, order:p.order});
     };
-    recs.forEach(rec=>{
-      const targets=(!hasScopeCol||rec.toks.includes('All'))?scopes:rec.toks;
-      targets.forEach(s=>{ if(byScope[s]) place(s,rec); });
+    scopeList.forEach(s=>{ byScope[s]=[]; scopes.push(s); });
+    pending.forEach(p=>{
+      const universal=p.toks.some(t=>/^all$/i.test(t)) || (col.scope<0);
+      (universal?scopeList:p.toks.filter(t=>scopeList.includes(t))).forEach(s=>add(s, p));
     });
-    // 카테고리 = 최소 Order number 순, 필드 = 카테고리 내 order 순
     scopes.forEach(s=>{
       byScope[s].forEach(c=>c.fields.sort((a,b)=>a.order-b.order));
-      byScope[s].sort((a,b)=>Math.min(...a.fields.map(f=>f.order)) - Math.min(...b.fields.map(f=>f.order)));
+      // a category sits where its earliest field sits
+      byScope[s].sort((a,b)=>Math.min(...a.fields.map(f=>f.order))-Math.min(...b.fields.map(f=>f.order)));
     });
+    const live=scopes.filter(s=>(byScope[s]||[]).length);
+    live.forEach(s=>{}); scopes.length=0; live.forEach(s=>scopes.push(s));
+    Object.keys(byScope).forEach(s=>{ if(!byScope[s].length) delete byScope[s]; });
     return {scopes, byScope};
   }
   async importCms(file){
@@ -1931,9 +1925,8 @@ class Component extends DCLogic {
   // 1 header row of DB_Field_Name columns, 1 row per product. Headers match the
   // CMS field keys exactly, so specs resolve by direct lookup — no fuzzy matching.
   BULK_META=['_draftDate','_publishDate','_publishStatus','_createdDate','_updatedDate','_owner','_id','Title','title'];
-  BULK_CORE=['product_id','product_name','model_number_sku','main_category','sub_category','product_status'];
-  // 스펙시트 테이블에 실제로 들어가는 CMS 필드 = Order 48(imaging_device)~484(power_saving). 그 밖은 참조용(Wix CMS).
-  BULK_SPEC_MIN=48; BULK_SPEC_MAX=484;
+  BULK_CORE=['product_id','product_name','model_number_sku','main_category','sub_category','product_status','product_summary','detailed_description'];
+  BULK_ORDER_MIN=48; BULK_ORDER_MAX=484;
   _sheetScope(name){
     const n=String(name||'').toLowerCase();
     if(/analog/.test(n)) return 'Camera';
@@ -1945,12 +1938,13 @@ class Component extends DCLogic {
   }
   _catScope(mainCat){
     const n=String(mainCat||'').toLowerCase();
-    if(/camera/.test(n)) return 'Camera';           // "Network_Camera"/"HD_Analog_Camera"도 카메라 → network보다 먼저 검사
     if(/recorder|nvr|dvr/.test(n)) return 'Recorder';
+    // "camera" wins over "network": Network_Camera is a Camera, not Networking
+    if(/camera/.test(n)) return 'Camera';
     if(/network|switch|poe/.test(n)) return 'Networking';
     return null;
   }
-  // field key → {name, category} for a scope, from the loaded CMS taxonomy
+  // field key → {name, category, order} for a scope, from the loaded CMS taxonomy
   _fieldIndex(scope){
     const idx={};
     const cms=this.state.cms; if(!cms) return idx;
@@ -2002,28 +1996,35 @@ class Component extends DCLogic {
     const scope=sheet.scope||this._catScope(mainCat)||this.state.scope||'Camera';
     const idx=this._fieldIndex(scope);
     const model=get('model_number_sku')||get('product_id')||('ROW-'+(rowIdx+1));
-    const hasCms=!!this.state.cms;
     const specs=[];
     sheet.cols.forEach(c=>{
       if(this.BULK_CORE.includes(c.h)) return;
       const v=String(r[c.i]==null?'':r[c.i]).trim();
       if(!v) return;
       const meta=idx[c.h];
-      // 스펙시트 테이블 필드만 = CMS Order 48~484. CMS 미로드 시엔 매핑된 필드로 폴백.
-      if(hasCms && (!meta || meta.order<this.BULK_SPEC_MIN || meta.order>this.BULK_SPEC_MAX)) return;
-      specs.push({
-        name: meta?meta.name:c.h.replace(/_/g,' ').replace(/\b\w/g,m=>m.toUpperCase()),
-        value: v,
-        section: meta?meta.category:'General',
-      });
+      // only CMS order 48 (imaging_device) … 484 (power_saving) belong on the
+      // spec sheet; everything else is Wix CMS bookkeeping
+      if(!meta || !(meta.order>=this.BULK_ORDER_MIN && meta.order<=this.BULK_ORDER_MAX)) return;
+      specs.push({ name:meta.name, value:v, section:meta.category, order:meta.order });
     });
-    return { id:model, model, subtitle:get('product_summary')||get('product_name')||model, series:'DIVERSITY', overview:get('detailed_description')||'',
+    specs.sort((a,b)=>a.order-b.order);
+    return { id:model, model, subtitle:get('product_summary')||get('product_name')||model,
+      series:'DIVERSITY', overview:get('detailed_description')||'',
       specs, scope, fromCms:true, cmsCategory:[mainCat, get('sub_category')].filter(Boolean).join(' / '), cmsStatus:get('product_status') };
   }
   _bulkSpecCount(sheet, rowIdx){
-    // 그리드의 "스펙 필드 수"도 실제 스펙시트 규칙(Order 48~484)과 동일하게 집계
-    return this._bulkProduct(sheet, rowIdx).specs.length;
+    const r=sheet.body[rowIdx]; let n=0;
+    const scope=sheet.scope||this._catScope(this._bulkCell(sheet,rowIdx,'main_category'))||this.state.scope||'Camera';
+    const idx=this._fieldIndex(scope);
+    sheet.cols.forEach(c=>{
+      if(this.BULK_CORE.includes(c.h)) return;
+      const meta=idx[c.h];
+      if(!meta || !(meta.order>=this.BULK_ORDER_MIN && meta.order<=this.BULK_ORDER_MAX)) return;
+      if(String(r[c.i]==null?'':r[c.i]).trim()) n++;
+    });
+    return n;
   }
+  _bulkCell(sheet, rowIdx, key){ const i=sheet.head.indexOf(key); return i<0?'':String(sheet.body[rowIdx][i]==null?'':sheet.body[rowIdx][i]).trim(); }
   addBulkSelection(){
     const st=this.state, sheet=(st.bulkData||{})[st.bulkSheet];
     if(!sheet) return;
@@ -2083,57 +2084,103 @@ class Component extends DCLogic {
   closeReports(){ this.setState({showReports:false}); }
   toggleExport(){ this.setState(s=>({showExport:!s.showExport, exportMsg:''})); }
   // ── session save / restore ───────────────────────────────────────────
-  // ── 서버(팀 공유) 상태 API — /api/state (Vercel KV) ──────────────────────
-  _editorName(){ return (this.state.editorName||'').trim(); }
-  setEditorName(v){ v=String(v||'').slice(0,60); try{ localStorage.setItem('specstudio:editor', v); }catch(e){} this.setState({editorName:v}); }
-  _curDoc(){ const s=this.state; return { v:1, scope:s.scope, raw:s.raw, assignments:s.assignments, reviewAccept:s.reviewAccept, overrides:s.overrides, meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, customOrder:s.customOrder, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample, savedAt:Date.now() }; }
-  async _srvSave(){ try{ const s=this.state; if(!s.raw) return false;
-      const model=(s.meta&&s.meta.model)||(s.raw&&s.raw.model)||s.activeSample; if(!model) return false;
-      const body={ action:'save', model, doc:this._curDoc(), title:(s.meta&&s.meta.subtitle)||(s.raw&&s.raw.subtitle)||'', step:s.step, by:this._editorName() };
-      const r=await fetch('/api/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); return r.ok;
-    }catch(e){ console.warn('server save failed', e); return false; } }
-  async _srvList(){ try{ const r=await fetch('/api/state?action=list'); if(!r.ok) return []; return (await r.json()).items||[]; }catch(e){ return []; } }
-  async _srvLoadDoc(model){ try{ const r=await fetch('/api/state?action=load&model='+encodeURIComponent(model)); if(!r.ok) return null; return (await r.json()).doc||null; }catch(e){ return null; } }
-  async _srvHistory(){ try{ const r=await fetch('/api/state?action=history&limit=100'); if(!r.ok) return []; return (await r.json()).events||[]; }catch(e){ return []; } }
+  // ── shared team store (/api/state → Vercel KV), localStorage as fallback ──
+  API='/api/state';
+  editorName(){ try{ return localStorage.getItem('specstudio:editor')||''; }catch(e){ return ''; } }
+  setEditorName(v){ try{ localStorage.setItem('specstudio:editor', v); }catch(e){} this.setState({editor:v}); }
+  async _api(params, body){
+    const q=new URLSearchParams(params||{}).toString();
+    const res=await fetch(this.API+(q?'?'+q:''), body
+      ? {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)}
+      : {method:'GET'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    return res.json();
+  }
+  _sessionDoc(){
+    const s=this.state;
+    return { v:1, scope:s.scope, raw:s.raw, assignments:s.assignments, reviewAccept:s.reviewAccept, overrides:s.overrides,
+      meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories,
+      customOrder:s.customOrder, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample, savedAt:Date.now() };
+  }
+  _applyDoc(d){
+    if(!d||!d.raw) return false;
+    this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:d.assignments||{}, reviewAccept:d.reviewAccept||{},
+      overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:d.bullets||[], dims:d.dims||[],
+      certs:d.certs||{}, accessories:d.accessories||[], customOrder:d.customOrder||{}, disabledRules:d.disabledRules||{},
+      step:d.step||1, activeSample:d.activeSample, importError:'', savedToast:'✓ 저장된 작업을 불러왔습니다' });
+    clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
+    return true;
+  }
   saveSession(){
     if(!this.state.raw){ this.setState({savedToast:'먼저 데이터를 불러오세요.'}); return; }
-    try{
-      const s=this.state;
-      localStorage.setItem('specstudio:session', JSON.stringify(this._curDoc()));
-      const t=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-      this.setState({savedToast:this.T('저장 중…','Saving…'), hasSession:true});
-      this._touchHist(s.activeSample||(s.raw&&s.raw.id), true);
-      this._srvSave().then(ok=>{
-        this.setState({savedToast:ok?('✓ '+this.T('공유 저장됨 · ','Saved (shared) · ')+t):('✓ '+this.T('로컬 저장됨(서버 실패) · ','Saved locally (server failed) · ')+t)});
+    const s=this.state, doc=this._sessionDoc();
+    const model=(s.meta&&s.meta.model)||(s.raw&&s.raw.model)||s.activeSample||'unknown';
+    // local write always happens — the server is a bonus, not a dependency
+    let localOk=true;
+    try{ localStorage.setItem('specstudio:session', JSON.stringify(doc)); }catch(e){ localOk=false; console.error(e); }
+    const t=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+    this.setState({savedToast: localOk?('✓ 저장됨 · '+t):'저장 실패 (용량 초과?)', hasSession:localOk});
+    this._touchHist(s.activeSample||(s.raw&&s.raw.id), true);
+    clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
+    this._api(null, {action:'save', model, doc, title:(s.meta&&s.meta.subtitle)||(s.raw&&s.raw.subtitle)||'', step:s.step, by:this.editorName()||'anonymous'})
+      .then(()=>{ this.setState({savedToast:'✓ 팀 서버에 저장됨 · '+t, serverOn:true});
         clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
+        this.loadHistory(); })
+      .catch(e=>{ console.warn('shared save unavailable', e); this.setState({serverOn:false}); });
+  }
+  async syncShared(){
+    try{
+      const r=await this._api({action:'list'});
+      const list=(r&&(r.items||r.list||r))||[];
+      if(!Array.isArray(list)||!list.length){ this.setState({serverOn:true}); return; }
+      this.setState(s=>{
+        const cur=[...(s.samples||[])];
+        list.forEach(it=>{
+          const model=it.model||it.id; if(!model) return;
+          const hit=cur.find(x=>x.model===model||x.id===model);
+          if(hit){ hit.shared=true; hit.sharedBy=it.by||''; hit.sharedAt=it.at||it.savedAt||0; }
+          else cur.push({ id:model, model, subtitle:it.title||'', series:'DIVERSITY', overview:'', specs:[],
+            shared:true, serverOnly:true, sharedBy:it.by||'', sharedAt:it.at||it.savedAt||0 });
+        });
+        return {samples:cur, serverOn:true};
       });
-    }catch(e){ console.error(e); this.setState({savedToast:'저장 실패 (용량 초과?)'}); }
+    }catch(e){ console.warn('shared list unavailable', e); this.setState({serverOn:false}); }
   }
-  _restoreDoc(d, id){
-    if(!d||!d.raw) return false;
-    this._clearSheetSlots();
-    this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:d.assignments||{}, reviewAccept:d.reviewAccept||{}, overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:d.bullets||[], dims:d.dims||[], certs:d.certs||{}, accessories:d.accessories||[], customOrder:d.customOrder||{}, disabledRules:d.disabledRules||{}, step:d.step||1, activeSample:id||d.activeSample, importError:'', savedToast:this.T('✓ 저장된 작업을 불러왔습니다','✓ Loaded saved work') });
-    clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600); return true;
+  async loadShared(model){
+    try{
+      const r=await this._api({action:'load', model});
+      const doc=(r&&(r.doc||r.state||r))||null;
+      if(doc && doc.raw){ this._applyDoc(doc); return true; }
+    }catch(e){ console.warn('shared load failed', e); }
+    return false;
   }
-  async restoreSession(){
-    try{ const items=await this._srvList(); if(items.length){ const newest=items[0]; const doc=await this._srvLoadDoc(newest.model); if(this._restoreDoc(doc, newest.model)) return; } }catch(e){}
-    try{ const raw=localStorage.getItem('specstudio:session'); if(!raw) return; const d=JSON.parse(raw); this._restoreDoc(d, d&&d.activeSample); }catch(e){ console.error('restore failed', e); }
+  async loadHistory(){
+    this.setState({histBusy:true});
+    try{
+      const r=await this._api({action:'history'});
+      const items=(r&&(r.items||r.history||r))||[];
+      this.setState({history:Array.isArray(items)?items:[], histBusy:false, serverOn:true});
+    }catch(e){ this.setState({history:[], histBusy:false, serverOn:false}); }
   }
-  // 시작 시 서버의 공유 저장 목록을 작업 목록에 병합
-  async _srvBootstrap(){
-    try{ const items=await this._srvList(); if(!items||!items.length) return;
-      this.setState(st=>{ const samples=[...(st.samples||[])];
-        items.forEach(it=>{ const ex=samples.find(x=>x.model===it.model || x.id===it.model);
-          if(ex){ ex.serverAt=it.at; ex.serverBy=it.by; }
-          else samples.unshift({ id:it.model, model:it.model, subtitle:it.title||it.model, specs:[], fromServer:true, serverAt:it.at, serverBy:it.by }); });
-        return { samples, hasSession:true }; });
-    }catch(e){ console.warn('srv bootstrap failed', e); }
+  toggleHistory(){
+    const open=!this.state.showHistory;
+    this.setState({showHistory:open, editor:this.editorName()});
+    if(open) this.loadHistory();
   }
-  async toggleHistory(){
-    if(this.state.showHistory){ this.setState({showHistory:false}); return; }
-    this.setState({showHistory:true, historyLoading:true, showExport:false});
-    const ev=await this._srvHistory();
-    this.setState({history:ev, historyLoading:false});
+  restoreSession(){
+    // server copy first, local as fallback
+    let localDoc=null;
+    try{ const raw=localStorage.getItem('specstudio:session'); if(raw) localDoc=JSON.parse(raw); }catch(e){}
+    const model=localDoc&&localDoc.raw&&localDoc.raw.model;
+    if(model){
+      this._api({action:'load', model})
+        .then(r=>{ const doc=(r&&(r.doc||r.state||r))||null;
+          if(doc && doc.raw && (!localDoc||!localDoc.savedAt||(doc.savedAt||0)>=localDoc.savedAt)) this._applyDoc(doc);
+          else this._applyDoc(localDoc); })
+        .catch(()=>this._applyDoc(localDoc));
+      return;
+    }
+    this._applyDoc(localDoc);
   }
 
   exportPdf(){
@@ -2472,7 +2519,8 @@ class Component extends DCLogic {
   acceptAll(){ const a={}; this.buildReviews().forEach(r=>a[r.key]=true); this.setState({reviewAccept:a}); }
   rejectAll(){ const a={}; this.buildReviews().forEach(r=>a[r.key]=false); this.setState({reviewAccept:a}); }
   setPage(v){ this.setState({pageView:v}); }
-  _zoomKey(){ return this.state.step===4 ? 'zoom4' : 'zoom'; }  // 활성 단계의 줌 변수
+  // the toolbar drives whichever step is showing: 3 → zoom, 4 → zoom4
+  _zoomKey(){ return this.state.step===4?'zoom4':'zoom'; }
   zoomBy(d){ const k=this._zoomKey(); this.setState(s=>({[k]:Math.min(2, Math.max(0.3, +(s[k]+d).toFixed(2))), fitMode:null})); }
   fitZoom(mode){
     const host=this._sheetHost; if(!host) return;
@@ -2481,9 +2529,10 @@ class Component extends DCLogic {
     let z=1;
     if(mode==='width') z=avW/pageW;
     else if(mode==='height') z=avH/pageH;
-    else if(mode==='page') z=Math.min(avW/pageW, avH/pageH); // fit one full page in view
+    else if(mode==='page'){ // fit one full page in view
+      z=Math.min(avW/pageW, avH/pageH); }
     z=Math.min(2, Math.max(0.3, +z.toFixed(3)));
-    const k=this._zoomKey(); this.setState({[k]:z, fitMode:mode});
+    this.setState({[this._zoomKey()]:z, fitMode:mode});
   }
   editMeta(k,val){ this.setState(s=>({meta:{...s.meta,[k]:val}})); }
   setSub(val){ this.setState(s=>({overrides:{...s.overrides,__subtitle:val}})); }
@@ -2705,9 +2754,11 @@ class Component extends DCLogic {
       scope:st.scope, scopeOptions, onScope:(e)=>this.onScope(e),
       showSettings:st.showSettings, onToggleSettings:()=>this.toggleSettings(), onCloseSettings:()=>this.setState({showSettings:false}),
       steps,
-      zoom:st.zoom, zoom4:st.zoom4, zoomPct:Math.round((st.step===4?st.zoom4:st.zoom)*100), canView:(st.step===3||st.step===4),
+      zoom:st.zoom, zoom4:st.zoom4, zoomPct:Math.round((st.step===4?st.zoom4:st.zoom)*100),
+      canView:st.loaded && (st.step===3||st.step===4),
       showP1:st.pageView!=='2', showP2:st.pageView!=='1',
-      pageTabs:[{key:'both',label:'양면',title:'양면 보기'},{key:'1',label:'1면',title:'1면만'},{key:'2',label:'2면',title:'2면만'}].map(p=>({label:p.label, title:p.title, bg:st.pageView===p.key?'#941A31':'transparent', color:st.pageView===p.key?'#fff':'#5e636b', onClick:()=>this.setPage(p.key)})),
+      pageTabs:[{key:'both',label:'양면',title:'양면 보기'},{key:'1',label:'1면',title:'1페이지'},{key:'2',label:'2면',title:'2페이지'}]
+        .map(p=>({label:p.label, title:p.title, bg:st.pageView===p.key?'#941A31':'transparent', color:st.pageView===p.key?'#fff':'#5e636b', onClick:()=>this.setPage(p.key)})),
       onZoomIn:()=>this.zoomBy(0.06), onZoomOut:()=>this.zoomBy(-0.06),
       onFitWidth:()=>this.fitZoom('width'), onFitHeight:()=>this.fitZoom('height'), onFitPage:()=>this.fitZoom('page'),
       fitWidthBg:st.fitMode==='width'?'#941A31':'#fff', fitWidthColor:st.fitMode==='width'?'#fff':'#44474e',
@@ -2729,12 +2780,21 @@ class Component extends DCLogic {
     out.onExportPdf=()=>this.exportPdf(); out.onExportXlsx=()=>this.exportXlsx(); out.onExportDocx=()=>this.exportDocx(); out.onExportPptx=()=>this.exportPptx();
     out.onSave=()=>this.saveSession(); out.savedToast=st.savedToast; out.hasToast=!!st.savedToast;
     out.hasSession=st.hasSession; out.onContinue=()=>this.restoreSession();
-    out.onToggleHistory=()=>this.toggleHistory(); out.showHistory=st.showHistory;
-    out.historyItems=(st.history||[]).map(e=>({ model:e.model||'', title:e.title||'', by:e.by||this.T('익명','anonymous'), action:(e.action||'save').toUpperCase(), actionColor:e.action==='delete'?'#b03a3a':'#3a6b46', when:new Date(e.at).toLocaleString(st.lang==='en'?'en-US':'ko-KR') }));
-    out.hasHistory=(st.history||[]).length>0;
-    out.historyEmpty=!st.historyLoading && !(st.history||[]).length;
-    out.historyEmptyLabel=st.historyLoading?this.T('불러오는 중…','Loading…'):this.T('아직 저장 기록이 없습니다.','No save history yet.');
-    out.editorName=st.editorName||''; out.onEditorName=(e)=>this.setEditorName(e.target.value);
+
+    // shared store · history panel
+    out.showHistory=!!st.showHistory;
+    out.onToggleHistory=()=>this.toggleHistory();
+    out.editorName=st.editor!==undefined?st.editor:this.editorName();
+    out.onEditorName=(e)=>this.setEditorName(e.target.value);
+    out.serverDot=st.serverOn?'#3a9a5c':'#c6cad0';
+    out.serverLabel=st.serverOn?this.T('팀 서버 연결됨','Team server connected'):this.T('로컬 저장만 사용 중','Local save only');
+    const fmt=(ts)=>{ if(!ts) return ''; const d=new Date(ts);
+      return isNaN(d)?String(ts):d.toLocaleString(st.lang==='en'?'en-US':'ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}); };
+    out.historyRows=(st.history||[]).map(h=>({ model:h.model||h.id||'—', by:h.by||this.T('알 수 없음','unknown'), when:fmt(h.at||h.savedAt||h.time) }));
+    out.noHistory=!(st.history||[]).length;
+    out.historyEmpty=st.histBusy?this.T('불러오는 중…','Loading…')
+      :(st.serverOn?this.T('저장 기록이 없습니다.','No save history yet.')
+        :this.T('팀 서버에 연결되지 않았습니다. 저장은 이 브라우저에만 보관됩니다.','Not connected to the team server. Saves stay in this browser only.'));
 
     // help wiki
     const flat=this._helpFlat();
@@ -2860,15 +2920,16 @@ class Component extends DCLogic {
     const all=(st.samples||[]).map(s=>{
       const h=hist[s.id]||null;
       const isSample=(this._sampleIds||[]).includes(s.id);
-      const src=s.fromServer?'공유':(s.fromCms?'CMS':(s.fromPdf?'PDF':(isSample?'샘플':'엑셀')));
-      const srvDate=s.serverAt?new Date(s.serverAt).toLocaleDateString('ko-KR'):'';
+      const src=s.serverOnly?'공유':(s.fromCms?'CMS':(s.fromPdf?'PDF':(isSample?'샘플':'엑셀')));
       return {
         id:s.id, model:s.model, title:s.subtitle, count:s.specs.length, src,
-        srcColor: s.fromServer?'#7a4bd0':(s.fromCms?'#2f6fb0':(s.fromPdf?'#8a5a12':(isSample?'#941A31':'#3a6b46'))),
-        srcBg: s.fromServer?'#efe9fb':(s.fromCms?'#e8f0f8':(s.fromPdf?'#fbf1de':(isSample?'#f6edef':'#e9f3ec'))),
-        status: h?(h.saved?('저장됨 · '+h.date):('작업함 · '+h.date)):(s.serverAt?('공유 저장 · '+srvDate):'미작업'),
-        stColor: h?(h.saved?'#3a6b46':'#5e636b'):(s.serverAt?'#7a4bd0':'#a8adb5'),
-        onLoad:()=>this.loadSample(s.id),
+        srcColor: s.serverOnly?'#5a4a9a':(s.fromCms?'#2f6fb0':(s.fromPdf?'#8a5a12':(isSample?'#941A31':'#3a6b46'))),
+        srcBg: s.serverOnly?'#eeecf8':(s.fromCms?'#e8f0f8':(s.fromPdf?'#fbf1de':(isSample?'#f6edef':'#e9f3ec'))),
+        status: h?(h.saved?('저장됨 · '+h.date):('작업함 · '+h.date)):'미작업',
+        stColor: h?(h.saved?'#3a6b46':'#5e636b'):'#a8adb5',
+        // a server-only row has no local specs — pull the shared doc instead
+        onLoad:()=>{ if(s.serverOnly) this.loadShared(s.model).then(ok=>{ if(!ok) this.setState({savedToast:'공유 문서를 불러오지 못했습니다.'}); });
+                     else this.loadSample(s.id); },
       };
     });
     const filtered=q?all.filter(r=>(r.model+' '+(r.title||'')).toLowerCase().includes(q)):all;
@@ -3022,7 +3083,6 @@ class Component extends DCLogic {
       out.onToggleCms=()=>this.setState(s=>({applyCms:!s.applyCms}));
       out.revTrackReview=st.applyReview?'#941A31':'#c9ccd2'; out.revKnobReview=st.applyReview?'19px':'3px';
       out.revTrackCms=st.applyCms?'#941A31':'#c9ccd2'; out.revKnobCms=st.applyCms?'19px':'3px';
-      // showP1/showP2/pageTabs are now in the main out (shared by top-bar view toolbar)
 
       // editor VM
       out.metaModel=sheet.model;

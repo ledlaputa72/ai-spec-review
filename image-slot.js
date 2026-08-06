@@ -440,7 +440,12 @@
       if (commit) this._commitView();
     }
 
-    attributeChangedCallback() { if (this.shadowRoot) this._render(); }
+    attributeChangedCallback(name, prev, next) {
+      // id changes when the sheet switches products — drop the previous
+      // product's session-only image so the new slot restores its own.
+      if (name === 'id' && prev !== next) this._local = null;
+      if (this.shadowRoot) this._render();
+    }
 
     // handleEvent — one listener object for all four drag events keeps the
     // add/remove symmetric and the depth counter correct.
@@ -635,14 +640,9 @@
         this.removeAttribute('data-filled');
       }
     }
-    // Public: clear this slot's stored image (used on product switch).
-    clearSlot() { if (this.id) setSlot(this.id, null); }
   }
 
   if (!customElements.get('image-slot')) {
     customElements.define('image-slot', ImageSlot);
   }
-  // Global id-based clear (works even if the element isn't mounted yet) — used
-  // on product switch so a new product doesn't inherit the previous image.
-  window.__clearImageSlot = (id) => { if (id) setSlot(id, null); };
 })();

@@ -148,13 +148,22 @@
       try { localStorage.removeItem(KEY(this.id)); } catch (e) {}
       this._renderEmpty();
     }
-    // Public: clear this slot's stored drawing (used on product switch).
-    clearSlot() { this._clear(); }
 
     _save(url) {
       if (!this.id) return;
       try { localStorage.setItem(KEY(this.id), url); }
       catch (e) { console.warn('vector-slot: could not persist (storage full?)', e); }
+    }
+
+    static get observedAttributes() { return ['id', 'placeholder']; }
+
+    attributeChangedCallback(name, prev, next) {
+      // The framework reuses the element across products — when the id changes,
+      // drop the old product's drawing and restore the new id's, if any.
+      if (name !== 'id' || prev === next || !this._init) return;
+      this._data = null;
+      this._renderEmpty();
+      this._restore();
     }
 
     _restore() {
@@ -181,11 +190,4 @@
     }
   }
   customElements.define('vector-slot', VectorSlot);
-  // Global id-based clear (works even if the element isn't mounted yet) — used
-  // on product switch so a new product doesn't inherit the previous drawing.
-  window.__clearVectorSlot = (id) => {
-    if (!id) return;
-    try { localStorage.removeItem(KEY(id)); } catch (e) {}
-    document.querySelectorAll('vector-slot').forEach((el) => { if (el.id === id) el._clear(); });
-  };
 })();

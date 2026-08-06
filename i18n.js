@@ -14,10 +14,6 @@ export const DICT = {
   '저장': 'Save',
   '공유 · 내보내기': 'Share · Export',
   '설정': 'Settings',
-  '📜 히스토리': '📜 History',
-  '📜 저장 히스토리': '📜 Save history',
-  '공유': 'Shared',
-  '공유됨': 'Shared',
   '전체 단계 문서 내보내기': 'Export all-step documents',
   'PDF로 저장': 'Save as PDF',
   '인쇄': 'Print',
@@ -55,9 +51,112 @@ export const DICT = {
   '.xlsx · 제조사 데이터시트 양식 · 끌어다 놓거나 클릭': '.xlsx · manufacturer datasheet format · drag & drop or click',
   '제조사 엑셀을 끌어다 놓기': 'Drop the manufacturer Excel',
   '기제작 PDF 스펙시트를 끌어다 놓기': 'Drop an existing PDF spec sheet',
-  '여기에 놓으세요': 'Drop it here',
   '모델명 검색': 'Search model name',
   '개 제품': ' products',
+
+  // ---- settings drawer · CMS table ----
+  '💾 저장': '💾 Save', '⤓ 공유 · 내보내기': '⤓ Share · Export', '⚙ 설정': '⚙ Settings',
+  'CMS 테이블': 'CMS table', '업로드한 CMS 테이블': 'Uploaded CMS table', '기본 내장 CMS 테이블': 'Built-in CMS table',
+  '현재 기준 테이블': 'Current reference table', '제품군(Scope)': 'Product scope', '데이터 필드': 'Data fields',
+  '⬆ CMS 테이블 업로드': '⬆ Upload CMS table', '기본값 복원': 'Restore default',
+  '⏳ CMS 테이블 분석 중…': '⏳ Analyzing CMS table…',
+  '매핑·정렬의 기준이 되는': 'The reference for mapping and ordering is the',
+  'CMS 데이터 필드 테이블': 'CMS data field table',
+  '입니다. 새 테이블을 업로드하면 이후 모든 매핑·정렬·레이아웃이 그 필드 정의를 기준으로 동작합니다.':
+    '. Upload a new table and all mapping, ordering and layout follow its field definitions.',
+  '지원 형식': 'Supported formats', '— 열:': '— columns:', '(키) ·': '(key) ·', '(표시명) ·': '(display name) ·',
+  '(Y/N, 선택). 헤더 행 자동 인식.': '(Y/N, optional). Header row detected automatically.',
+  '— 내보내기와 동일한': '— same', '구조.': 'structure as the export.',
+  '전체 필드': 'All fields', '필드:': 'Fields:', '(삭제)': '(deleted)',
+
+  // ---- mapping modal ----
+  '매핑 연결 확인 · 수정': 'Review & edit mapping',
+  '연결된 원본 필드를 확인하고 다른 필드로 바꾸거나 해제하세요': 'Check the linked source field, swap it, or disconnect it',
+  'CMS 필드': 'CMS field', '현재 연결된 원본 필드': 'Currently linked source field',
+  '연결 변경': 'Change link', '연결 해제': 'Disconnect',
+  '다른 원본 필드를 선택하면 이 CMS 항목에 연결되고 기존 연결은 해제됩니다.':
+    'Picking another source field links it here and releases the previous link.',
+  '✕ 연결 해제 → 미매핑으로 이동': '✕ Disconnect → move to unmapped',
+  '이 CMS 항목의 연결을 끊고 해당 원본 필드를 미매핑 목록으로 되돌립니다.':
+    'Unlinks this CMS item and returns the source field to the unmapped list.',
+  '(연결 안 됨)': '(not linked)', '★ 추천:': '★ Suggested:', '추천': 'Suggested',
+
+  // ---- rule library ----
+  '기본 내장 검수 규칙': 'Built-in review rules',
+  '입니다. 끄면 해당 유형의 수정 제안이 검수 결과에서 제외됩니다. 새로 발견한 오류는':
+    '. Turning one off excludes that type from the review results. Add newly found problems in the',
+  '규칙 라이브러리': 'Rule library', '탭에서 추가하세요.': 'tab.',
+  '새로 들어온 데이터·기제작 스펙에서 발견한 오류를 규칙으로 누적하는':
+    'Your own accumulating',
+  '사용자 규칙 라이브러리': 'user rule library',
+  '입니다. 내장 규칙과 별도로 저장되며 엑셀·CSV로 내보낼 수 있습니다.':
+    ', built from problems found in incoming data. Stored separately from the built-in rules and exportable as Excel or CSV.',
+  '누적 사용자 규칙': 'Saved user rules', '⬇ 엑셀': '⬇ Excel', '⬆ 가져오기': '⬆ Import',
+  '규칙 직접 추가': 'Add a rule', '정규식': 'Regex', '대소문자 무시': 'Ignore case', '대소문자무시': 'Ignore case',
+  '+ 규칙 추가': '+ Add rule', '규칙 추가': 'Add rule', '규칙:': 'Rule:',
+  '아직 누적된 사용자 규칙이 없습니다.': 'No user rules saved yet.',
+  '데이터를 불러온 뒤': 'Load data, then run', '를 실행하세요.': '.',
+  '전체 비우기': 'Clear all', '전체 규칙으로 추가': 'Add all as rules',
+  '🔍 새 규칙 후보 검사': '🔍 Scan for rule candidates', '🔍 새 규칙 후보': '🔍 Rule candidates',
+  '새 규칙 후보': 'New rule candidates', '새 규칙 후보 검사': 'Scan for rule candidates',
+  '새 데이터에서 규칙 후보 검출': 'Detect rule candidates in new data',
+  '검출된 새 패턴이 없습니다.': 'No new patterns detected.',
+  '현재 규칙 라이브러리가 이 데이터를 모두 커버합니다.': 'The current rule library already covers this data.',
+  '찾을 문자열': 'Find', '바꿀 문자열': 'Replace with', '적용 필드': 'Field scope',
+  '찾을 문자열 (예: 12V DC)': 'Find (e.g. 12V DC)', '바꿀 문자열 (비우면 삭제)': 'Replace with (empty = delete)',
+  '규칙 설명 (선택)': 'Rule note (optional)', '적용 필드 (선택, 예: dimension)': 'Field scope (optional, e.g. dimension)',
+  '출처': 'Source', '추가일': 'Added', '사용중': 'Active', '패턴 규칙': 'Pattern rule', '문자열 규칙': 'String rule',
+  '내보낼 사용자 규칙이 없습니다.': 'There are no user rules to export.',
+  '규칙 파일 읽는 중…': 'Reading rule file…',
+  '규칙 행을 찾지 못했습니다. (찾을 문자열 열 필요)': 'No rule rows found (a "Find" column is required).',
+  '규칙 라이브러리를 비웠습니다.': 'Rule library cleared.',
+  '찾을 문자열을 입력하세요.': 'Enter a string to find.',
+  '제외 목록을 초기화했습니다. 다시 검사하세요.': 'Exclusion list reset — run the scan again.',
+
+  // ---- reports · export ----
+  '🖨 인쇄': '🖨 Print', '⬇ PDF로 저장': '⬇ Save as PDF',
+  'CMS 매핑 필드 (유사 매칭 포함)': 'CMS mapped fields (incl. fuzzy matches)',
+  '확인 필요 (추정·미매핑)': 'Needs review (inferred / unmapped)',
+  '(계속)': '(cont.)', '검출': 'detected', '개요': 'Overview',
+  '1. 정렬·매핑 리포트': '1. Ordering & mapping report', '1. 정렬·매핑 결과': '1. Ordering & mapping result',
+  '2. AI 검수 리포트': '2. AI review report',
+  'STEP 3 · 스펙시트 — 수정버전 (AI 검수 · CMS 정렬·매핑 반영)': 'STEP 3 · Spec sheet — revised (AI review · CMS ordering applied)',
+  'STEP 3 · 스펙시트 — 기존버전 (중국/PDF 원본 데이터)': 'STEP 3 · Spec sheet — original (manufacturer / PDF source data)',
+  '레이아웃 옵션': 'Layout options', '출력 버전': 'Output version', '2번째 도면 배치': 'Second drawing layout',
+  '모델 코드': 'Model code', '설명': 'Description', '제거': 'Remove', '닫기': 'Close', '도움말': 'Help',
+  '전체 도움말 PDF': 'Full help PDF', '기능 설명 · 사용 설명 위키': 'Features · How-to wiki',
+  '전체 선택': 'Select all', '전체 해제': 'Clear all', '제품을 선택하세요': 'Select products',
+
+  // ---- toasts · errors ----
+  '먼저 데이터를 불러오세요.': 'Load data first.',
+  '저장 실패 (용량 초과?)': 'Save failed (storage full?)',
+  '팝업이 차단되었습니다. 팝업을 허용해 주세요.': 'The popup was blocked — please allow popups.',
+  '기본 내장 CMS 테이블로 복원했습니다.': 'Restored the built-in CMS table.',
+  '데이터 행을 찾지 못했습니다.': 'No data rows found.',
+  '제품 행을 찾지 못했습니다.': 'No product rows found.',
+  '헤더(Scope/Category/Field/Name/Order)를 찾지 못했습니다.': 'Could not find the header row (Scope/Category/Field/Name/Order).',
+  '.xlsx 또는 .json 파일을 넣어주세요.': 'Please provide an .xlsx or .json file.',
+  '.xlsx 파일을 넣어주세요.': 'Please provide an .xlsx file.',
+  '.pdf 파일을 넣어주세요.': 'Please provide a .pdf file.',
+  '스펙 데이터를 찾지 못했습니다. (A열 항목명 / B열 값 형식)': 'No spec data found (expected column A = label, column B = value).',
+  'PDF 생성 중…': 'Generating PDF…', 'PDF로 저장했습니다.': 'Saved as PDF.',
+  'PDF 생성 실패 — 인쇄로 저장해 주세요.': 'PDF generation failed — please save via print.',
+  '도움말 PDF 생성 중…': 'Building help PDF…', '도움말 PDF를 저장했습니다.': 'Help PDF saved.',
+  '엑셀 변환 중…': 'Converting to Excel…', '엑셀 생성 중…': 'Building Excel…',
+  '✓ 엑셀로 변환·다운로드됨': '✓ Converted and downloaded as Excel',
+  '✓ 엑셀 다운로드됨': '✓ Excel downloaded', '✓ CSV 다운로드됨': '✓ CSV downloaded',
+  '✓ Word 문서 다운로드됨': '✓ Word document downloaded', '✓ PPTX 다운로드됨': '✓ PPTX downloaded',
+  'PPTX 생성 중…': 'Building PPTX…', '검수 중…': 'Reviewing…',
+  '검수 엔진을 불러오는 중입니다.': 'The review engine is still loading.',
+  '실시간 AI 검수는 이 미리보기 환경에서 사용할 수 없습니다. 위의 규칙 기반 검수 결과를 사용하세요.':
+    'Live AI review is unavailable in this preview environment — use the rule-based results above.',
+  '📜 히스토리': '📜 History', '히스토리': 'History',
+  '작업자 이름': 'Editor name', '이름을 입력하세요': 'Enter your name',
+  '공유': 'Shared', '공유 문서를 불러오지 못했습니다.': 'Could not load the shared document.',
+  '양면': 'Both', '1면': 'P1', '2면': 'P2',
+  '양면 보기': 'Both pages', '1페이지': 'Page 1', '2페이지': 'Page 2',
+  '너비 맞춤': 'Fit width', '세로 맞춤': 'Fit height', '페이지 맞춤': 'Fit page',
+  '축소': 'Zoom out', '확대': 'Zoom in',
   '페이지당 표시': 'Rows per page',
   '총': 'Total', '개 · 표시': ' · shown', '개 열': ' cols', '제품군 자동 판별': 'Scope: auto',
   '🗂 대량 CMS 데이터 (.xlsx)': '🗂 Bulk CMS data (.xlsx)',
@@ -80,13 +179,10 @@ export const DICT = {
   '소스': 'Source', '상태': 'Status', '작업': 'Action', '열기 →': 'Open →',
   '미작업': 'Not started', '샘플': 'Sample', '엑셀': 'Excel',
   '일치하는 제품이 없습니다.': 'No matching products.',
-  '기제작 PDF 스펙시트를 끌어다 놓기': 'Drop an existing PDF spec sheet',
-  '제조사 엑셀을 끌어다 놓기': 'Drop the manufacturer Excel',
   '여기에 놓으세요': 'Drop it here',
   'PDF 추출 중…': 'Extracting PDF…',
   '엑셀 분석 중…': 'Analyzing Excel…',
   '.pdf · AVYCON 포맷 스펙시트 · 텍스트 추출 → 엑셀 데이터로 변환': '.pdf · AVYCON-format spec sheet · text extraction → Excel data',
-  '.xlsx · 제조사 데이터시트 양식 · 끌어다 놓거나 클릭': '.xlsx · manufacturer datasheet format · drag & drop or click',
   '샘플 데이터로 시작': 'Start with sample data',
   '↻ 저장된 작업 이어서 하기': '↻ Continue saved work',
   '← 처음으로': '← Home',
@@ -114,32 +210,26 @@ export const DICT = {
   'AI 검수 중…': 'AI reviewing…',
   '총 검출 항목': 'Total detections',
   '전체 승인': 'Approve all',
-  '전체 해제': 'Clear all',
   '전체 보기 ▼': 'Show full ▼',
   '접기 ▲': 'Collapse ▲',
   '→ 수정 후': '→ after',
-  '실시간 AI 심화 검수': 'Live AI deep review',
   '레이아웃 배치 →': 'Place in layout →',
   '← 정렬로': '← Back to mapping',
-  '단위': 'Units', '표기': 'Notation', '오타': 'Typo', '표준': 'Standard', '문법': 'Grammar', '기본 정보': 'Basic',
+  '단위': 'Units', '표기': 'Notation', '오타': 'Typo', '표준': 'Standard', '문법': 'Grammar', '기본 정보': 'Basic info',
 
   // ---- step 3: layout ----
-  '레이아웃 옵션': 'Layout options',
   'US Letter 세로 · 2페이지': 'US Letter portrait · 2 pages',
-  '출력 버전': 'Output version',
   '수정버전': 'Revised', '기존버전': 'Original',
   'AI 검수 반영': 'Apply AI review',
   'CMS 정렬·매핑': 'CMS sort & map',
   '페이지 보기': 'Page view',
-  '양면': 'Both', '1면': 'Page 1', '2면': 'Page 2',
   '확대 · 맞춤': 'Zoom · fit',
   '↔ 너비': '↔ Width', '↕ 세로': '↕ Height', '□ 페이지': '□ Page',
   '사진·정보 편집 →': 'Edit photos & info →',
 
   // ---- step 4: editor ----
   '엑셀 데이터에서 가져온 값 · 모두 수정 가능': 'Values imported from Excel · all editable',
-  '기본 정보': 'Basic info',
-  '모델명': 'Model', '서브 타이틀': 'Subtitle', '서브 타이틀 (1행)': 'Subtitle (line 1)', '서브 타이틀 (2행)': 'Subtitle (line 2)',
+  '서브 타이틀': 'Subtitle', '서브 타이틀 (1행)': 'Subtitle (line 1)', '서브 타이틀 (2행)': 'Subtitle (line 2)',
   'OVERVIEW 불릿': 'OVERVIEW bullets', '+ 추가': '+ Add',
   '제품 사진 · 치수 도면': 'Product photos · dimension drawings',
   '왼쪽 미리보기의 제품 사진·치수 도면 영역에 이미지를 직접 끌어다 놓으세요. 드롭한 이미지는 자동 저장됩니다.':
@@ -218,109 +308,6 @@ export const DICT = {
   '치수 도면': 'dimension drawing',
   '영역에 이미지를 직접 끌어다 놓으세요. 드롭한 이미지는 자동 저장됩니다.': 'areas. Dropped images are saved automatically.',
   '치수 도면 개수': 'Number of drawings',
-
-  // ---- settings drawer: CMS table tab ----
-  'CMS 데이터 필드 테이블': 'CMS data field table',
-  '매핑·정렬의 기준이 되는': 'The reference for mapping & sorting —',
-  '입니다. 새 테이블을 업로드하면 이후 모든 매핑·정렬·레이아웃이 그 필드 정의를 기준으로 동작합니다.': '. Upload a new table and all mapping, sorting and layout follow its field definitions.',
-  '현재 기준 테이블': 'Current reference table',
-  'CMS 테이블 업로드': 'Upload CMS table',
-  '기본값 복원': 'Restore default',
-  'CMS 테이블 분석 중…': 'Analyzing CMS table…',
-  '지원 형식': 'Supported formats',
-  '— 열:': '— columns:',
-  '(키) ·': '(key) ·',
-  '(표시명) ·': '(display name) ·',
-  '(Y/N, 선택). 헤더 행 자동 인식.': '(Y/N, optional). Header row auto-detected.',
-  '— 내보내기와 동일한': '— same as export:',
-  '구조.': 'structure.',
-  // ---- settings drawer: display order tab ----
-  '제품군(Scope)': 'Product group (Scope)',
-  '데이터 필드': 'Data fields',
-  // ---- settings drawer: review rules tab ----
-  '기본 내장 검수 규칙': 'Built-in review rules',
-  '입니다. 끄면 해당 유형의 수정 제안이 검수 결과에서 제외됩니다. 새로 발견한 오류는': '. Turn one off to exclude that suggestion type from results. New errors can be',
-  '탭에서 추가하세요.': 'added from the tab.',
-  '규칙:': 'Rules:',
-  // ---- settings drawer: rule library tab ----
-  '규칙 라이브러리': 'Rule library',
-  '사용자 규칙 라이브러리': 'Custom rule library',
-  '새로 들어온 데이터·기제작 스펙에서 발견한 오류를 규칙으로 누적하는': 'Accumulates errors found in incoming data and existing specs as rules —',
-  '입니다. 내장 규칙과 별도로 저장되며 엑셀·CSV로 내보낼 수 있습니다.': '. Stored separately from built-in rules and exportable to Excel/CSV.',
-  '누적 사용자 규칙': 'Accumulated custom rules',
-  '새 규칙 후보 검사': 'Scan for rule candidates',
-  '새 규칙 후보': 'Rule candidates',
-  '새 데이터에서 규칙 후보 검출': 'Detect rule candidates from new data',
-  '가져오기': 'Import',
-  '규칙 직접 추가': 'Add a rule manually',
-  '찾을 문자열 (예: 12V DC)': 'Find text (e.g. 12V DC)',
-  '바꿀 문자열 (비우면 삭제)': 'Replace with (empty = delete)',
-  '규칙 설명 (선택)': 'Rule description (optional)',
-  '적용 필드 (선택, 예: dimension)': 'Target field (optional, e.g. dimension)',
-  '규칙 추가': 'Add rule',
-  '전체 규칙으로 추가': 'Add as global rule',
-  '대소문자 무시': 'Ignore case',
-  '정규식': 'Regex',
-  '아직 누적된 사용자 규칙이 없습니다.': 'No custom rules yet.',
-  '데이터를 불러온 뒤': 'After loading data, run',
-  '를 실행하세요.': '.',
-  '전체 비우기': 'Clear all',
-  '검출': 'Detect',
-  '검출된 새 패턴이 없습니다.': 'No new patterns detected.',
-  '현재 규칙 라이브러리가 이 데이터를 모두 커버합니다.': 'The current rule library covers all of this data.',
-  // ---- mapping-connection modal ----
-  '매핑 연결 확인 · 수정': 'Check & edit mapping',
-  'CMS 매핑 필드 (유사 매칭 포함)': 'CMS mapped fields (incl. fuzzy matches)',
-  'CMS 필드': 'CMS field',
-  '모델 코드': 'Model code',
-  '현재 연결된 원본 필드': 'Currently linked source field',
-  '연결된 원본 필드를 확인하고 다른 필드로 바꾸거나 해제하세요': 'Review the linked source field; change it or unlink',
-  '연결 변경': 'Change link',
-  '연결 해제': 'Unlink',
-  '연결 해제 → 미매핑으로 이동': 'Unlink → move to unmapped',
-  '다른 원본 필드를 선택하면 이 CMS 항목에 연결되고 기존 연결은 해제됩니다.': 'Pick another source field to link it to this CMS item; the existing link is removed.',
-  '이 CMS 항목의 연결을 끊고 해당 원본 필드를 미매핑 목록으로 되돌립니다.': 'Unlinks this CMS item and returns its source field to the unmapped list.',
-  '확인 필요 (추정·미매핑)': 'Needs review (guessed / unmapped)',
-  // ---- report / misc ----
-  '1. 정렬·매핑 리포트': '1. Sort & mapping report',
-  '2. AI 검수 리포트': '2. AI review report',
-  'STEP 3 · 스펙시트 — 기존버전 (중국/PDF 원본 데이터)': 'STEP 3 · Spec sheet — original (manufacturer/PDF source data)',
-  'STEP 3 · 스펙시트 — 수정버전 (AI 검수 · CMS 정렬·매핑 반영)': 'STEP 3 · Spec sheet — revised (AI review · CMS sort & map applied)',
-  '2번째 도면 배치': 'Second drawing layout',
-  '설명': 'Description',
-  '닫기': 'Close',
-  '도움말': 'Help',
-  '저장 히스토리': 'Save history',
-  '제거': 'Remove',
-  '(계속)': '(continued)',
-
-  // ---- editor name / toasts & messages ----
-  '작업자 이름': 'Editor name',
-  '저장 기록에 표시할 이름': 'Name shown in the save log',
-  '팝업이 차단되었습니다. 팝업을 허용해 주세요.': 'Popup blocked. Please allow popups.',
-  '기본 내장 CMS 테이블로 복원했습니다.': 'Restored the built-in CMS table.',
-  '.xlsx 파일을 넣어주세요.': 'Please drop an .xlsx file.',
-  '.pdf 파일을 넣어주세요.': 'Please drop a .pdf file.',
-  '먼저 데이터를 불러오세요.': 'Load data first.',
-  '저장 실패 (용량 초과?)': 'Save failed (storage full?)',
-  'PDF 생성 중…': 'Generating PDF…',
-  'PDF로 저장했습니다.': 'Saved as PDF.',
-  'PDF 생성 실패 — 인쇄로 저장해 주세요.': 'PDF failed — please save via print.',
-  '엑셀 변환 중…': 'Converting to Excel…',
-  '✓ 엑셀로 변환·다운로드됨': '✓ Converted & downloaded as Excel',
-  '엑셀 생성 중…': 'Generating Excel…',
-  '✓ 엑셀 다운로드됨': '✓ Excel downloaded',
-  '✓ Word 문서 다운로드됨': '✓ Word document downloaded',
-  'PPTX 생성 중…': 'Generating PPTX…',
-  '✓ PPTX 다운로드됨': '✓ PPTX downloaded',
-  '찾을 문자열을 입력하세요.': 'Enter the text to find.',
-  '내보낼 사용자 규칙이 없습니다.': 'No custom rules to export.',
-  '✓ CSV 다운로드됨': '✓ CSV downloaded',
-  '규칙 파일 읽는 중…': 'Reading rule file…',
-  // ---- top-bar view toolbar (page view) ----
-  '양면': 'Both',
-  '1면': 'P1',
-  '2면': 'P2',
 };
 
 // number-embedding strings → regex replacers ($1 = captured number)
@@ -330,6 +317,24 @@ export const PATTERNS = [
   [/^(\d+)개 스펙 필드 →$/, '$1 spec fields →'],
   [/^(\d+)개 제품$/, '$1 products'],
   [/^(\d+)개 선택$/, '$1 selected'],
+  [/^✓ CMS 테이블 적용됨 — 제품군 (\d+)개 · 필드 (\d+)개\. 이후 매핑·정렬이 이 테이블 기준으로 동작합니다\.$/,
+    '✓ CMS table applied — $1 scopes, $2 fields. Mapping and ordering now follow this table.'],
+  [/^CMS 테이블을 읽지 못했습니다: (.+)$/, 'Could not read the CMS table: $1'],
+  [/^엑셀을 읽지 못했습니다: (.+)$/, 'Could not read the Excel file: $1'],
+  [/^대량 데이터를 읽지 못했습니다: (.+)$/, 'Could not read the bulk data: $1'],
+  [/^PDF 추출 실패: (.+)$/, 'PDF extraction failed: $1'],
+  [/^엑셀 변환 실패: (.+)$/, 'Excel conversion failed: $1'],
+  [/^엑셀 실패: (.+)$/, 'Excel export failed: $1'],
+  [/^Word 실패: (.+)$/, 'Word export failed: $1'],
+  [/^PPTX 실패: (.+)$/, 'PPTX export failed: $1'],
+  [/^가져오기 실패: (.+)$/, 'Import failed: $1'],
+  [/^정규식이 올바르지 않습니다: (.+)$/, 'Invalid regular expression: $1'],
+  [/^✓ 규칙을 추가했습니다 \(총 (\d+)건\)$/, '✓ Rule added ($1 total)'],
+  [/^✓ 규칙 라이브러리에 추가됨 \((\d+)건\)$/, '✓ Added to the rule library ($1)'],
+  [/^(\d+)건을 규칙으로 추가했습니다$/, 'Added $1 item(s) as rules'],
+  [/^(\d+)건 추가 \(총 (\d+)건\)$/, 'Added $1 (total $2)'],
+  [/^(\d+)개 시트가 더 있습니다 \(첫 시트를 불러왔습니다\)\.$/, '$1 more sheet(s) available (the first one was loaded).'],
+  [/^(\d+)개씩$/, '$1 / page'],
   [/^총 (\d+)개 · 표시 (\d+)개$/, '$1 total · $2 shown'],
   [/^(\d+)개 제품을 작업 목록에 추가했습니다\.$/, 'Added $1 product(s) to the work list.'],
   [/^(.*)\(복사본 (\d+)\)$/, '$1(Copy $2)'],
@@ -337,7 +342,6 @@ export const PATTERNS = [
   [/^(\d+)개 제품을 같은 데이터로 복사해 목록에 추가합니다\.$/, 'Copies $1 product(s) with the same data and adds them to the list.'],
   [/^작업함 · (.+)$/, 'Worked · $1'],
   [/^저장됨 · (.+)$/, 'Saved · $1'],
-  [/^공유 저장 · (.+)$/, 'Shared · $1'],
   [/^미매핑 필드 · (\d+)건$/, 'Unmapped fields · $1'],
   [/^확인 필요 항목 · (\d+)건$/, 'Items to review · $1'],
   [/^(\d+)\s*\/\s*(\d+) 필드$/, '$1 / $2 fields'],
@@ -347,19 +351,9 @@ export const PATTERNS = [
   [/^CMS 표시 순서 기준으로 (.+?) 스펙을 재배열했습니다\.$/, 'Specs for $1 rearranged by CMS display order.'],
   [/^총 (\d+)건 검출 · (\d+)건 반영$/, '$1 detected · $2 applied'],
   [/^✓ 저장됨 · (.+)$/, '✓ Saved · $1'],
+  [/^✓ 팀 서버에 저장됨 · (.+)$/, '✓ Saved to team server · $1'],
   [/^(\d+) \/ (\d+)$/, '$1 / $2'],
   [/^(\d+)개 시트가 더 있습니다 \(첫 시트를 불러왔습니다\)\.$/, '$1 more sheets found (loaded the first).'],
-  [/^✓ CMS 테이블 적용됨 — 제품군 (\d+)개 · 필드 (\d+)개\. 이후 매핑·정렬이 이 테이블 기준으로 동작합니다\.$/, '✓ CMS table applied — $1 product groups · $2 fields. Mapping & sorting now follow this table.'],
-  [/^CMS 테이블을 읽지 못했습니다: ([\s\S]+)$/, 'Could not read the CMS table: $1'],
-  [/^엑셀을 읽지 못했습니다: ([\s\S]+)$/, 'Could not read the Excel: $1'],
-  [/^대량 데이터를 읽지 못했습니다: ([\s\S]+)$/, 'Could not read the bulk data: $1'],
-  [/^PDF 추출 실패: ([\s\S]+)$/, 'PDF extraction failed: $1'],
-  [/^엑셀 변환 실패: ([\s\S]+)$/, 'Excel conversion failed: $1'],
-  [/^엑셀 실패: ([\s\S]+)$/, 'Excel failed: $1'],
-  [/^Word 실패: ([\s\S]+)$/, 'Word failed: $1'],
-  [/^PPTX 실패: ([\s\S]+)$/, 'PPTX failed: $1'],
-  [/^정규식이 올바르지 않습니다: ([\s\S]+)$/, 'Invalid regex: $1'],
-  [/^가져오기 실패: ([\s\S]+)$/, 'Import failed: $1'],
 ];
 
 function tr(text) {
@@ -407,6 +401,19 @@ export function translateTree(root, lang) {
       el.setAttribute('placeholder', out);
     }
   });
+  // tooltips / a11y labels — icon-only controls carry their label ONLY here
+  ['title', 'aria-label'].forEach((attr) => {
+    const stash = attr === 'title' ? '__koTitle' : '__koAria';
+    root.querySelectorAll('[' + attr + ']').forEach((el) => {
+      if (el.closest('[data-i18n-skip]')) return;
+      const cur = el.getAttribute(attr);
+      const out = tr(cur);
+      if (out != null && out !== cur) {
+        if (el[stash] == null) el[stash] = cur;
+        el.setAttribute(attr, out);
+      }
+    });
+  });
 }
 
 // Restore Korean originals stashed by translateTree.
@@ -419,5 +426,11 @@ export function restoreTree(root) {
   }
   root.querySelectorAll('input[placeholder], textarea[placeholder]').forEach((el) => {
     if (el.__koPh != null) { el.setAttribute('placeholder', el.__koPh); el.__koPh = null; }
+  });
+  root.querySelectorAll('[title]').forEach((el) => {
+    if (el.__koTitle != null) { el.setAttribute('title', el.__koTitle); el.__koTitle = null; }
+  });
+  root.querySelectorAll('[aria-label]').forEach((el) => {
+    if (el.__koAria != null) { el.setAttribute('aria-label', el.__koAria); el.__koAria = null; }
   });
 }
