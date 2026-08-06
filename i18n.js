@@ -293,6 +293,30 @@ export const DICT = {
   '저장 히스토리': 'Save history',
   '제거': 'Remove',
   '(계속)': '(continued)',
+
+  // ---- editor name / toasts & messages ----
+  '작업자 이름': 'Editor name',
+  '저장 기록에 표시할 이름': 'Name shown in the save log',
+  '팝업이 차단되었습니다. 팝업을 허용해 주세요.': 'Popup blocked. Please allow popups.',
+  '기본 내장 CMS 테이블로 복원했습니다.': 'Restored the built-in CMS table.',
+  '.xlsx 파일을 넣어주세요.': 'Please drop an .xlsx file.',
+  '.pdf 파일을 넣어주세요.': 'Please drop a .pdf file.',
+  '먼저 데이터를 불러오세요.': 'Load data first.',
+  '저장 실패 (용량 초과?)': 'Save failed (storage full?)',
+  'PDF 생성 중…': 'Generating PDF…',
+  'PDF로 저장했습니다.': 'Saved as PDF.',
+  'PDF 생성 실패 — 인쇄로 저장해 주세요.': 'PDF failed — please save via print.',
+  '엑셀 변환 중…': 'Converting to Excel…',
+  '✓ 엑셀로 변환·다운로드됨': '✓ Converted & downloaded as Excel',
+  '엑셀 생성 중…': 'Generating Excel…',
+  '✓ 엑셀 다운로드됨': '✓ Excel downloaded',
+  '✓ Word 문서 다운로드됨': '✓ Word document downloaded',
+  'PPTX 생성 중…': 'Generating PPTX…',
+  '✓ PPTX 다운로드됨': '✓ PPTX downloaded',
+  '찾을 문자열을 입력하세요.': 'Enter the text to find.',
+  '내보낼 사용자 규칙이 없습니다.': 'No custom rules to export.',
+  '✓ CSV 다운로드됨': '✓ CSV downloaded',
+  '규칙 파일 읽는 중…': 'Reading rule file…',
 };
 
 // number-embedding strings → regex replacers ($1 = captured number)
@@ -321,6 +345,17 @@ export const PATTERNS = [
   [/^✓ 저장됨 · (.+)$/, '✓ Saved · $1'],
   [/^(\d+) \/ (\d+)$/, '$1 / $2'],
   [/^(\d+)개 시트가 더 있습니다 \(첫 시트를 불러왔습니다\)\.$/, '$1 more sheets found (loaded the first).'],
+  [/^✓ CMS 테이블 적용됨 — 제품군 (\d+)개 · 필드 (\d+)개\. 이후 매핑·정렬이 이 테이블 기준으로 동작합니다\.$/, '✓ CMS table applied — $1 product groups · $2 fields. Mapping & sorting now follow this table.'],
+  [/^CMS 테이블을 읽지 못했습니다: ([\s\S]+)$/, 'Could not read the CMS table: $1'],
+  [/^엑셀을 읽지 못했습니다: ([\s\S]+)$/, 'Could not read the Excel: $1'],
+  [/^대량 데이터를 읽지 못했습니다: ([\s\S]+)$/, 'Could not read the bulk data: $1'],
+  [/^PDF 추출 실패: ([\s\S]+)$/, 'PDF extraction failed: $1'],
+  [/^엑셀 변환 실패: ([\s\S]+)$/, 'Excel conversion failed: $1'],
+  [/^엑셀 실패: ([\s\S]+)$/, 'Excel failed: $1'],
+  [/^Word 실패: ([\s\S]+)$/, 'Word failed: $1'],
+  [/^PPTX 실패: ([\s\S]+)$/, 'PPTX failed: $1'],
+  [/^정규식이 올바르지 않습니다: ([\s\S]+)$/, 'Invalid regex: $1'],
+  [/^가져오기 실패: ([\s\S]+)$/, 'Import failed: $1'],
 ];
 
 function tr(text) {

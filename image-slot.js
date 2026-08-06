@@ -635,9 +635,14 @@
         this.removeAttribute('data-filled');
       }
     }
+    // Public: clear this slot's stored image (used on product switch).
+    clearSlot() { if (this.id) setSlot(this.id, null); }
   }
 
   if (!customElements.get('image-slot')) {
     customElements.define('image-slot', ImageSlot);
   }
+  // Global id-based clear (works even if the element isn't mounted yet) — used
+  // on product switch so a new product doesn't inherit the previous image.
+  window.__clearImageSlot = (id) => { if (id) setSlot(id, null); };
 })();

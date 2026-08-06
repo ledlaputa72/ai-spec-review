@@ -791,6 +791,10 @@
           <div style="font-size:15px; font-weight:800; color:#941A31;">📜 저장 히스토리</div>
           <button onClick="{{ onToggleHistory }}" style="width:30px; height:30px; border:1px solid #e6e8ec; background:#f5f6f8; border-radius:8px; cursor:pointer; font-size:16px; color:#5e636b;">×</button>
         </div>
+        <div style="display:flex; align-items:center; gap:10px; padding:11px 20px; border-bottom:1px solid #f2f3f5; background:#faf9fb;">
+          <span style="font-size:12px; font-weight:700; color:#5e636b; white-space:nowrap;">작업자 이름</span>
+          <input value="{{ editorName }}" onChange="{{ onEditorName }}" placeholder="저장 기록에 표시할 이름" style="flex:1; border:1px solid #d9dce1; border-radius:7px; padding:7px 11px; font-size:12.5px; color:#1c2330; outline:none; font-family:inherit;" />
+        </div>
         <div class="scroll" style="overflow:auto; padding:6px 10px 10px;">
           <sc-for list="{{ historyItems }}" as="h" hint-placeholder-count="6">
             <div style="display:flex; align-items:center; gap:12px; padding:10px 8px; border-bottom:1px solid #f2f3f5;">
@@ -1239,7 +1243,7 @@ class Component extends DCLogic {
     customOrder:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false,
     importing:false, importError:'', dragOver:false, importNote:'', importSource:'xlsx',
     showReports:false, reportFocus:'mapping', showExport:false, exportMsg:'', savedToast:'', hasSession:false,
-    showHistory:false, history:[], historyLoading:false,
+    showHistory:false, history:[], historyLoading:false, editorName:'',
     reviewFilter:null, expandedReviews:{}, sheetVersion:'reviewed', applyReview:true, applyCms:true,
     customRules:[], dismissedCands:{}, cands:[], showCands:false, candScanned:false, candSrc:0,
     newRule:{find:'',repl:'',cat:'표기',note:'',ci:false,regex:false,scope:''}, libMsg:'',
@@ -1271,9 +1275,10 @@ class Component extends DCLogic {
       try{ const isrc=await fetch('./i18n.js').then(r=>r.text()); const iurl=URL.createObjectURL(new Blob([isrc],{type:'text/javascript'})); this._i18n=await import(iurl); }catch(e){ console.warn('i18n load failed', e); }
       let hasSession=false; try{ hasSession=!!localStorage.getItem('specstudio:session'); }catch(e){}
       let lang='en'; try{ lang=localStorage.getItem('specstudio:lang')||'en'; }catch(e){}  // 기본 영어(저장된 선호 없으면)
+      let editorName=''; try{ editorName=localStorage.getItem('specstudio:editor')||''; }catch(e){}
       const {lib, dismissed}=this._loadRuleLib(qc);
       this._sampleIds=(samples||[]).map(s=>s.id);
-      this.setState({cms, defaultCms:cms, samples, qc, ready:true, hasSession, lang, customRules:lib, dismissedCands:dismissed, workHist:this._loadHist()});
+      this.setState({cms, defaultCms:cms, samples, qc, ready:true, hasSession, lang, editorName, customRules:lib, dismissedCands:dismissed, workHist:this._loadHist()});
       this._srvBootstrap();  // 서버(공유) 저장 목록 병합
     }catch(e){ console.error('load error', e); this.setState({ready:true}); }
   }
@@ -1763,7 +1768,16 @@ class Component extends DCLogic {
     try{ localStorage.setItem('specstudio:workhist', JSON.stringify(h)); }catch(e){}
     this.setState({workHist:h});
   }
+  // 제품 전환 시 스펙시트 이미지 슬롯(제품 사진·치수 도면·액세서리) 초기화 →
+  // 새 제품이 이전 제품의 이미지를 물려받지 않도록. (고정 id 슬롯이라 필요)
+  _clearSheetSlots(){
+    try{
+      ['ss_product_photo','acc0','acc1','acc2','acc3'].forEach(id=>{ if(window.__clearImageSlot) window.__clearImageSlot(id); });
+      ['ss_dims_1','ss_dims_2'].forEach(id=>{ if(window.__clearVectorSlot) window.__clearVectorSlot(id); });
+    }catch(e){ console.warn('clear sheet slots failed', e); }
+  }
   _loadProduct(s, id){
+    this._clearSheetSlots();
     this._touchHist(id||s.id, false);
     const qc=this.state.qc;
     const bullets=(s.overview||'').split(/\n+/).map(l=>l.replace(/^[•\-\u2022\u00b7]\s*/,'').replace(/\s*OPTIONAL ACCESSORIES.*$/i,'').trim()).filter(Boolean).map(l=>qc.runQC(l,'Overview',[]).result);
@@ -2074,7 +2088,8 @@ class Component extends DCLogic {
   toggleExport(){ this.setState(s=>({showExport:!s.showExport, exportMsg:''})); }
   // ── session save / restore ───────────────────────────────────────────
   // ── 서버(팀 공유) 상태 API — /api/state (Vercel KV) ──────────────────────
-  _editorName(){ try{ let n=localStorage.getItem('specstudio:editor'); if(n===null){ n=(window.prompt(this.T('저장 기록에 표시할 이름(작업자):','Your name for the save log:'),'')||'').slice(0,60); localStorage.setItem('specstudio:editor', n); } return n; }catch(e){ return ''; } }
+  _editorName(){ return (this.state.editorName||'').trim(); }
+  setEditorName(v){ v=String(v||'').slice(0,60); try{ localStorage.setItem('specstudio:editor', v); }catch(e){} this.setState({editorName:v}); }
   _curDoc(){ const s=this.state; return { v:1, scope:s.scope, raw:s.raw, assignments:s.assignments, reviewAccept:s.reviewAccept, overrides:s.overrides, meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, customOrder:s.customOrder, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample, savedAt:Date.now() }; }
   async _srvSave(){ try{ const s=this.state; if(!s.raw) return false;
       const model=(s.meta&&s.meta.model)||(s.raw&&s.raw.model)||s.activeSample; if(!model) return false;
@@ -2100,6 +2115,7 @@ class Component extends DCLogic {
   }
   _restoreDoc(d, id){
     if(!d||!d.raw) return false;
+    this._clearSheetSlots();
     this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:d.assignments||{}, reviewAccept:d.reviewAccept||{}, overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:d.bullets||[], dims:d.dims||[], certs:d.certs||{}, accessories:d.accessories||[], customOrder:d.customOrder||{}, disabledRules:d.disabledRules||{}, step:d.step||1, activeSample:id||d.activeSample, importError:'', savedToast:this.T('✓ 저장된 작업을 불러왔습니다','✓ Loaded saved work') });
     clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600); return true;
   }
@@ -2721,6 +2737,7 @@ class Component extends DCLogic {
     out.hasHistory=(st.history||[]).length>0;
     out.historyEmpty=!st.historyLoading && !(st.history||[]).length;
     out.historyEmptyLabel=st.historyLoading?this.T('불러오는 중…','Loading…'):this.T('아직 저장 기록이 없습니다.','No save history yet.');
+    out.editorName=st.editorName||''; out.onEditorName=(e)=>this.setEditorName(e.target.value);
 
     // help wiki
     const flat=this._helpFlat();

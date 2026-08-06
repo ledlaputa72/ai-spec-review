@@ -148,6 +148,8 @@
       try { localStorage.removeItem(KEY(this.id)); } catch (e) {}
       this._renderEmpty();
     }
+    // Public: clear this slot's stored drawing (used on product switch).
+    clearSlot() { this._clear(); }
 
     _save(url) {
       if (!this.id) return;
@@ -179,4 +181,11 @@
     }
   }
   customElements.define('vector-slot', VectorSlot);
+  // Global id-based clear (works even if the element isn't mounted yet) — used
+  // on product switch so a new product doesn't inherit the previous drawing.
+  window.__clearVectorSlot = (id) => {
+    if (!id) return;
+    try { localStorage.removeItem(KEY(id)); } catch (e) {}
+    document.querySelectorAll('vector-slot').forEach((el) => { if (el.id === id) el._clear(); });
+  };
 })();

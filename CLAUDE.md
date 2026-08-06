@@ -50,6 +50,12 @@ Claude Design 산출물 JS를 로컬에서 직접 고친 부분 → **재export 
 - **i18n 사전 완성** (`i18n.js` DICT, 2026-08): 앱은 한글 소스 + `translateTree`가 DICT에 있는 문구만 EN 치환.
   설정 드로어(4탭)·매핑 연결 모달·리포트 라벨 등 미번역이던 71개 문구를 DICT에 추가 → 템플릿 미번역 0.
   ⚠️ 새 한글 UI 문구를 추가하면 반드시 `i18n.js` DICT에도 EN을 넣어야 영어모드에서 번역됨(제품명·모델코드·외래어는 제외).
+  토스트/오류 메시지도 DOM 텍스트라 DICT/PATTERN으로 번역됨(동적 접두사는 PATTERN).
+- **치수 도면·사진 슬롯 제품 전환 시 초기화** (`_clearSheetSlots` + slot 전역 clear, 2026-08):
+  `SpecSheet`의 이미지/벡터 슬롯이 고정 id(`ss_dims_1/2`·`ss_product_photo`·`acc0~3`)라 제품을 바꿔도 이전 이미지가 남던 문제.
+  `image-slot.js`/`vector-slot.js`에 `window.__clearImageSlot`/`__clearVectorSlot`(+요소 `clearSlot()`) 추가, `_loadProduct`·`_restoreDoc`에서 호출.
+  (한계: 이미지가 제품별로 저장되진 않음 — 전환 시 비워짐. 제품별 이미지 기억은 Claude Design에서 슬롯 id를 제품별로 바꾸는 게 정석.)
+- **작업자 이름 = 히스토리 패널 입력 필드** (`editorName`/`setEditorName`, 2026-08): 기존 `window.prompt`(1회 차단형) 제거, 히스토리 패널 상단 입력 필드로 설정(`localStorage 'specstudio:editor'`).
 
 ## 팀 공유 작업 저장 (Vercel KV / Upstash) — 백엔드
 - 목적: **누가 저장하든 마지막 저장 상태를 모든 사용자·기기가 공유**(localStorage는 브라우저별이라 불가).
