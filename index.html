@@ -2111,7 +2111,7 @@ class Component extends DCLogic {
   async _srvBootstrap(){
     try{ const items=await this._srvList(); if(!items||!items.length) return;
       this.setState(st=>{ const samples=[...(st.samples||[])];
-        items.forEach(it=>{ const ex=samples.find(x=>x.id===it.model);
+        items.forEach(it=>{ const ex=samples.find(x=>x.model===it.model || x.id===it.model);
           if(ex){ ex.serverAt=it.at; ex.serverBy=it.by; }
           else samples.unshift({ id:it.model, model:it.model, subtitle:it.title||it.model, specs:[], fromServer:true, serverAt:it.at, serverBy:it.by }); });
         return { samples, hasSession:true }; });
