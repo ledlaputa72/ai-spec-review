@@ -58,6 +58,7 @@
       <sc-if value="{{ canShare }}" hint-placeholder-val="{{ true }}">
       <button onClick="{{ onSave }}" style="display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); color:#fff; border-radius:8px; padding:7px 13px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:rgba(255,255,255,.22);">💾 저장</button>
       </sc-if>
+      <button onClick="{{ onToggleHistory }}" title="저장 히스토리" style="display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); color:#e3e9f2; border-radius:8px; padding:7px 12px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:rgba(255,255,255,.16);">📜 히스토리</button>
       <sc-if value="{{ canShare }}" hint-placeholder-val="{{ true }}">
       <div style="position:relative;">
         <button onClick="{{ onToggleExport }}" style="display:flex; align-items:center; gap:7px; background:#fff; border:none; color:#941A31; border-radius:8px; padding:7px 14px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:#f3e7ea;">⤓ 공유 · 내보내기</button>
@@ -781,6 +782,33 @@
     </sc-if>
   </div>
 
+  <!-- ============ SAVE HISTORY ============ -->
+  <sc-if value="{{ showHistory }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; inset:0; z-index:195; display:flex; align-items:center; justify-content:center;">
+      <div onClick="{{ onToggleHistory }}" style="position:absolute; inset:0; background:rgba(20,30,50,.45);"></div>
+      <div style="position:relative; width:560px; max-width:92vw; max-height:80vh; background:#fff; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,.35); display:flex; flex-direction:column; overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:15px 20px; border-bottom:1px solid #eceef1;">
+          <div style="font-size:15px; font-weight:800; color:#941A31;">📜 저장 히스토리</div>
+          <button onClick="{{ onToggleHistory }}" style="width:30px; height:30px; border:1px solid #e6e8ec; background:#f5f6f8; border-radius:8px; cursor:pointer; font-size:16px; color:#5e636b;">×</button>
+        </div>
+        <div class="scroll" style="overflow:auto; padding:6px 10px 10px;">
+          <sc-for list="{{ historyItems }}" as="h" hint-placeholder-count="6">
+            <div style="display:flex; align-items:center; gap:12px; padding:10px 8px; border-bottom:1px solid #f2f3f5;">
+              <span style="font-size:10px; font-weight:800; color:#fff; background:{{ h.actionColor }}; border-radius:5px; padding:3px 8px; letter-spacing:.4px;">{{ h.action }}</span>
+              <div style="min-width:0; flex:1;">
+                <div style="font-size:13px; font-weight:700; color:#1c2330; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ h.model }} <span style="font-weight:500; color:#8b9099;">{{ h.title }}</span></div>
+                <div style="font-size:11px; color:#8b9099; margin-top:2px;">{{ h.when }} · {{ h.by }}</div>
+              </div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ historyEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:34px; text-align:center; color:#8b9099; font-size:13px;">{{ historyEmptyLabel }}</div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
   <!-- ============ SETTINGS DRAWER ============ -->
   <sc-if value="{{ showSettings }}" hint-placeholder-val="{{ true }}">
     <div style="position:fixed; inset:0; z-index:50; display:flex; justify-content:flex-end;">
@@ -1211,6 +1239,7 @@ class Component extends DCLogic {
     customOrder:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false,
     importing:false, importError:'', dragOver:false, importNote:'', importSource:'xlsx',
     showReports:false, reportFocus:'mapping', showExport:false, exportMsg:'', savedToast:'', hasSession:false,
+    showHistory:false, history:[], historyLoading:false,
     reviewFilter:null, expandedReviews:{}, sheetVersion:'reviewed', applyReview:true, applyCms:true,
     customRules:[], dismissedCands:{}, cands:[], showCands:false, candScanned:false, candSrc:0,
     newRule:{find:'',repl:'',cat:'표기',note:'',ci:false,regex:false,scope:''}, libMsg:'',
@@ -1245,6 +1274,7 @@ class Component extends DCLogic {
       const {lib, dismissed}=this._loadRuleLib(qc);
       this._sampleIds=(samples||[]).map(s=>s.id);
       this.setState({cms, defaultCms:cms, samples, qc, ready:true, hasSession, lang, customRules:lib, dismissedCands:dismissed, workHist:this._loadHist()});
+      this._srvBootstrap();  // 서버(공유) 저장 목록 병합
     }catch(e){ console.error('load error', e); this.setState({ready:true}); }
   }
   _applyLang(){ try{ if(!this._i18n||!this._rootEl) return; if(this.state.lang!=='en') return; if(this._mo) this._mo.disconnect(); this._i18n.translateTree(this._rootEl, 'en'); if(this._mo) this._mo.observe(this._rootEl,{subtree:true,childList:true,characterData:true}); }catch(e){} }
@@ -1488,8 +1518,12 @@ class Component extends DCLogic {
   }
 
   // actions
-  loadSample(id){
+  async loadSample(id){
     const s=this.state.samples.find(x=>x.id===id); if(!s) return;
+    if(s.fromServer && (!s.specs || !s.specs.length)){
+      const doc=await this._srvLoadDoc(id);
+      if(doc && doc.raw){ this._restoreDoc(doc, id); this._touchHist(id, false); return; }
+    }
     this._loadProduct(s, id);
   }
   duplicateSelected(ids){
@@ -2039,25 +2073,55 @@ class Component extends DCLogic {
   closeReports(){ this.setState({showReports:false}); }
   toggleExport(){ this.setState(s=>({showExport:!s.showExport, exportMsg:''})); }
   // ── session save / restore ───────────────────────────────────────────
+  // ── 서버(팀 공유) 상태 API — /api/state (Vercel KV) ──────────────────────
+  _editorName(){ try{ let n=localStorage.getItem('specstudio:editor'); if(n===null){ n=(window.prompt(this.T('저장 기록에 표시할 이름(작업자):','Your name for the save log:'),'')||'').slice(0,60); localStorage.setItem('specstudio:editor', n); } return n; }catch(e){ return ''; } }
+  _curDoc(){ const s=this.state; return { v:1, scope:s.scope, raw:s.raw, assignments:s.assignments, reviewAccept:s.reviewAccept, overrides:s.overrides, meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, customOrder:s.customOrder, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample, savedAt:Date.now() }; }
+  async _srvSave(){ try{ const s=this.state; if(!s.raw) return false;
+      const model=(s.meta&&s.meta.model)||(s.raw&&s.raw.model)||s.activeSample; if(!model) return false;
+      const body={ action:'save', model, doc:this._curDoc(), title:(s.meta&&s.meta.subtitle)||(s.raw&&s.raw.subtitle)||'', step:s.step, by:this._editorName() };
+      const r=await fetch('/api/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); return r.ok;
+    }catch(e){ console.warn('server save failed', e); return false; } }
+  async _srvList(){ try{ const r=await fetch('/api/state?action=list'); if(!r.ok) return []; return (await r.json()).items||[]; }catch(e){ return []; } }
+  async _srvLoadDoc(model){ try{ const r=await fetch('/api/state?action=load&model='+encodeURIComponent(model)); if(!r.ok) return null; return (await r.json()).doc||null; }catch(e){ return null; } }
+  async _srvHistory(){ try{ const r=await fetch('/api/state?action=history&limit=100'); if(!r.ok) return []; return (await r.json()).events||[]; }catch(e){ return []; } }
   saveSession(){
     if(!this.state.raw){ this.setState({savedToast:'먼저 데이터를 불러오세요.'}); return; }
     try{
       const s=this.state;
-      const data={ v:1, scope:s.scope, raw:s.raw, assignments:s.assignments, reviewAccept:s.reviewAccept, overrides:s.overrides, meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, customOrder:s.customOrder, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample, savedAt:Date.now() };
-      localStorage.setItem('specstudio:session', JSON.stringify(data));
+      localStorage.setItem('specstudio:session', JSON.stringify(this._curDoc()));
       const t=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-      this.setState({savedToast:'✓ 저장됨 · '+t, hasSession:true});
+      this.setState({savedToast:this.T('저장 중…','Saving…'), hasSession:true});
       this._touchHist(s.activeSample||(s.raw&&s.raw.id), true);
-      clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
+      this._srvSave().then(ok=>{
+        this.setState({savedToast:ok?('✓ '+this.T('공유 저장됨 · ','Saved (shared) · ')+t):('✓ '+this.T('로컬 저장됨(서버 실패) · ','Saved locally (server failed) · ')+t)});
+        clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
+      });
     }catch(e){ console.error(e); this.setState({savedToast:'저장 실패 (용량 초과?)'}); }
   }
-  restoreSession(){
-    try{
-      const raw=localStorage.getItem('specstudio:session'); if(!raw) return;
-      const d=JSON.parse(raw); if(!d||!d.raw) return;
-      this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:d.assignments||{}, reviewAccept:d.reviewAccept||{}, overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:d.bullets||[], dims:d.dims||[], certs:d.certs||{}, accessories:d.accessories||[], customOrder:d.customOrder||{}, disabledRules:d.disabledRules||{}, step:d.step||1, activeSample:d.activeSample, importError:'', savedToast:'✓ 저장된 작업을 불러왔습니다' });
-      clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
-    }catch(e){ console.error('restore failed', e); }
+  _restoreDoc(d, id){
+    if(!d||!d.raw) return false;
+    this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:d.assignments||{}, reviewAccept:d.reviewAccept||{}, overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:d.bullets||[], dims:d.dims||[], certs:d.certs||{}, accessories:d.accessories||[], customOrder:d.customOrder||{}, disabledRules:d.disabledRules||{}, step:d.step||1, activeSample:id||d.activeSample, importError:'', savedToast:this.T('✓ 저장된 작업을 불러왔습니다','✓ Loaded saved work') });
+    clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600); return true;
+  }
+  async restoreSession(){
+    try{ const items=await this._srvList(); if(items.length){ const newest=items[0]; const doc=await this._srvLoadDoc(newest.model); if(this._restoreDoc(doc, newest.model)) return; } }catch(e){}
+    try{ const raw=localStorage.getItem('specstudio:session'); if(!raw) return; const d=JSON.parse(raw); this._restoreDoc(d, d&&d.activeSample); }catch(e){ console.error('restore failed', e); }
+  }
+  // 시작 시 서버의 공유 저장 목록을 작업 목록에 병합
+  async _srvBootstrap(){
+    try{ const items=await this._srvList(); if(!items||!items.length) return;
+      this.setState(st=>{ const samples=[...(st.samples||[])];
+        items.forEach(it=>{ const ex=samples.find(x=>x.id===it.model);
+          if(ex){ ex.serverAt=it.at; ex.serverBy=it.by; }
+          else samples.unshift({ id:it.model, model:it.model, subtitle:it.title||it.model, specs:[], fromServer:true, serverAt:it.at, serverBy:it.by }); });
+        return { samples, hasSession:true }; });
+    }catch(e){ console.warn('srv bootstrap failed', e); }
+  }
+  async toggleHistory(){
+    if(this.state.showHistory){ this.setState({showHistory:false}); return; }
+    this.setState({showHistory:true, historyLoading:true, showExport:false});
+    const ev=await this._srvHistory();
+    this.setState({history:ev, historyLoading:false});
   }
 
   exportPdf(){
@@ -2652,6 +2716,11 @@ class Component extends DCLogic {
     out.onExportPdf=()=>this.exportPdf(); out.onExportXlsx=()=>this.exportXlsx(); out.onExportDocx=()=>this.exportDocx(); out.onExportPptx=()=>this.exportPptx();
     out.onSave=()=>this.saveSession(); out.savedToast=st.savedToast; out.hasToast=!!st.savedToast;
     out.hasSession=st.hasSession; out.onContinue=()=>this.restoreSession();
+    out.onToggleHistory=()=>this.toggleHistory(); out.showHistory=st.showHistory;
+    out.historyItems=(st.history||[]).map(e=>({ model:e.model||'', title:e.title||'', by:e.by||this.T('익명','anonymous'), action:(e.action||'save').toUpperCase(), actionColor:e.action==='delete'?'#b03a3a':'#3a6b46', when:new Date(e.at).toLocaleString(st.lang==='en'?'en-US':'ko-KR') }));
+    out.hasHistory=(st.history||[]).length>0;
+    out.historyEmpty=!st.historyLoading && !(st.history||[]).length;
+    out.historyEmptyLabel=st.historyLoading?this.T('불러오는 중…','Loading…'):this.T('아직 저장 기록이 없습니다.','No save history yet.');
 
     // help wiki
     const flat=this._helpFlat();
@@ -2777,13 +2846,14 @@ class Component extends DCLogic {
     const all=(st.samples||[]).map(s=>{
       const h=hist[s.id]||null;
       const isSample=(this._sampleIds||[]).includes(s.id);
-      const src=s.fromCms?'CMS':(s.fromPdf?'PDF':(isSample?'샘플':'엑셀'));
+      const src=s.fromServer?'공유':(s.fromCms?'CMS':(s.fromPdf?'PDF':(isSample?'샘플':'엑셀')));
+      const srvDate=s.serverAt?new Date(s.serverAt).toLocaleDateString('ko-KR'):'';
       return {
         id:s.id, model:s.model, title:s.subtitle, count:s.specs.length, src,
-        srcColor: s.fromCms?'#2f6fb0':(s.fromPdf?'#8a5a12':(isSample?'#941A31':'#3a6b46')),
-        srcBg: s.fromCms?'#e8f0f8':(s.fromPdf?'#fbf1de':(isSample?'#f6edef':'#e9f3ec')),
-        status: h?(h.saved?('저장됨 · '+h.date):('작업함 · '+h.date)):'미작업',
-        stColor: h?(h.saved?'#3a6b46':'#5e636b'):'#a8adb5',
+        srcColor: s.fromServer?'#7a4bd0':(s.fromCms?'#2f6fb0':(s.fromPdf?'#8a5a12':(isSample?'#941A31':'#3a6b46'))),
+        srcBg: s.fromServer?'#efe9fb':(s.fromCms?'#e8f0f8':(s.fromPdf?'#fbf1de':(isSample?'#f6edef':'#e9f3ec'))),
+        status: h?(h.saved?('저장됨 · '+h.date):('작업함 · '+h.date)):(s.serverAt?('공유 저장 · '+srvDate):'미작업'),
+        stColor: h?(h.saved?'#3a6b46':'#5e636b'):(s.serverAt?'#7a4bd0':'#a8adb5'),
         onLoad:()=>this.loadSample(s.id),
       };
     });
