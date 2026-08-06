@@ -47,6 +47,9 @@ Claude Design 산출물 JS를 로컬에서 직접 고친 부분 → **재export 
   두 jsPDF 초기화에 **`hotfixes:['px_scaling']`** 추가 → 612×792pt(8.5×11in)로 정확. (좌표/W·H 변경 없음)
 - **UI 기본 언어 = 영어** (`state.lang` 초기값 + init, 2026-08): 저장된 선호(`localStorage 'specstudio:lang'`) 없으면
   `'en'`. 이전엔 `'ko'`라 시크릿모드에서 한국어로 뜨던 것 수정.
+- **i18n 사전 완성** (`i18n.js` DICT, 2026-08): 앱은 한글 소스 + `translateTree`가 DICT에 있는 문구만 EN 치환.
+  설정 드로어(4탭)·매핑 연결 모달·리포트 라벨 등 미번역이던 71개 문구를 DICT에 추가 → 템플릿 미번역 0.
+  ⚠️ 새 한글 UI 문구를 추가하면 반드시 `i18n.js` DICT에도 EN을 넣어야 영어모드에서 번역됨(제품명·모델코드·외래어는 제외).
 
 ## 팀 공유 작업 저장 (Vercel KV / Upstash) — 백엔드
 - 목적: **누가 저장하든 마지막 저장 상태를 모든 사용자·기기가 공유**(localStorage는 브라우저별이라 불가).
