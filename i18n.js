@@ -317,6 +317,10 @@ export const DICT = {
   '내보낼 사용자 규칙이 없습니다.': 'No custom rules to export.',
   '✓ CSV 다운로드됨': '✓ CSV downloaded',
   '규칙 파일 읽는 중…': 'Reading rule file…',
+  // ---- top-bar view toolbar (page view) ----
+  '양면': 'Both',
+  '1면': 'P1',
+  '2면': 'P2',
 };
 
 // number-embedding strings → regex replacers ($1 = captured number)
