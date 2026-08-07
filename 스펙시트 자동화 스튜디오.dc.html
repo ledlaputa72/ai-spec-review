@@ -348,6 +348,11 @@
                   </div>
                 </sc-if>
                 <input value="{{ workQuery }}" onChange="{{ onWorkQuery }}" placeholder="모델명 검색" style="background:#fff; border:1px solid #d9dce1; border-radius:8px; padding:8px 11px; font-size:12.5px; color:#1c2330; outline:none; width:190px; font-family:inherit;" />
+                <select value="{{ workSort }}" onChange="{{ onWorkSort }}" title="정렬" style="background:#fff; border:1px solid #d9dce1; border-radius:8px; padding:8px 9px; font-size:12.5px; color:#1c2330; outline:none; font-family:inherit; cursor:pointer;">
+                  <sc-for list="{{ sortOptions }}" as="o" hint-placeholder-count="3">
+                    <option value="{{ o.value }}">{{ o.label }}</option>
+                  </sc-for>
+                </select>
                 <select value="{{ workPerPage }}" onChange="{{ onWorkPerPage }}" title="페이지당 표시" style="background:#fff; border:1px solid #d9dce1; border-radius:8px; padding:8px 9px; font-size:12.5px; color:#1c2330; outline:none; font-family:inherit; cursor:pointer;">
                   <sc-for list="{{ perPageOptions }}" as="p" hint-placeholder-count="3">
                     <option value="{{ p.value }}">{{ p.label }}</option>
@@ -357,18 +362,19 @@
               </div>
             </div>
             <div style="background:#fff; border:1px solid #e0e3e7; border-radius:12px; overflow:hidden;">
-              <div style="display:grid; grid-template-columns:34px 1.15fr 2fr 0.7fr 0.7fr 0.9fr 0.75fr; gap:12px; padding:11px 16px; background:#f5f6f8; border-bottom:1px solid #e6e8ec; font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.4px; align-items:center;">
+              <div style="display:grid; grid-template-columns:34px 1.1fr 1.7fr 0.6fr 0.55fr 0.9fr 0.8fr 0.55fr; gap:12px; padding:11px 16px; background:#f5f6f8; border-bottom:1px solid #e6e8ec; font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.4px; align-items:center;">
                 <input type="checkbox" checked="{{ allSel }}" onChange="{{ onToggleAll }}" style="width:15px; height:15px; accent-color:#941A31; cursor:pointer;" />
-                <span>모델명</span><span>제품명</span><span style="text-align:right;">스펙 필드</span><span>소스</span><span>상태</span><span style="text-align:right;">작업</span>
+                <span>모델명</span><span>제품명</span><span style="text-align:right;">스펙 필드</span><span>소스</span><span>상태</span><span>작업자</span><span style="text-align:right;">작업</span>
               </div>
               <sc-for list="{{ workRows }}" as="r" hint-placeholder-count="2">
-                <div onClick="{{ r.onLoad }}" style="display:grid; grid-template-columns:34px 1.15fr 2fr 0.7fr 0.7fr 0.9fr 0.75fr; gap:12px; align-items:center; padding:12px 16px; border-bottom:1px solid #f0f1f4; cursor:pointer; transition:.12s; background:{{ r.rowBg }};" style-hover="background:#faf6f7;">
+                <div onClick="{{ r.onLoad }}" style="display:grid; grid-template-columns:34px 1.1fr 1.7fr 0.6fr 0.55fr 0.9fr 0.8fr 0.55fr; gap:12px; align-items:center; padding:12px 16px; border-bottom:1px solid #f0f1f4; cursor:pointer; transition:.12s; background:{{ r.rowBg }};" style-hover="background:#faf6f7;">
                   <input type="checkbox" checked="{{ r.sel }}" onChange="{{ r.onSel }}" onClick="{{ r.stop }}" style="width:15px; height:15px; accent-color:#941A31; cursor:pointer;" />
                   <span style="font-size:13.5px; font-weight:800; color:#941A31;">{{ r.model }}</span>
                   <span style="font-size:12.5px; color:#5e636b; line-height:1.35;">{{ r.title }}</span>
                   <span style="font-size:12.5px; color:#44474e; text-align:right; font-variant-numeric:tabular-nums;">{{ r.count }}</span>
                   <span style="font-size:10.5px; font-weight:700; color:{{ r.srcColor }}; background:{{ r.srcBg }}; border-radius:5px; padding:3px 7px; justify-self:start;">{{ r.src }}</span>
                   <span style="font-size:11.5px; color:{{ r.stColor }}; font-weight:600;">{{ r.status }}</span>
+                  <span style="font-size:11.5px; color:#5e636b; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.by }}</span>
                   <span style="font-size:12px; font-weight:700; color:#941A31; text-align:right;">열기 →</span>
                 </div>
               </sc-for>
@@ -1843,7 +1849,9 @@ class Component extends DCLogic {
     if(!id) return;
     const h=Object.assign({}, this.state.workHist||{});
     const p=n=>(n<10?'0'+n:''+n), d=new Date(), date=(d.getMonth()+1)+'/'+d.getDate()+' '+p(d.getHours())+':'+p(d.getMinutes());
-    h[id]={ date, saved: saved || !!(h[id]&&h[id].saved) };
+    const prev=h[id]||{};
+    // ts(정렬용 시각)·by(작업자 이름)도 함께 기록. 저장 시에만 by를 갱신.
+    h[id]={ date, ts:d.getTime(), saved: saved || !!prev.saved, by: saved ? (this.editorName()||prev.by||'') : (prev.by||'') };
     try{ localStorage.setItem('specstudio:workhist', JSON.stringify(h)); }catch(e){}
     this.setState({workHist:h});
   }
@@ -3068,6 +3076,8 @@ class Component extends DCLogic {
       const src=s.serverOnly?'공유':(s.fromCms?'CMS':(s.fromPdf?'PDF':(isSample?'샘플':'엑셀')));
       return {
         id:s.id, model:s.model, title:s.subtitle, count:s.specs.length, src,
+        by: s.sharedBy||(h&&h.by)||'',                       // 작업자(저장 이름) — 서버 by 우선
+        _ts: s.sharedAt||(h&&h.ts)||0,                        // 정렬용 최근작업 시각(서버 우선)
         srcColor: s.serverOnly?'#5a4a9a':(s.fromCms?'#2f6fb0':(s.fromPdf?'#8a5a12':(isSample?'#941A31':'#3a6b46'))),
         srcBg: s.serverOnly?'#eeecf8':(s.fromCms?'#e8f0f8':(s.fromPdf?'#fbf1de':(isSample?'#f6edef':'#e9f3ec'))),
         // 상태: 팀 서버 저장본(sharedAt)이 있으면 모든 기기에서 '저장됨'으로 통일. 없으면 로컬 작업 이력.
@@ -3081,6 +3091,15 @@ class Component extends DCLogic {
       };
     });
     const filtered=q?all.filter(r=>(r.model+' '+(r.title||'')).toLowerCase().includes(q)):all;
+    // 정렬: 최근작업(최근 저장 시각 내림차순) · 이름순 · 작업자순
+    const byName=(a,b)=>String(a.model||'').localeCompare(String(b.model||''));
+    const sorters={
+      recent:(a,b)=>((b._ts||0)-(a._ts||0))||byName(a,b),
+      name:byName,
+      editor:(a,b)=>((a.by||'￿').toLowerCase().localeCompare((b.by||'￿').toLowerCase()))||byName(a,b),
+    };
+    const sortKey=st.workSort||'recent';
+    filtered.sort(sorters[sortKey]||sorters.recent);
     const per=Number(st.workPerPage||20);
     const pageCount=Math.max(1, Math.ceil(filtered.length/per));
     const page=Math.min(Math.max(1, st.workPage||1), pageCount);
@@ -3101,6 +3120,9 @@ class Component extends DCLogic {
     out.workPerPage=String(per);
     out.perPageOptions=[20,50,100].map(n=>({value:String(n), label:n+this.T('개씩',' / page')}));
     out.onWorkPerPage=(e)=>this.setState({workPerPage:Number(e.target.value), workPage:1});
+    out.workSort=sortKey;
+    out.sortOptions=[{value:'recent',label:this.T('최근 작업순','Recent')},{value:'name',label:this.T('이름순','Name')},{value:'editor',label:this.T('작업자순','Saved by')}];
+    out.onWorkSort=(e)=>this.setState({workSort:e.target.value, workPage:1});
     out.hasPages=filtered.length>per;
     const from=filtered.length?((page-1)*per+1):0, to=Math.min(page*per, filtered.length);
     out.pageRangeText=from+'–'+to+' / '+filtered.length+this.T('개',' items');
