@@ -670,6 +670,26 @@
             </sc-if>
           </div>
 
+          <!-- 페이지 나눔 조정 (스펙 표 한정) -->
+          <sc-if value="{{ hasPageBreaks }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:16px 18px; border-top:1px solid #edeef1;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:11px;">
+              <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px;">페이지 나눔 조정</div>
+              <sc-if value="{{ breaksAdjusted }}" hint-placeholder-val="{{ true }}"><button onClick="{{ onResetBreaks }}" style="border:none; background:none; cursor:pointer; font-size:11px; font-weight:700; color:#941A31; padding:0;">자동으로 되돌리기</button></sc-if>
+            </div>
+            <div style="font-size:11px; color:#9aa0a8; line-height:1.5; margin-bottom:11px;">경계에 걸친 카테고리 그룹을 이전/다음 페이지로 옮깁니다.</div>
+            <div style="display:flex; flex-direction:column; gap:11px;">
+              <sc-for list="{{ pageBreaks }}" as="pb" hint-placeholder-count="1">
+                <div style="border:1px solid #e6e8ec; border-radius:8px; padding:10px 12px;">
+                  <div style="font-size:11px; font-weight:800; color:#8b9099; margin-bottom:8px;">{{ pb.pageA }} · {{ pb.pageB }} 페이지 경계</div>
+                  <button onClick="{{ pb.onUp }}" style="width:100%; display:flex; align-items:center; gap:8px; background:{{ pb.upBg }}; color:{{ pb.upColor }}; border:1px solid #e6e8ec; border-radius:7px; padding:8px 10px; font-size:12px; font-weight:700; cursor:pointer; margin-bottom:6px; text-align:left;"><span style="font-size:14px; line-height:1;">▲</span><span>‘{{ pb.nextLabel }}’ 위 페이지로</span></button>
+                  <button onClick="{{ pb.onDown }}" style="width:100%; display:flex; align-items:center; gap:8px; background:{{ pb.downBg }}; color:{{ pb.downColor }}; border:1px solid #e6e8ec; border-radius:7px; padding:8px 10px; font-size:12px; font-weight:700; cursor:pointer; text-align:left;"><span style="font-size:14px; line-height:1;">▼</span><span>‘{{ pb.prevLabel }}’ 아래 페이지로</span></button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+
           <!-- 다음 -->
           <div style="padding:16px 18px;">
             <button onClick="{{ onToStep4 }}" style="width:100%; background:#941A31; color:#fff; border:none; border-radius:8px; padding:12px 18px; font-size:13.5px; font-weight:700; cursor:pointer;" style-hover="background:#a8243a;">사진·정보 편집 →</button>
@@ -1250,6 +1270,7 @@ class Component extends DCLogic {
     importing:false, importError:'', dragOver:false, importNote:'', importSource:'xlsx',
     showReports:false, reportFocus:'mapping', showExport:false, exportMsg:'', savedToast:'', hasSession:false,
     reviewFilter:null, expandedReviews:{}, sheetVersion:'reviewed', applyReview:true, applyCms:true,
+    specBreaks:null, specBreaksSig:'',
     customRules:[], dismissedCands:{}, cands:[], showCands:false, candScanned:false, candSrc:0,
     newRule:{find:'',repl:'',cat:'표기',note:'',ci:false,regex:false,scope:''}, libMsg:'',
     cms:null, samples:null, qc:null, lang:'en'
@@ -1539,6 +1560,34 @@ class Component extends DCLogic {
     push();
     return pages.length?pages:[[]];
   }
+  // ── 스펙 표 페이지 나눔 — 카테고리 경계 인덱스 모델(수동 조정 지원) ──────────
+  _specSig(cats){ cats=cats||[]; return cats.length+':'+cats.map(c=>c.label).join('|'); }
+  _specRowPx(f){ return 6+13.2*Math.max(1, Math.ceil(String(f.value||'').length/70), Math.ceil(String(f.name||'').length/24)); }
+  _specCatH(c){ let h=11; (c.fields||[]).forEach(f=>h+=this._specRowPx(f)); return h; }
+  // 카테고리 단위 자동 경계(각 값 = 그 인덱스 앞에서 새 페이지 시작)
+  _autoSpecBreaks(cats){ cats=cats||[]; const budget=856; const breaks=[]; let u=0;
+    cats.forEach((c,i)=>{ const h=this._specCatH(c); if(i>0 && u+h>budget){ breaks.push(i); u=0; } u+=h; }); return breaks; }
+  // 경계 인덱스 배열 → 페이지(카테고리 배열)들
+  _pagesFromBreaks(cats, breaks){ cats=cats||[]; const bs=[...(breaks||[])].filter(b=>b>0&&b<cats.length).sort((a,b)=>a-b);
+    const pages=[]; let s=0; bs.forEach(b=>{ pages.push(cats.slice(s,b)); s=b; }); pages.push(cats.slice(s));
+    return pages.filter(p=>p.length).length?pages:[[]]; }
+  // 현재 유효 경계(수동 있으면 수동, 없으면 자동)
+  _effectiveBreaks(cats){ const sig=this._specSig(cats);
+    return (this.state.specBreaks && this.state.specBreaksSig===sig) ? this.state.specBreaks : this._autoSpecBreaks(cats); }
+  // sheet → 분할된 스펙 페이지들(프리뷰·PDF 공용, WYSIWYG)
+  _specPagesFor(sh){ const cats=sh.specCats||[]; const arr=this._pagesFromBreaks(cats, this._effectiveBreaks(cats));
+    return arr.map((c,i,a)=>({sheet:{...sh, specCats:c}, cont: a.length>1?('('+(i+1)+' / '+a.length+')'):''})); }
+  // 경계 bi를 delta(+1: 다음 페이지 첫 그룹을 위로 / -1: 이전 페이지 끝 그룹을 아래로)만큼 이동
+  adjustBreak(bi, delta){ const st=this.state;
+    const sheet=this.computeSheet(st.sheetVersion!=='raw'?{review:st.applyReview, cms:st.applyCms}:{review:false, cms:false});
+    const cats=sheet.specCats||[]; const sig=this._specSig(cats);
+    let breaks=(st.specBreaks && st.specBreaksSig===sig)?[...st.specBreaks]:this._autoSpecBreaks(cats);
+    if(bi<0||bi>=breaks.length) return;
+    const nv=breaks[bi]+delta; const lo=(bi>0?breaks[bi-1]:0)+1; const hi=((bi+1<breaks.length)?breaks[bi+1]:cats.length)-1;
+    if(nv<lo||nv>hi) return; breaks[bi]=nv;
+    this.setState({specBreaks:breaks, specBreaksSig:sig});
+  }
+  resetBreaks(){ this.setState({specBreaks:null, specBreaksSig:''}); }
 
   // actions
   loadSample(id){
@@ -3116,7 +3165,27 @@ class Component extends DCLogic {
       const sheet=this.computeSheet(rev?{review:st.applyReview, cms:st.applyCms}:{review:false, cms:false});
       out.sheet=sheet;
       // 프리뷰(3·4단계)도 PDF와 동일하게 스펙 테이블을 페이지 분할 → 2페이지 잘림 없음 + 프리뷰=PDF(WYSIWYG)
-      out.specPages=this.computeSpecPages(sheet.specCats).map((cats,i,arr)=>({sheet:{...sheet, specCats:cats}, cont: arr.length>1?('('+(i+1)+' / '+arr.length+')'):''}));
+      out.specPages=this._specPagesFor(sheet);
+      // ── 페이지 나눔 조정 UI 데이터 (스펙 표 한정) ──
+      {
+        const nCats=(sheet.specCats||[]).length;
+        const breaks=[]; let cc=0; out.specPages.forEach((pg,i)=>{ if(i>0) breaks.push(cc); cc+=pg.sheet.specCats.length; });
+        out.hasPageBreaks=breaks.length>0;
+        out.pageBreaks=breaks.map((b,bi)=>{
+          const prevCats=out.specPages[bi].sheet.specCats, nextCats=out.specPages[bi+1].sheet.specCats;
+          const lo=(bi>0?breaks[bi-1]:0)+1, hi=((bi+1<breaks.length)?breaks[bi+1]:nCats)-1;
+          const canDown=(b-1)>=lo, canUp=(b+1)<=hi;
+          return { pageA:bi+2, pageB:bi+3,
+            prevLabel:prevCats[prevCats.length-1].label, nextLabel:nextCats[0].label,
+            canDown, canUp,
+            downBg:canDown?'#fff':'#f5f6f8', downColor:canDown?'#44474e':'#c2c6cc',
+            upBg:canUp?'#fff':'#f5f6f8', upColor:canUp?'#44474e':'#c2c6cc',
+            onDown:canDown?(()=>this.adjustBreak(bi,-1)):(()=>{}),
+            onUp:canUp?(()=>this.adjustBreak(bi,1)):(()=>{}) };
+        });
+        out.onResetBreaks=()=>this.resetBreaks();
+        out.breaksAdjusted=!!(st.specBreaks && st.specBreaksSig===this._specSig(sheet.specCats));
+      }
       out.verReviewed=rev;
       out.onVerRaw=()=>this.setState({sheetVersion:'raw'}); out.onVerReviewed=()=>this.setState({sheetVersion:'reviewed'});
       out.verRawBg=!rev?'#941A31':'#fff'; out.verRawColor=!rev?'#fff':'#5e636b';
@@ -3188,9 +3257,8 @@ class Component extends DCLogic {
       out.repFocusMap=st.reportFocus==='mapping'||st.reportFocus==='all';
       out.sheetReviewed=this.computeSheet({review:st.applyReview, cms:st.applyCms});
       out.sheetRaw=this.computeSheet({review:false, cms:false});
-      const mkPages=(sh)=>{ const arr=this.computeSpecPages(sh.specCats); return arr.map((cats,i)=>({sheet:{...sh, specCats:cats}, cont: arr.length>1?('('+(i+1)+' / '+arr.length+')'):''})); };
-      out.specPagesReviewed=mkPages(out.sheetReviewed);
-      out.specPagesRaw=mkPages(out.sheetRaw);
+      out.specPagesReviewed=this._specPagesFor(out.sheetReviewed);
+      out.specPagesRaw=this._specPagesFor(out.sheetRaw);
     }
 
     // settings
