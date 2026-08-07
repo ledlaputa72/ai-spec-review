@@ -1847,6 +1847,7 @@ class Component extends DCLogic {
     try{ localStorage.setItem('specstudio:workhist', JSON.stringify(h)); }catch(e){}
     this.setState({workHist:h});
   }
+  _shortDate(ts){ try{ const d=new Date(ts); return (d.getMonth()+1)+'/'+d.getDate(); }catch(e){ return ''; } }
   _loadProduct(s, id){
     this._touchHist(id||s.id, false);
     const qc=this.state.qc;
@@ -2216,7 +2217,7 @@ class Component extends DCLogic {
     this._api(null, {action:'save', model, doc, title:(s.meta&&s.meta.subtitle)||(s.raw&&s.raw.subtitle)||'', step:s.step, by:this.editorName()||'anonymous'})
       .then(()=>{ this.setState({savedToast:'✓ 팀 서버에 저장됨 · '+t, serverOn:true});
         clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
-        this.loadHistory(); })
+        this.loadHistory(); this.syncShared(); })
       .catch(e=>{ console.warn('shared save unavailable', e); this.setState({serverOn:false}); });
   }
   async syncShared(){
@@ -3033,10 +3034,13 @@ class Component extends DCLogic {
         id:s.id, model:s.model, title:s.subtitle, count:s.specs.length, src,
         srcColor: s.serverOnly?'#5a4a9a':(s.fromCms?'#2f6fb0':(s.fromPdf?'#8a5a12':(isSample?'#941A31':'#3a6b46'))),
         srcBg: s.serverOnly?'#eeecf8':(s.fromCms?'#e8f0f8':(s.fromPdf?'#fbf1de':(isSample?'#f6edef':'#e9f3ec'))),
-        status: h?(h.saved?('저장됨 · '+h.date):('작업함 · '+h.date)):'미작업',
-        stColor: h?(h.saved?'#3a6b46':'#5e636b'):'#a8adb5',
-        // a server-only row has no local specs — pull the shared doc instead
+        // 상태: 팀 서버 저장본(sharedAt)이 있으면 모든 기기에서 '저장됨'으로 통일. 없으면 로컬 작업 이력.
+        status: s.sharedAt?('저장됨 · '+this._shortDate(s.sharedAt)):(h?(h.saved?('저장됨 · '+h.date):('작업함 · '+h.date)):'미작업'),
+        stColor: (s.sharedAt||(h&&h.saved))?'#3a6b46':(h?'#5e636b':'#a8adb5'),
+        // 서버에 저장본이 있으면(공유 or 이 모델의 팀 저장 sharedAt) 서버의 마지막 저장 문서를 우선 로드
+        // → 다른 기기에서도 저장 내용이 그대로 열림. 실패 시 로컬 샘플로 폴백.
         onLoad:()=>{ if(s.serverOnly) this.loadShared(s.model).then(ok=>{ if(!ok) this.setState({savedToast:'공유 문서를 불러오지 못했습니다.'}); });
+                     else if(s.sharedAt) this.loadShared(s.model).then(ok=>{ if(!ok) this.loadSample(s.id); });
                      else this.loadSample(s.id); },
       };
     });
