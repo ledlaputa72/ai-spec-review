@@ -682,8 +682,8 @@
               <sc-for list="{{ pageBreaks }}" as="pb" hint-placeholder-count="1">
                 <div style="border:1px solid #e6e8ec; border-radius:8px; padding:10px 12px;">
                   <div style="font-size:11px; font-weight:800; color:#8b9099; margin-bottom:8px;">{{ pb.pageA }} · {{ pb.pageB }} 페이지 경계</div>
-                  <button onClick="{{ pb.onUp }}" style="width:100%; display:flex; align-items:center; gap:8px; background:{{ pb.upBg }}; color:{{ pb.upColor }}; border:1px solid #e6e8ec; border-radius:7px; padding:8px 10px; font-size:12px; font-weight:700; cursor:pointer; margin-bottom:6px; text-align:left;"><span style="font-size:14px; line-height:1;">▲</span><span>‘{{ pb.nextLabel }}’ 위 페이지로</span></button>
-                  <button onClick="{{ pb.onDown }}" style="width:100%; display:flex; align-items:center; gap:8px; background:{{ pb.downBg }}; color:{{ pb.downColor }}; border:1px solid #e6e8ec; border-radius:7px; padding:8px 10px; font-size:12px; font-weight:700; cursor:pointer; text-align:left;"><span style="font-size:14px; line-height:1;">▼</span><span>‘{{ pb.prevLabel }}’ 아래 페이지로</span></button>
+                  <button onClick="{{ pb.onUp }}" style="width:100%; display:{{ pb.upDisplay }}; align-items:center; gap:8px; background:#fff; color:#44474e; border:1px solid #e6e8ec; border-radius:7px; padding:8px 10px; font-size:12px; font-weight:700; cursor:pointer; margin-bottom:6px; text-align:left;" style-hover="background:#f6edef;"><span style="font-size:14px; line-height:1;">▲</span><span>‘{{ pb.nextLabel }}’ 위 페이지로</span></button>
+                  <button onClick="{{ pb.onDown }}" style="width:100%; display:{{ pb.downDisplay }}; align-items:center; gap:8px; background:#fff; color:#44474e; border:1px solid #e6e8ec; border-radius:7px; padding:8px 10px; font-size:12px; font-weight:700; cursor:pointer; text-align:left;" style-hover="background:#f6edef;"><span style="font-size:14px; line-height:1;">▼</span><span>‘{{ pb.prevLabel }}’ 아래 페이지로</span></button>
                 </div>
               </sc-for>
             </div>
@@ -1577,14 +1577,24 @@ class Component extends DCLogic {
   // sheet → 분할된 스펙 페이지들(프리뷰·PDF 공용, WYSIWYG)
   _specPagesFor(sh){ const cats=sh.specCats||[]; const arr=this._pagesFromBreaks(cats, this._effectiveBreaks(cats));
     return arr.map((c,i,a)=>({sheet:{...sh, specCats:c}, cont: a.length>1?('('+(i+1)+' / '+a.length+')'):''})); }
-  // 경계 bi를 delta(+1: 다음 페이지 첫 그룹을 위로 / -1: 이전 페이지 끝 그룹을 아래로)만큼 이동
+  // 경계 bi를 delta(+1: 다음 페이지 첫 그룹을 위로 / -1: 이전 페이지 끝 그룹을 아래로)만큼 이동.
+  // 위로 당겨 다음 페이지가 비면 그 페이지는 사라짐(경계값이 n에 닿아 필터로 제거).
   adjustBreak(bi, delta){ const st=this.state;
     const sheet=this.computeSheet(st.sheetVersion!=='raw'?{review:st.applyReview, cms:st.applyCms}:{review:false, cms:false});
-    const cats=sheet.specCats||[]; const sig=this._specSig(cats);
+    const cats=sheet.specCats||[]; const n=cats.length; const sig=this._specSig(cats);
     let breaks=(st.specBreaks && st.specBreaksSig===sig)?[...st.specBreaks]:this._autoSpecBreaks(cats);
     if(bi<0||bi>=breaks.length) return;
-    const nv=breaks[bi]+delta; const lo=(bi>0?breaks[bi-1]:0)+1; const hi=((bi+1<breaks.length)?breaks[bi+1]:cats.length)-1;
+    const nv=breaks[bi]+delta; const lo=(bi>0?breaks[bi-1]:0)+1; const hi=(bi+1<breaks.length)?breaks[bi+1]:n;
     if(nv<lo||nv>hi) return; breaks[bi]=nv;
+    breaks=[...new Set(breaks.filter(b=>b>0&&b<n))].sort((a,b)=>a-b); // 범위 밖(=0/n)은 페이지 병합·삭제
+    this.setState({specBreaks:breaks, specBreaksSig:sig});
+  }
+  // 팬텀 경계 ▼: 마지막 페이지의 끝 카테고리를 새 페이지로 분리(사라졌던 페이지 재생성)
+  splitLastPage(){ const st=this.state;
+    const sheet=this.computeSheet(st.sheetVersion!=='raw'?{review:st.applyReview, cms:st.applyCms}:{review:false, cms:false});
+    const cats=sheet.specCats||[]; const n=cats.length; if(n<2) return; const sig=this._specSig(cats);
+    let breaks=(st.specBreaks && st.specBreaksSig===sig)?[...st.specBreaks]:this._autoSpecBreaks(cats);
+    breaks=[...new Set([...breaks, n-1].filter(b=>b>0&&b<n))].sort((a,b)=>a-b);
     this.setState({specBreaks:breaks, specBreaksSig:sig});
   }
   resetBreaks(){ this.setState({specBreaks:null, specBreaksSig:''}); }
@@ -3168,23 +3178,33 @@ class Component extends DCLogic {
       out.specPages=this._specPagesFor(sheet);
       // ── 페이지 나눔 조정 UI 데이터 (스펙 표 한정) ──
       {
-        const nCats=(sheet.specCats||[]).length;
-        const breaks=[]; let cc=0; out.specPages.forEach((pg,i)=>{ if(i>0) breaks.push(cc); cc+=pg.sheet.specCats.length; });
-        out.hasPageBreaks=breaks.length>0;
-        out.pageBreaks=breaks.map((b,bi)=>{
-          const prevCats=out.specPages[bi].sheet.specCats, nextCats=out.specPages[bi+1].sheet.specCats;
-          const lo=(bi>0?breaks[bi-1]:0)+1, hi=((bi+1<breaks.length)?breaks[bi+1]:nCats)-1;
-          const canDown=(b-1)>=lo, canUp=(b+1)<=hi;
-          return { pageA:bi+2, pageB:bi+3,
+        const sp=out.specPages;
+        // 현재 페이지 경계(카테고리 인덱스) 재구성
+        const breaks=[]; let cc=0; sp.forEach((pg,i)=>{ if(i>0) breaks.push(cc); cc+=pg.sheet.specCats.length; });
+        const lastCats=sp[sp.length-1].sheet.specCats;
+        const adjusted=!!(st.specBreaks && st.specBreaksSig===this._specSig(sheet.specCats));
+        const panelShown=(sp.length>=2)||adjusted;
+        const cards=[];
+        // 실제 페이지 경계: ▲ 다음 페이지 첫 그룹 위로(항상 가능, 빈 페이지는 사라짐)
+        //                    ▼ 이전 페이지 끝 그룹 아래로(이전 페이지에 ≥2그룹일 때만)
+        breaks.forEach((b,bi)=>{
+          const prevCats=sp[bi].sheet.specCats, nextCats=sp[bi+1].sheet.specCats;
+          cards.push({ pageA:bi+2, pageB:bi+3,
             prevLabel:prevCats[prevCats.length-1].label, nextLabel:nextCats[0].label,
-            canDown, canUp,
-            downBg:canDown?'#fff':'#f5f6f8', downColor:canDown?'#44474e':'#c2c6cc',
-            upBg:canUp?'#fff':'#f5f6f8', upColor:canUp?'#44474e':'#c2c6cc',
-            onDown:canDown?(()=>this.adjustBreak(bi,-1)):(()=>{}),
-            onUp:canUp?(()=>this.adjustBreak(bi,1)):(()=>{}) };
+            upDisplay:'flex', downDisplay:(prevCats.length>=2)?'flex':'none',
+            onUp:()=>this.adjustBreak(bi,1), onDown:()=>this.adjustBreak(bi,-1) });
         });
+        // 팬텀 경계: 마지막 페이지 끝 그룹을 새 페이지로(사라졌던 다음 장 재생성)
+        if(panelShown && lastCats.length>=2){
+          cards.push({ pageA:sp.length+1, pageB:sp.length+2,
+            prevLabel:lastCats[lastCats.length-1].label, nextLabel:'',
+            upDisplay:'none', downDisplay:'flex',
+            onUp:()=>{}, onDown:()=>this.splitLastPage() });
+        }
+        out.pageBreaks=cards;
+        out.hasPageBreaks=panelShown && cards.length>0;
         out.onResetBreaks=()=>this.resetBreaks();
-        out.breaksAdjusted=!!(st.specBreaks && st.specBreaksSig===this._specSig(sheet.specCats));
+        out.breaksAdjusted=adjusted;
       }
       out.verReviewed=rev;
       out.onVerRaw=()=>this.setState({sheetVersion:'raw'}); out.onVerReviewed=()=>this.setState({sheetVersion:'reviewed'});
