@@ -40,7 +40,7 @@
 
   <!-- ============ HEADER ============ -->
   <div style="flex-shrink:0; background:#941A31; color:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 22px; height:60px; box-shadow:0 2px 12px rgba(20,30,50,.18); z-index:30;">
-    <div style="display:flex; align-items:center; gap:14px;">
+    <div onClick="{{ onHome }}" title="홈으로" style="display:flex; align-items:center; gap:14px; cursor:pointer;">
       <div style="display:flex; align-items:baseline; gap:3px;">
         <span style="font-family:'Pretendard',sans-serif; font-weight:800; font-size:18px; letter-spacing:2px;">AVYCON</span>
         <span style="width:5px; height:5px; border-radius:50%; background:#e23b52; display:inline-block;"></span>
@@ -122,6 +122,10 @@
 
   <!-- ============ STEPPER ============ -->
   <div style="flex-shrink:0; background:#fff; border-bottom:1px solid #dde0e5; display:flex; align-items:stretch; padding:0 16px; height:64px; z-index:20;">
+    <button onClick="{{ onHome }}" title="홈" style="appearance:none; background:transparent; border:none; cursor:pointer; display:flex; align-items:center; gap:9px; padding:0 18px; margin-right:6px; position:relative; border-right:1px solid #eceef1;" style-hover="background:#f5f6f8;">
+      <span style="width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; background:#f6edef; color:#941A31; border:2px solid #e3c9cf;">🏠</span>
+      <span style="font-size:13.5px; font-weight:700; color:#941A31;">홈</span>
+    </button>
     <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
       <button onClick="{{ s.onClick }}" style="appearance:none; background:transparent; border:none; cursor:pointer; display:flex; align-items:center; gap:11px; padding:0 22px; position:relative; opacity:{{ s.opacity }};" style-hover="background:#f5f6f8;">
         <span style="width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0; background:{{ s.dotBg }}; color:{{ s.dotColor }}; border:2px solid {{ s.dotBorder }};">{{ s.badge }}</span>
@@ -2573,6 +2577,8 @@ class Component extends DCLogic {
     }catch(e){ console.error(e); this.setState({exportMsg:'PPTX 실패: '+(e.message||e)}); }
   }
   resetImport(){ this.setState({loaded:false, raw:null, activeSample:null, step:1, showUnmapped:false}); }
+  // 홈(랜딩: 가져오기 + 제품 작업 목록)으로. 헤더 로고·홈 탭에서 호출. 열린 패널도 닫음.
+  goHome(){ this.setState({loaded:false, raw:null, activeSample:null, step:1, showUnmapped:false, showSettings:false, showHistory:false, showExport:false, showLangMenu:false, showReports:false}); }
   goStep(n){ if(n>1 && !this.state.loaded) return; this.setState({step:n}); }
   onScope(e){ this.setState({scope:e.target.value}); }
   assign(name,val){ const a={...this.state.assignments}; if(val==='') delete a[name]; else a[name]=val; this.setState({assignments:a}); }
@@ -2855,7 +2861,7 @@ class Component extends DCLogic {
       isStep1:st.step===1, isStep2:st.step===2, isStep3:st.step===3, isStep4:st.step===4,
       scope:st.scope, scopeOptions, onScope:(e)=>this.onScope(e),
       showSettings:st.showSettings, onToggleSettings:()=>this.toggleSettings(), onCloseSettings:()=>this.setState({showSettings:false}),
-      steps,
+      steps, onHome:()=>this.goHome(),
       zoom:st.zoom, zoom4:st.zoom4, zoomPct:Math.round((st.step===4?st.zoom4:st.zoom)*100),
       canView:st.loaded && (st.step===3||st.step===4),
       showP1:st.pageView!=='2', showP2:st.pageView!=='1',

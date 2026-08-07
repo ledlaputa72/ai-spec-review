@@ -14,6 +14,7 @@ export const DICT = {
   '저장': 'Save',
   '공유 · 내보내기': 'Share · Export',
   '설정': 'Settings',
+  '홈': 'Home', '홈으로': 'Home',
   '전체 단계 문서 내보내기': 'Export all-step documents',
   'PDF로 저장': 'Save as PDF',
   '스펙시트만 PDF': 'Spec sheet only (PDF)', '2페이지': '2 pages',
