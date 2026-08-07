@@ -1842,12 +1842,12 @@ class Component extends DCLogic {
   _touchHist(id, saved){
     if(!id) return;
     const h=Object.assign({}, this.state.workHist||{});
-    const d=new Date(), date=(d.getMonth()+1)+'/'+d.getDate();
+    const p=n=>(n<10?'0'+n:''+n), d=new Date(), date=(d.getMonth()+1)+'/'+d.getDate()+' '+p(d.getHours())+':'+p(d.getMinutes());
     h[id]={ date, saved: saved || !!(h[id]&&h[id].saved) };
     try{ localStorage.setItem('specstudio:workhist', JSON.stringify(h)); }catch(e){}
     this.setState({workHist:h});
   }
-  _shortDate(ts){ try{ const d=new Date(ts); return (d.getMonth()+1)+'/'+d.getDate(); }catch(e){ return ''; } }
+  _shortDate(ts){ try{ const d=new Date(ts), p=n=>(n<10?'0'+n:''+n); return (d.getMonth()+1)+'/'+d.getDate()+' '+p(d.getHours())+':'+p(d.getMinutes()); }catch(e){ return ''; } }
   _loadProduct(s, id){
     this._touchHist(id||s.id, false);
     const qc=this.state.qc;
