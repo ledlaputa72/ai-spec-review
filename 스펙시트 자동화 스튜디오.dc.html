@@ -58,7 +58,27 @@
         </select>
       </div>
       <sc-if value="{{ canShare }}" hint-placeholder-val="{{ true }}">
-      <button onClick="{{ onSave }}" style="display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); color:#fff; border-radius:8px; padding:7px 13px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:rgba(255,255,255,.22);">💾 저장</button>
+      <div style="position:relative;">
+        <button onClick="{{ onOpenSave }}" style="display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); color:#fff; border-radius:8px; padding:7px 13px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:rgba(255,255,255,.22);">💾 저장</button>
+        <sc-if value="{{ showSaveMenu }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute; right:0; top:42px; width:290px; background:#fff; border:1px solid #e0e3e7; border-radius:11px; box-shadow:0 12px 34px rgba(20,30,50,.22); padding:14px; z-index:70;">
+            <div style="font-size:12px; font-weight:800; color:#1c2330; margin-bottom:8px;">작업자 이름으로 저장</div>
+            <input value="{{ saveNameDraft }}" onInput="{{ onSaveNameInput }}" placeholder="이름을 입력하세요" autofocus="{{ true }}" style="width:100%; box-sizing:border-box; background:#fff; border:1px solid #d9dce1; border-radius:7px; padding:8px 10px; font-size:13px; color:#1c2330; outline:none; font-family:inherit;" />
+            <sc-if value="{{ hasEditorTags }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:10.5px; font-weight:700; color:#8b9099; letter-spacing:.4px; margin:11px 0 6px;">등록된 작업자</div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px; max-height:96px; overflow:auto;">
+                <sc-for list="{{ editorTags }}" as="t" hint-placeholder-count="3">
+                  <button onClick="{{ t.onPick }}" style="background:#f6edef; border:1px solid #e3c9cf; color:#941A31; border-radius:14px; padding:4px 11px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap;" style-hover="background:#efdfe2;">{{ t.name }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <div style="display:flex; justify-content:flex-end; gap:7px; margin-top:14px;">
+              <button onClick="{{ onCloseSave }}" style="background:#fff; border:1px solid #d9dce1; color:#44474e; border-radius:8px; padding:7px 13px; font-size:12.5px; font-weight:700; cursor:pointer;" style-hover="background:#f5f6f8;">취소</button>
+              <button onClick="{{ onConfirmSave }}" style="background:{{ confirmSaveBg }}; border:none; color:#fff; border-radius:8px; padding:7px 15px; font-size:12.5px; font-weight:700; cursor:pointer;" style-hover="filter:brightness(1.08);">💾 저장</button>
+            </div>
+          </div>
+        </sc-if>
+      </div>
       </sc-if>
       <div style="position:relative;">
         <button onClick="{{ onToggleHistory }}" title="히스토리" style="display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); color:#fff; border-radius:8px; padding:7px 13px; font-size:13px; font-weight:700; cursor:pointer;" style-hover="background:rgba(255,255,255,.22);">📜 히스토리</button>
@@ -2187,6 +2207,14 @@ class Component extends DCLogic {
   // ── shared team store (/api/state → Vercel KV), localStorage as fallback ──
   API='/api/state';
   editorName(){ try{ return localStorage.getItem('specstudio:editor')||''; }catch(e){ return ''; } }
+  // 이미 등록된 작업자 이름(서버 히스토리·work-list by·로컬 이력)에서 중복 제거해 수집
+  _editorNames(){
+    const set=new Set();
+    (this.state.history||[]).forEach(h=>{ if(h&&h.by) set.add(String(h.by).trim()); });
+    (this.state.samples||[]).forEach(s=>{ if(s&&s.sharedBy) set.add(String(s.sharedBy).trim()); });
+    const wh=this.state.workHist||{}; Object.keys(wh).forEach(k=>{ if(wh[k]&&wh[k].by) set.add(String(wh[k].by).trim()); });
+    return [...set].filter(Boolean).sort((a,b)=>a.toLowerCase().localeCompare(b.toLowerCase()));
+  }
   setEditorName(v){ try{ localStorage.setItem('specstudio:editor', v); }catch(e){} this.setState({editor:v}); }
   async _api(params, body){
     const q=new URLSearchParams(params||{}).toString();
@@ -2931,8 +2959,22 @@ class Component extends DCLogic {
     out.canShare=st.loaded;
     out.showExport=st.showExport; out.onToggleExport=()=>this.toggleExport(); out.exportMsg=st.exportMsg; out.hasExportMsg=!!st.exportMsg;
     out.onExportPdf=()=>this.exportPdf(); out.onExportPdfSheet=()=>this.exportPdf(true); out.onExportXlsx=()=>this.exportXlsx(); out.onExportDocx=()=>this.exportDocx(); out.onExportPptx=()=>this.exportPptx();
-    out.onSave=()=>this.saveSession(); out.savedToast=st.savedToast; out.hasToast=!!st.savedToast;
+    out.savedToast=st.savedToast; out.hasToast=!!st.savedToast;
     out.hasSession=st.hasSession; out.onContinue=()=>this.restoreSession();
+    // 저장 팝오버: 작업자 이름 입력 + 이미 등록된 작업자 태그(입력에 따라 필터)
+    out.showSaveMenu=!!st.showSaveMenu;
+    out.onOpenSave=()=>{ this.setState({showSaveMenu:!this.state.showSaveMenu, saveNameDraft:this.editorName()}); this.loadHistory(); };
+    out.onCloseSave=()=>this.setState({showSaveMenu:false});
+    out.saveNameDraft=st.saveNameDraft!==undefined?st.saveNameDraft:'';
+    out.onSaveNameInput=(e)=>this.setState({saveNameDraft:e.target.value});
+    const _sq=(st.saveNameDraft||'').trim().toLowerCase();
+    out.editorTags=this._editorNames().filter(n=>!_sq||n.toLowerCase().includes(_sq)).slice(0,14)
+      .map(n=>({name:n, onPick:()=>this.setState({saveNameDraft:n})}));
+    out.hasEditorTags=out.editorTags.length>0;
+    out.canConfirmSave=!!(st.saveNameDraft&&st.saveNameDraft.trim());
+    out.confirmSaveBg=out.canConfirmSave?'#941A31':'#c9ccd2';
+    out.onConfirmSave=()=>{ const n=(this.state.saveNameDraft||'').trim(); if(!n) return; this.setEditorName(n); this.setState({showSaveMenu:false}); this.saveSession(); };
+    out.onSave=()=>this.saveSession();
 
     // shared store · history panel
     out.showHistory=!!st.showHistory;
