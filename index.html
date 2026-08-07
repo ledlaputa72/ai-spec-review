@@ -631,8 +631,15 @@
       <div style="display:flex; height:100%;">
         <!-- preview -->
         <div class="scroll" ref="{{ sheetHostRef }}" style="flex:1; overflow:auto; padding:30px; display:flex; justify-content:center; background:#e6e8ea;">
-          <div style="zoom:{{ zoom }};">
-            <dc-import name="SpecSheet" sheet="{{ sheet }}" show-p1="{{ showP1 }}" show-p2="{{ showP2 }}" hint-size="816px,1100px"></dc-import>
+          <div style="zoom:{{ zoom }}; display:flex; flex-direction:column; align-items:center; gap:20px;">
+            <sc-if value="{{ showP1 }}" hint-placeholder-val="{{ true }}">
+              <dc-import name="SpecSheet" sheet="{{ sheet }}" show-p1="{{ true }}" show-p2="{{ false }}" hint-size="816px,1100px"></dc-import>
+            </sc-if>
+            <sc-if value="{{ showP2 }}" hint-placeholder-val="{{ true }}">
+              <sc-for list="{{ specPages }}" as="sp" hint-placeholder-count="1">
+                <dc-import name="SpecSheet" sheet="{{ sp.sheet }}" show-p1="{{ false }}" show-p2="{{ true }}" spec-cont="{{ sp.cont }}" hint-size="816px,1100px"></dc-import>
+              </sc-for>
+            </sc-if>
           </div>
         </div>
 
@@ -676,8 +683,15 @@
       <div style="display:flex; height:100%;">
         <!-- live preview -->
         <div class="scroll" ref="{{ sheetHostRef }}" style="flex:1; overflow:auto; padding:26px; display:flex; justify-content:center; background:#e6e8ea;">
-          <div style="zoom:{{ zoom4 }};">
-            <dc-import name="SpecSheet" sheet="{{ sheet }}" show-p1="{{ showP1 }}" show-p2="{{ showP2 }}" hint-size="816px,1100px"></dc-import>
+          <div style="zoom:{{ zoom4 }}; display:flex; flex-direction:column; align-items:center; gap:20px;">
+            <sc-if value="{{ showP1 }}" hint-placeholder-val="{{ true }}">
+              <dc-import name="SpecSheet" sheet="{{ sheet }}" show-p1="{{ true }}" show-p2="{{ false }}" hint-size="816px,1100px"></dc-import>
+            </sc-if>
+            <sc-if value="{{ showP2 }}" hint-placeholder-val="{{ true }}">
+              <sc-for list="{{ specPages }}" as="sp" hint-placeholder-count="1">
+                <dc-import name="SpecSheet" sheet="{{ sp.sheet }}" show-p1="{{ false }}" show-p2="{{ true }}" spec-cont="{{ sp.cont }}" hint-size="816px,1100px"></dc-import>
+              </sc-for>
+            </sc-if>
           </div>
         </div>
 
@@ -3101,6 +3115,8 @@ class Component extends DCLogic {
       const rev=st.sheetVersion!=='raw';
       const sheet=this.computeSheet(rev?{review:st.applyReview, cms:st.applyCms}:{review:false, cms:false});
       out.sheet=sheet;
+      // 프리뷰(3·4단계)도 PDF와 동일하게 스펙 테이블을 페이지 분할 → 2페이지 잘림 없음 + 프리뷰=PDF(WYSIWYG)
+      out.specPages=this.computeSpecPages(sheet.specCats).map((cats,i,arr)=>({sheet:{...sheet, specCats:cats}, cont: arr.length>1?('('+(i+1)+' / '+arr.length+')'):''}));
       out.verReviewed=rev;
       out.onVerRaw=()=>this.setState({sheetVersion:'raw'}); out.onVerReviewed=()=>this.setState({sheetVersion:'reviewed'});
       out.verRawBg=!rev?'#941A31':'#fff'; out.verRawColor=!rev?'#fff':'#5e636b';
