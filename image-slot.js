@@ -122,6 +122,20 @@
       .then(() => { saving = false; if (saveDirty) { saveDirty = false; save(); } });
   }
 
+  // Bridge so the host app can persist dropped images inside its own saved
+  // document (team-shared save) and restore them on load — the sidecar/
+  // localStorage store alone is per-browser. get() snapshots the store;
+  // set() merges entries (ids are per-product), persists, and re-renders.
+  window.__imageSlots = {
+    get() { try { return JSON.parse(JSON.stringify(slots)); } catch (e) { return {}; } },
+    set(map) {
+      if (!map || typeof map !== 'object') return;
+      for (const k in map) { if (map[k] != null) { slots[k] = map[k]; tombstones.delete(k); } }
+      save();
+      subs.forEach((fn) => fn());
+    },
+  };
+
   const S_MAX = 5;
   const clampS = (s) => Math.max(1, Math.min(S_MAX, s));
 

@@ -189,5 +189,27 @@
       }
     }
   }
+  // Bridge so the host app can persist dropped drawings inside its own saved
+  // document (team-shared save) and restore them on load. get() returns
+  // {id:url} for every omvec: key; set() stores them and refreshes any
+  // mounted <vector-slot> so the new drawing shows without a reload.
+  window.__vectorSlots = {
+    get() {
+      const out = {};
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.indexOf('omvec:') === 0) out[k.slice(6)] = localStorage.getItem(k);
+        }
+      } catch (e) {}
+      return out;
+    },
+    set(map) {
+      if (!map || typeof map !== 'object') return;
+      try { for (const id in map) { if (map[id] != null) localStorage.setItem(KEY(id), map[id]); } } catch (e) {}
+      document.querySelectorAll('vector-slot').forEach((el) => { if (el._init) { el._data = null; el._restore(); } });
+    },
+  };
+
   customElements.define('vector-slot', VectorSlot);
 })();

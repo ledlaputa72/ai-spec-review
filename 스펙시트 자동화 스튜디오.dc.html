@@ -2188,18 +2188,52 @@ class Component extends DCLogic {
     if(!res.ok) throw new Error('HTTP '+res.status);
     return res.json();
   }
+  // 현재 제품의 사진(image-slot)·치수 도면(vector-slot)을 슬롯 id 기준으로 수집.
+  // 이 이미지들은 슬롯 컴포넌트의 localStorage에만 있어 저장 문서에 담지 않으면
+  // 서버/다른 기기로 공유되지 않는다 → 문서에 포함해 함께 저장/복원한다.
+  _collectSlots(){
+    let sheet=null; try{ sheet=this.computeSheet(); }catch(e){}
+    if(!sheet) return {img:{}, vec:{}};
+    const imgIds=[sheet.photoSlotId, ...((sheet.accessories||[]).map(a=>a.slotId))].filter(Boolean);
+    const vecIds=[sheet.dimSlot1Id, sheet.dimSlot2Id].filter(Boolean);
+    // 이미지 슬롯: 로드됐으면 브릿지(최신 인메모리), 아니면 localStorage에서 읽음
+    let imgAll={};
+    if(window.__imageSlots&&window.__imageSlots.get) imgAll=window.__imageSlots.get()||{};
+    else { try{ imgAll=JSON.parse(localStorage.getItem('omimg:slots')||'{}')||{}; }catch(e){} }
+    const img={}; imgIds.forEach(id=>{ if(imgAll[id]!=null) img[id]=imgAll[id]; });
+    const vec={}; vecIds.forEach(id=>{ try{ const v=localStorage.getItem('omvec:'+id); if(v!=null) vec[id]=v; }catch(e){} });
+    return {img, vec};
+  }
+  _restoreSlots(sl){
+    if(!sl||typeof sl!=='object') return;
+    // 1) 슬롯 컴포넌트의 localStorage에 직접 기록 → SpecSheet(슬롯 스크립트)가
+    //    이 복원보다 늦게 로드돼도 슬롯이 자기 저장소에서 읽어 표시됨.
+    try{
+      if(sl.img && Object.keys(sl.img).length){
+        let cur={}; try{ cur=JSON.parse(localStorage.getItem('omimg:slots')||'{}')||{}; }catch(e){}
+        Object.assign(cur, sl.img); localStorage.setItem('omimg:slots', JSON.stringify(cur));
+      }
+      if(sl.vec){ for(const id in sl.vec){ if(sl.vec[id]!=null) localStorage.setItem('omvec:'+id, sl.vec[id]); } }
+    }catch(e){}
+    // 2) 이미 로드된 슬롯은 브릿지로 즉시 갱신(재렌더)
+    try{ if(window.__imageSlots && sl.img) window.__imageSlots.set(sl.img); }catch(e){}
+    try{ if(window.__vectorSlots && sl.vec) window.__vectorSlots.set(sl.vec); }catch(e){}
+  }
   _sessionDoc(){
     const s=this.state;
     return { v:1, scope:s.scope, raw:s.raw, assignments:s.assignments, reviewAccept:s.reviewAccept, overrides:s.overrides,
       meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories,
-      customOrder:s.customOrder, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample, savedAt:Date.now() };
+      customOrder:s.customOrder, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample,
+      specBreaks:s.specBreaks, specBreaksSig:s.specBreaksSig, slots:this._collectSlots(), savedAt:Date.now() };
   }
   _applyDoc(d){
     if(!d||!d.raw) return false;
     this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:d.assignments||{}, reviewAccept:d.reviewAccept||{},
       overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:d.bullets||[], dims:d.dims||[],
       certs:d.certs||{}, accessories:d.accessories||[], customOrder:d.customOrder||{}, disabledRules:d.disabledRules||{},
+      specBreaks:d.specBreaks||null, specBreaksSig:d.specBreaksSig||'',
       step:d.step||1, activeSample:d.activeSample, importError:'', savedToast:'✓ 저장된 작업을 불러왔습니다' });
+    this._restoreSlots(d.slots);   // 저장된 사진·치수 도면을 슬롯에 복원(제품별 id 유지)
     clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
     return true;
   }
@@ -2218,7 +2252,9 @@ class Component extends DCLogic {
       .then(()=>{ this.setState({savedToast:'✓ 팀 서버에 저장됨 · '+t, serverOn:true});
         clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
         this.loadHistory(); this.syncShared(); })
-      .catch(e=>{ console.warn('shared save unavailable', e); this.setState({serverOn:false}); });
+      .catch(e=>{ console.warn('shared save unavailable', e);
+        this.setState({serverOn:false, savedToast:this.T('⚠ 로컬 저장됨 · 팀 서버 저장 실패(용량·연결 확인)','⚠ Saved locally · team-server save failed (size/connection)')});
+        clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 3400); });
   }
   async syncShared(){
     try{
