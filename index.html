@@ -1271,11 +1271,13 @@ class Component extends DCLogic {
       this.setState({cms, defaultCms:cms, samples, qc, ready:true, hasSession, lang, customRules:lib, dismissedCands:dismissed, workHist:this._loadHist()});
     }catch(e){ console.error('load error', e); this.setState({ready:true}); }
   }
-  _applyLang(){ try{ if(!this._i18n||!this._rootEl) return; if(this.state.lang!=='en') return; if(this._mo) this._mo.disconnect(); this._i18n.translateTree(this._rootEl, 'en'); if(this._mo) this._mo.observe(this._rootEl,{subtree:true,childList:true,characterData:true}); }catch(e){} }
-  _setupObserver(){ if(this._mo||!this._rootEl) return; this._mo=new MutationObserver(()=>{ clearTimeout(this._moT); this._moT=setTimeout(()=>this._applyLang(), 30); }); if(this.state.lang==='en') this._mo.observe(this._rootEl,{subtree:true,childList:true,characterData:true}); }
+  // 번역 대상 = document.body (설정 드로어 등 포털로 렌더되는 모달이 _rootEl 밖에 있어도 커버)
+  _langRoot(){ return (typeof document!=='undefined' && document.body) ? document.body : this._rootEl; }
+  _applyLang(){ try{ if(!this._i18n||!this._rootEl) return; if(this.state.lang!=='en') return; const root=this._langRoot(); if(this._mo) this._mo.disconnect(); this._i18n.translateTree(root, 'en'); if(this._mo) this._mo.observe(root,{subtree:true,childList:true,characterData:true}); }catch(e){} }
+  _setupObserver(){ if(this._mo||!this._rootEl) return; const root=this._langRoot(); this._mo=new MutationObserver(()=>{ clearTimeout(this._moT); this._moT=setTimeout(()=>this._applyLang(), 30); }); if(this.state.lang==='en') this._mo.observe(root,{subtree:true,childList:true,characterData:true}); }
   componentDidUpdate(){ this._applyLang(); }
   toggleLang(){ const lang=this.state.lang==='en'?'ko':'en'; try{ localStorage.setItem('specstudio:lang', lang); }catch(e){} if(lang!=='en' && this._mo){ this._mo.disconnect(); } this.setState({lang}, ()=>{ if(lang==='en'){ this._setupObserver(); this._applyLang(); } else { this._restoreKo(); } }); }
-  _restoreKo(){ try{ if(this._mo) this._mo.disconnect(); if(this._i18n && this._rootEl && this._i18n.restoreTree) this._i18n.restoreTree(this._rootEl); }catch(e){} }
+  _restoreKo(){ try{ if(this._mo) this._mo.disconnect(); if(this._i18n && this._i18n.restoreTree) this._i18n.restoreTree(this._langRoot()); }catch(e){} }
 
   norm(s){ return String(s||'').toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]/g,''); }
 
@@ -1949,7 +1951,7 @@ class Component extends DCLogic {
     const idx={};
     const cms=this.state.cms; if(!cms) return idx;
     const scopes=cms.byScope[scope]?[scope]:(cms.scopes||[]);
-    scopes.forEach(sc=>(cms.byScope[sc]||[]).forEach(c=>c.fields.forEach(f=>{ if(!idx[f.field]) idx[f.field]={name:f.name, category:c.category, order:f.order}; })));
+    scopes.forEach(sc=>(cms.byScope[sc]||[]).forEach(c=>c.fields.forEach(f=>{ if(!idx[f.field]) idx[f.field]={name:f.name, category:c.category, order:f.order, specSheet:!!c.specSheet}; })));
     return idx;
   }
   pickBulk(){
@@ -2002,9 +2004,9 @@ class Component extends DCLogic {
       const v=String(r[c.i]==null?'':r[c.i]).trim();
       if(!v) return;
       const meta=idx[c.h];
-      // only CMS order 48 (imaging_device) … 484 (power_saving) belong on the
-      // spec sheet; everything else is Wix CMS bookkeeping
-      if(!meta || !(meta.order>=this.BULK_ORDER_MIN && meta.order<=this.BULK_ORDER_MAX)) return;
+      // spec-sheet fields only = CMS category with specSheet=true (엑셀/PDF 경로의 scopeCats와 동일 기준).
+      // 매직넘버(48~484)는 CMS 버전이 바뀌면 어긋나므로 taxonomy의 플래그로 판단.
+      if(!meta || !meta.specSheet) return;
       specs.push({ name:meta.name, value:v, section:meta.category, order:meta.order });
     });
     specs.sort((a,b)=>a.order-b.order);
@@ -2019,7 +2021,7 @@ class Component extends DCLogic {
     sheet.cols.forEach(c=>{
       if(this.BULK_CORE.includes(c.h)) return;
       const meta=idx[c.h];
-      if(!meta || !(meta.order>=this.BULK_ORDER_MIN && meta.order<=this.BULK_ORDER_MAX)) return;
+      if(!meta || !meta.specSheet) return;
       if(String(r[c.i]==null?'':r[c.i]).trim()) n++;
     });
     return n;
@@ -2275,7 +2277,16 @@ class Component extends DCLogic {
       const cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
       const ctx=cv.getContext('2d');
       ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,cw,ch);
-      ctx.drawImage(img, Math.round((ir.left-sr.left)*S), Math.round((ir.top-sr.top)*S), dw, dh);
+      const boxX=Math.round((ir.left-sr.left)*S), boxY=Math.round((ir.top-sr.top)*S);
+      const fit=(getComputedStyle(im).objectFit||'fill');
+      if(fit==='contain'){
+        // drawImage는 CSS object-fit을 무시하므로 contain(원본 종횡비 유지·레터박스)을 직접 계산.
+        const nw=img.naturalWidth||img.width||dw, nh=img.naturalHeight||img.height||dh;
+        const s=Math.min(dw/nw, dh/nh), rw=nw*s, rh=nh*s;
+        ctx.drawImage(img, boxX+(dw-rw)/2, boxY+(dh-rh)/2, rw, rh);
+      } else {
+        ctx.drawImage(img, boxX, boxY, dw, dh); // cover/fill: 기존 동작(리프레임된 cover 슬롯 호환)
+      }
       return cv.toDataURL('image/png');
     }catch(e){ console.warn('slot raster failed', e); return ''; }
   }
