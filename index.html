@@ -2349,8 +2349,10 @@ class Component extends DCLogic {
     this._applyDoc(localDoc);
   }
 
+  // PDF 내보내기 = 브라우저 인쇄(window.print) 경로 → 텍스트가 텍스트로, 폰트는 Pretendard로 출력.
+  // (html2canvas 래스터 savePdf는 이미지 PDF라 사용하지 않음)
   exportPdf(sheetOnly){
-    this.setState({showReports:true, showExport:false}, ()=>{ setTimeout(()=>this.savePdf(sheetOnly), 500); });
+    this.setState({showReports:true, showExport:false}, ()=>{ setTimeout(()=>this.printReport(sheetOnly), 500); });
   }
 
   // Collect the rendered report pages into an isolated, correctly-sized document.
@@ -2360,6 +2362,8 @@ class Component extends DCLogic {
   _printCss(){
     return "@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');"
       +"*{box-sizing:border-box;}"
+      // 모든 문자를 Pretendard로 강제(인라인의 Inter 등 폴백까지 덮어씀)
+      +"*,*::before,*::after{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif !important;}"
       +"html,body{margin:0;padding:0;background:#fff;font-family:'Pretendard',-apple-system,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;}"
       +"@page{size:letter;margin:0;}"
       +".report-page{box-shadow:none!important;margin:0 auto!important;page-break-after:always;break-after:page;}"
@@ -2487,8 +2491,8 @@ class Component extends DCLogic {
     c.querySelectorAll(this.SLOT_SEL).forEach(sl=>sl.remove());
     return c;
   }
-  async printReport(){
-    const pages=this._collectReportPages();
+  async printReport(sheetOnly){
+    const pages=(sheetOnly?this._collectSheetPages():this._collectReportPages());
     if(!pages.length){ try{ window.print(); }catch(e){} return; }
     const base=location.href.replace(/[^/]*$/,'');
     const restore=await this._swapSlotsForExport();
@@ -3360,7 +3364,7 @@ class Component extends DCLogic {
 
       // reports overlay data
       const rep=this.reportData();
-      out.showReports=st.showReports; out.onCloseReports=()=>this.closeReports(); out.onPrintReport=()=>this.printReport(); out.onSavePdf=()=>this.savePdf();
+      out.showReports=st.showReports; out.onCloseReports=()=>this.closeReports(); out.onPrintReport=()=>this.printReport(); out.onSavePdf=()=>this.printReport();
       out.repModel=rep.model; out.repTitle=rep.title; out.repScope=rep.scope; out.repDate=rep.date;
       out.repMapMatched=rep.mapping.matched; out.repMapTotal=rep.mapping.total; out.repMapUnmappedN=rep.mapping.unmapped.length;
       out.repReviewTotal=rep.review.total; out.repReviewApplied=rep.review.applied;
