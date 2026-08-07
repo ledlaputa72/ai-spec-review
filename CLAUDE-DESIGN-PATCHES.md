@@ -111,6 +111,27 @@ localStorage 'specstudio:lang' 폴백을 'ko' → 'en'으로. (이전에 한국�
 - 페이지 라벨 i18n: 양면=Both, 1면=P1, 2면=P2.
 ````
 
+## 9. 스펙 표 페이지 나눔: 카테고리 단위 + 수동 조정 UI
+
+````text
+[스펙 표 페이지 나눔] 스펙 데이터표를 US Letter 여러 장으로 나눌 때 카테고리 그룹
+(그레이바+하위 행)을 절대 중간에서 쪼개지 말고, 통째로 다음 장으로 넘겨줘. 그리고
+프리뷰(3·4단계)와 PDF가 완전히 같은 페이지 구성으로 나오게(WYSIWYG) 해줘. 추가로
+Layout(3단계) 우측 패널에 "페이지 나눔 조정" UI를 넣어줘:
+- 페이지 경계마다 카드 1개(예: "2 · 3 페이지 경계").
+- ▲ '<다음 페이지 첫 그룹>' 위 페이지로 / ▼ '<이전 페이지 끝 그룹>' 아래 페이지로 버튼.
+  각 페이지는 최소 1개 그룹을 유지(더 못 옮기면 버튼 비활성).
+- "자동으로 되돌리기" 버튼(수동 조정 상태일 때만 표시).
+구현 지침:
+- computeSpecPages(행 그리디)를 카테고리 경계 인덱스 모델로 대체:
+  _autoSpecBreaks(cats)=카테고리 높이 누적이 budget(856) 초과 직전마다 경계,
+  높이추정은 headPx 11 + rowPx=6+13.2*max(1, ceil(value/70), ceil(name/24)).
+  _pagesFromBreaks(cats,breaks) / _specPagesFor(sh)로 프리뷰·PDF 공용.
+- 수동 경계는 state.specBreaks(+specBreaksSig=카테고리 라벨 시그니처)에 저장하고,
+  시그니처가 일치할 때만 적용 → 제품/버전 전환 시 자동 경계로 복귀.
+- adjustBreak(bi,delta)로 경계값을 ±1, lo/hi로 각 페이지 최소 1그룹 클램프.
+````
+
 ---
 
 ## 참고 — 백엔드/인프라 (Claude Design 아님, 저장소·Vercel)
