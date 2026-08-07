@@ -129,7 +129,10 @@ Layout(3단계) 우측 패널에 "페이지 나눔 조정" UI를 넣어줘:
   _pagesFromBreaks(cats,breaks) / _specPagesFor(sh)로 프리뷰·PDF 공용.
 - 수동 경계는 state.specBreaks(+specBreaksSig=카테고리 라벨 시그니처)에 저장하고,
   시그니처가 일치할 때만 적용 → 제품/버전 전환 시 자동 경계로 복귀.
-- adjustBreak(bi,delta)로 경계값을 ±1, lo/hi로 각 페이지 최소 1그룹 클램프.
+- adjustBreak(bi,delta): ▲는 항상 가능(위로 당겨 다음 페이지가 비면 경계값이 n에
+  닿아 필터로 제거 → 그 페이지 통째로 사라짐). ▼는 이전 페이지에 ≥2그룹일 때만.
+- 팬텀 경계: 마지막 페이지에 그룹이 ≥2개면 '끝 그룹을 새 페이지로' ▼(splitLastPage)
+  카드를 노출 → 사라졌던 마지막 장을 재생성. 패널은 스펙 페이지 ≥2 또는 수동 조정 시 표시.
 ````
 
 ---
