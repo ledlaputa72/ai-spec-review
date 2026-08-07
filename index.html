@@ -2735,9 +2735,13 @@ class Component extends DCLogic {
       const m=this.buildMapping(); const lines=[];
       m.orderedCats.forEach(c=>c.fields.forEach(f=>lines.push(f.name+': '+f.value)));
       const prompt='You are a US/UL technical editor for AVYCON CCTV spec sheets. Review these spec field values for American English, UL voltage notation (12VDC, 24VAC), unit spacing, CCTV standard terms (microSD, PoE, IEC 62676-4 DORI noun forms), and typos. List ONLY remaining issues, max 6 lines, each formatted "Field — suggested fix". If clean, reply "추가 발견 사항 없음.".\n\n'+lines.slice(0,40).join('\n');
-      const out=await window.claude.complete(prompt);
-      this.setState({aiBusy:false, aiNote:(out||'').trim()||'응답이 없습니다.'});
-    }catch(e){ this.setState({aiBusy:false, aiNote:'실시간 AI 검수는 이 미리보기 환경에서 사용할 수 없습니다. 위의 규칙 기반 검수 결과를 사용하세요.'}); }
+      let out='';
+      // 1) 서버리스 프록시(/api/ai-review) — 배포 사이트에서 동작(ANTHROPIC_API_KEY 필요)
+      try{ const r=await fetch('/api/ai-review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})}); if(r.ok){ out=((await r.json()).text||''); } else if(r.status===503){ out=''; } }catch(e){}
+      // 2) Claude Design 런타임 폴백(미리보기 전용)
+      if(!out && window.claude && window.claude.complete){ try{ out=await window.claude.complete(prompt); }catch(e){} }
+      this.setState({aiBusy:false, aiNote:(out||'').trim()||this.T('AI 심화 검수를 사용할 수 없습니다. (서버 키 미설정) 위의 규칙 기반 검수 결과를 사용하세요.','AI deep review is unavailable (server key not set). Use the rule-based results above.')});
+    }catch(e){ this.setState({aiBusy:false, aiNote:this.T('AI 심화 검수를 사용할 수 없습니다. 위의 규칙 기반 검수 결과를 사용하세요.','AI deep review is unavailable. Use the rule-based results above.')}); }
   }
 
   renderVals(){
