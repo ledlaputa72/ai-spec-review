@@ -663,7 +663,7 @@
       <div style="display:flex; height:100%;">
         <!-- preview -->
         <div class="scroll" ref="{{ sheetHostRef }}" style="flex:1; overflow:auto; padding:30px 30px 120px; text-align:center; background:#e6e8ea;">
-          <div style="zoom:{{ zoom }}; display:inline-flex; flex-direction:column; align-items:center; gap:20px;">
+          <div style="zoom:{{ zoom }}; display:inline-flex; flex-direction:column; align-items:center; gap:20px; text-align:left;">
             <sc-if value="{{ showP1 }}" hint-placeholder-val="{{ true }}">
               <dc-import name="SpecSheet" sheet="{{ sheet }}" show-p1="{{ true }}" show-p2="{{ false }}" hint-size="816px,1100px"></dc-import>
             </sc-if>
@@ -735,7 +735,7 @@
       <div style="display:flex; height:100%;">
         <!-- live preview -->
         <div class="scroll" ref="{{ sheetHostRef }}" style="flex:1; overflow:auto; padding:26px 26px 120px; text-align:center; background:#e6e8ea;">
-          <div style="zoom:{{ zoom4 }}; display:inline-flex; flex-direction:column; align-items:center; gap:20px;">
+          <div style="zoom:{{ zoom4 }}; display:inline-flex; flex-direction:column; align-items:center; gap:20px; text-align:left;">
             <sc-if value="{{ showP1 }}" hint-placeholder-val="{{ true }}">
               <dc-import name="SpecSheet" sheet="{{ sheet }}" show-p1="{{ true }}" show-p2="{{ false }}" hint-size="816px,1100px"></dc-import>
             </sc-if>
