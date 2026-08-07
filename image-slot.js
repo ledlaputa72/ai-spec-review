@@ -179,6 +179,22 @@
     }
   }
 
+  // ── Blob upload ─────────────────────────────────────────────────────────
+  // Push the resized bytes to /api/upload (Vercel Blob) and store the small
+  // https URL instead of a multi-MB base64 data-URL, so the host's saved
+  // document / KV stays tiny. Returns null (→ keep base64) if the API is
+  // unavailable (local preview, Blob store not connected).
+  async function uploadToBlob(dataUrl, filename) {
+    try {
+      const blob = await (await fetch(dataUrl)).blob();
+      const resp = await fetch('/api/upload?filename=' + encodeURIComponent(filename || 'image'), {
+        method: 'POST', headers: { 'Content-Type': (blob && blob.type) || 'application/octet-stream' }, body: blob,
+      });
+      if (resp.ok) { const d = await resp.json(); if (d && d.url) return d.url; }
+    } catch (e) {}
+    return null;
+  }
+
   // ── Custom element ──────────────────────────────────────────────────────
   const stylesheet =
     ':host{display:inline-block;position:relative;vertical-align:top;' +
@@ -508,7 +524,11 @@
         // Only exit reframe once the new image is in hand — a rejected type
         // or decode failure leaves the in-progress crop untouched.
         this._exitReframe(false);
-        const val = { u: url, s: 1, x: 0, y: 0 };
+        // Upload to Blob → store the small https URL; fall back to base64 offline.
+        let finalUrl = url;
+        try { const up = await uploadToBlob(url, (this.id || 'photo') + '.webp'); if (up && gen === this._gen) finalUrl = up; } catch (e) {}
+        if (gen !== this._gen) return;
+        const val = { u: finalUrl, s: 1, x: 0, y: 0 };
         setSlot(this.id || '', val);
         // Keep a session-local copy for id-less slots so the drop still
         // shows, even though it cannot persist.
@@ -627,7 +647,8 @@
       // data:image/ URLs from it. The `src` attribute is author-controlled
       // (Claude wrote it into the HTML) so it passes through unchanged.
       let stored = this.id ? getSlot(this.id) : this._local;
-      if (stored && stored.u && !/^data:image\//i.test(stored.u)) stored = null;
+      // Accept canvas data-URLs and our Blob https URLs; reject anything else.
+      if (stored && stored.u && !/^(data:image\/|https:\/\/)/i.test(stored.u)) stored = null;
       const srcAttr = this.getAttribute('src') || '';
       this._userUrl = (stored && stored.u) || null;
       const url = this._userUrl || srcAttr;

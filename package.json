@@ -4,6 +4,7 @@
   "private": true,
   "description": "AVYCON Spec Sheet Studio — shared-state API (Vercel KV)",
   "dependencies": {
-    "@upstash/redis": "^1.34.3"
+    "@upstash/redis": "^1.34.3",
+    "@vercel/blob": "^2.0.0"
   }
 }

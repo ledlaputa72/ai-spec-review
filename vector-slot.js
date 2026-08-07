@@ -30,6 +30,19 @@
     });
   }
 
+  // Push a (usually large) drawing to /api/upload (Vercel Blob) and return the
+  // small https URL; null → keep the inline data-URL (local preview / no Blob store).
+  async function uploadToBlob(dataUrl, filename) {
+    try {
+      const blob = await (await fetch(dataUrl)).blob();
+      const resp = await fetch('/api/upload?filename=' + encodeURIComponent(filename || 'drawing'), {
+        method: 'POST', headers: { 'Content-Type': (blob && blob.type) || 'application/octet-stream' }, body: blob,
+      });
+      if (resp.ok) { const d = await resp.json(); if (d && d.url) return d.url; }
+    } catch (e) {}
+    return null;
+  }
+
   async function svgToVectorUrl(file) {
     const text = await file.text();
     // Embed as an <img>-safe vector data URL (no script execution).
@@ -134,6 +147,9 @@
         else if (isPdf) url = await pdfToImageUrl(file);
         else if (/^image\//.test(file.type)) url = await fileToDataUrl(file);
         else { this._renderError('SVG · PDF · 이미지 파일만 가능합니다.'); return; }
+        // Big rasters (PDF render / photos) → Blob so the saved doc stays small.
+        // SVG stays inline: it's a tiny vector and prints crisp as a data-URL.
+        if (!isSvg) { try { const up = await uploadToBlob(url, (this.id || 'drawing') + (isPdf ? '.png' : '.img')); if (up) url = up; } catch (e) {} }
         this._data = url;
         this._renderImage(url);
         this._save(url);
