@@ -19,6 +19,8 @@
   .scroll::-webkit-scrollbar-thumb{ background:#c2cad6; border-radius:6px; border:2px solid #eceef0; }
   input,select,textarea{ font-family:inherit; }
   .reports-panel > *{ flex:0 0 auto !important; }
+  /* 스펙시트만 미리보기: data-sheet-only(수정 스펙시트) 외 모든 리포트 페이지 숨김 */
+  .reports-panel[data-mode="sheet"] > *:not([data-sheet-only]){ display:none !important; }
   @media print {
     .app-root > *:not(.reports-overlay){ display:none !important; }
     .reports-overlay{ position:static !important; display:block !important; height:auto !important; }
@@ -1101,7 +1103,7 @@
       <div class="rep-backdrop" onClick="{{ onCloseReports }}" style="position:absolute; inset:0; background:rgba(20,28,44,.55);"></div>
       <!-- toolbar -->
       <div class="reports-toolbar" style="position:relative; z-index:2; background:#1f2433; color:#fff; display:flex; align-items:center; justify-content:space-between; padding:11px 20px; box-shadow:0 2px 10px rgba(0,0,0,.25);">
-        <div style="font-size:14px; font-weight:700;">문서 리포트 미리보기 <span style="font-size:12px; color:#aab2c4; font-weight:500;">· 전체 단계 · US Letter</span></div>
+        <div style="font-size:14px; font-weight:700;">{{ reportTitle }} <span style="font-size:12px; color:#aab2c4; font-weight:500;">{{ reportSubtitle }}</span></div>
         <div style="display:flex; align-items:center; gap:9px;">
           <button onClick="{{ onPrintReport }}" style="background:rgba(255,255,255,.14); color:#fff; border:none; border-radius:8px; padding:8px 15px; font-size:12.5px; font-weight:700; cursor:pointer;" style-hover="background:rgba(255,255,255,.24);">🖨 인쇄</button>
           <button onClick="{{ onSavePdf }}" style="background:#fff; color:#941A31; border:none; border-radius:8px; padding:8px 15px; font-size:12.5px; font-weight:800; cursor:pointer;" style-hover="background:#f3e7ea;">⬇ PDF로 저장</button>
@@ -1109,7 +1111,7 @@
         </div>
       </div>
       <!-- scrollable pages -->
-      <div class="scroll reports-panel" style="position:relative; z-index:2; flex:1; overflow:auto; background:#52586a; padding:28px; display:flex; flex-direction:column; align-items:center; gap:24px;">
+      <div class="scroll reports-panel" data-mode="{{ reportMode }}" style="position:relative; z-index:2; flex:1; overflow:auto; background:#52586a; padding:28px; display:flex; flex-direction:column; align-items:center; gap:24px;">
 
         <!-- REPORT 1 — MAPPING (paginated) -->
         <sc-for list="{{ repMapPages }}" as="p" hint-placeholder-count="1">
@@ -2202,7 +2204,7 @@ class Component extends DCLogic {
       sheet
     };
   }
-  openReports(focus){ this.setState({showReports:true, reportFocus:focus||'mapping', showExport:false}); }
+  openReports(focus){ this.setState({showReports:true, reportFocus:focus||'mapping', reportMode:'full', showExport:false}); }
   closeReports(){ this.setState({showReports:false}); }
   toggleExport(){ this.setState(s=>({showExport:!s.showExport, exportMsg:''})); }
   // ── session save / restore ───────────────────────────────────────────
@@ -2352,7 +2354,7 @@ class Component extends DCLogic {
   // PDF 내보내기 = 브라우저 인쇄(window.print) 경로 → 텍스트가 텍스트로, 폰트는 Pretendard로 출력.
   // (html2canvas 래스터 savePdf는 이미지 PDF라 사용하지 않음)
   exportPdf(sheetOnly){
-    this.setState({showReports:true, showExport:false}, ()=>{ setTimeout(()=>this.printReport(sheetOnly), 500); });
+    this.setState({showReports:true, reportMode:sheetOnly?'sheet':'full', showExport:false}, ()=>{ setTimeout(()=>this.printReport(sheetOnly), 500); });
   }
 
   // Collect the rendered report pages into an isolated, correctly-sized document.
@@ -3364,7 +3366,12 @@ class Component extends DCLogic {
 
       // reports overlay data
       const rep=this.reportData();
-      out.showReports=st.showReports; out.onCloseReports=()=>this.closeReports(); out.onPrintReport=()=>this.printReport(); out.onSavePdf=()=>this.printReport();
+      out.showReports=st.showReports; out.onCloseReports=()=>this.closeReports();
+      const _sheetMode=(st.reportMode==='sheet');
+      out.reportMode=st.reportMode||'full';
+      out.reportTitle=_sheetMode?this.T('스펙시트 미리보기','Spec sheet preview'):this.T('문서 리포트 미리보기','Document report preview');
+      out.reportSubtitle=_sheetMode?this.T('· 스펙시트만 · US Letter','· Spec sheet only · US Letter'):this.T('· 전체 단계 · US Letter','· All steps · US Letter');
+      out.onPrintReport=()=>this.printReport(_sheetMode); out.onSavePdf=()=>this.printReport(_sheetMode);
       out.repModel=rep.model; out.repTitle=rep.title; out.repScope=rep.scope; out.repDate=rep.date;
       out.repMapMatched=rep.mapping.matched; out.repMapTotal=rep.mapping.total; out.repMapUnmappedN=rep.mapping.unmapped.length;
       out.repReviewTotal=rep.review.total; out.repReviewApplied=rep.review.applied;
