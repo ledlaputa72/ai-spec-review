@@ -632,8 +632,8 @@
     <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ true }}">
       <div style="display:flex; height:100%;">
         <!-- preview -->
-        <div class="scroll" ref="{{ sheetHostRef }}" style="flex:1; overflow:auto; padding:30px; display:flex; justify-content:center; background:#e6e8ea;">
-          <div style="zoom:{{ zoom }}; display:flex; flex-direction:column; align-items:center; gap:20px;">
+        <div class="scroll" ref="{{ sheetHostRef }}" style="flex:1; overflow:auto; padding:30px 30px 48px; text-align:center; background:#e6e8ea;">
+          <div style="zoom:{{ zoom }}; display:inline-flex; flex-direction:column; align-items:center; gap:20px;">
             <sc-if value="{{ showP1 }}" hint-placeholder-val="{{ true }}">
               <dc-import name="SpecSheet" sheet="{{ sheet }}" show-p1="{{ true }}" show-p2="{{ false }}" hint-size="816px,1100px"></dc-import>
             </sc-if>
@@ -704,8 +704,8 @@
     <sc-if value="{{ isStep4 }}" hint-placeholder-val="{{ true }}">
       <div style="display:flex; height:100%;">
         <!-- live preview -->
-        <div class="scroll" ref="{{ sheetHostRef }}" style="flex:1; overflow:auto; padding:26px; display:flex; justify-content:center; background:#e6e8ea;">
-          <div style="zoom:{{ zoom4 }}; display:flex; flex-direction:column; align-items:center; gap:20px;">
+        <div class="scroll" ref="{{ sheetHostRef }}" style="flex:1; overflow:auto; padding:26px 26px 44px; text-align:center; background:#e6e8ea;">
+          <div style="zoom:{{ zoom4 }}; display:inline-flex; flex-direction:column; align-items:center; gap:20px;">
             <sc-if value="{{ showP1 }}" hint-placeholder-val="{{ true }}">
               <dc-import name="SpecSheet" sheet="{{ sheet }}" show-p1="{{ true }}" show-p2="{{ false }}" hint-size="816px,1100px"></dc-import>
             </sc-if>
