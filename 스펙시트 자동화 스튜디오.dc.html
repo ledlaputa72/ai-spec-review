@@ -93,7 +93,8 @@
         <sc-if value="{{ showExport }}" hint-placeholder-val="{{ true }}">
           <div style="position:absolute; right:0; top:42px; width:268px; background:#fff; border:1px solid #e0e3e7; border-radius:11px; box-shadow:0 12px 34px rgba(20,30,50,.22); padding:8px; z-index:60;">
             <div style="font-size:10.5px; font-weight:800; color:#8b9099; letter-spacing:.5px; padding:6px 9px 8px;">전체 단계 문서 내보내기</div>
-            <button onClick="{{ onExportPdf }}" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; background:transparent; border:none; border-radius:8px; padding:9px 9px; font-size:13px; font-weight:600; color:#1c2330; cursor:pointer;" style-hover="background:#f5f6f8;"><span style="font-size:15px;">🅿</span> PDF로 저장 <span style="margin-left:auto; font-size:10px; color:#9aa0aa;">인쇄</span></button>
+            <button onClick="{{ onExportPdfSheet }}" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; background:#f6edef; border:none; border-radius:8px; padding:9px 9px; font-size:13px; font-weight:700; color:#941A31; cursor:pointer;" style-hover="background:#efdfe2;"><span style="font-size:15px;">📄</span> 스펙시트만 PDF <span style="margin-left:auto; font-size:10px; color:#b58a92;">2페이지</span></button>
+            <button onClick="{{ onExportPdf }}" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; background:transparent; border:none; border-radius:8px; padding:9px 9px; font-size:13px; font-weight:600; color:#1c2330; cursor:pointer;" style-hover="background:#f5f6f8;"><span style="font-size:15px;">🅿</span> 전체 리포트 PDF <span style="margin-left:auto; font-size:10px; color:#9aa0aa;">검수·매핑 포함</span></button>
             <button onClick="{{ onExportDocx }}" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; background:transparent; border:none; border-radius:8px; padding:9px 9px; font-size:13px; font-weight:600; color:#1c2330; cursor:pointer;" style-hover="background:#f5f6f8;"><span style="font-size:15px;">📄</span> Word 문서 (.doc)</button>
             <button onClick="{{ onExportPptx }}" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; background:transparent; border:none; border-radius:8px; padding:9px 9px; font-size:13px; font-weight:600; color:#1c2330; cursor:pointer;" style-hover="background:#f5f6f8;"><span style="font-size:15px;">📊</span> PowerPoint (.pptx)</button>
             <div style="height:1px; background:#eceef1; margin:6px 4px;"></div>
@@ -1201,7 +1202,7 @@
         </sc-for>
 
         <!-- REPORT 3 — SPEC SHEET (AI 검수본) -->
-        <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <div data-sheet-only="" style="display:flex; flex-direction:column; gap:8px; align-items:center;">
           <div style="width:816px; font-size:13px; font-weight:800; color:#941A31; padding:4px 0;">STEP 3 · 스펙시트 — 수정버전 (AI 검수 · CMS 정렬·매핑 반영)</div>
           <dc-import name="SpecSheet" sheet="{{ sheetReviewed }}" show-p1="{{ true }}" show-p2="{{ false }}" hint-size="816px,1100px"></dc-import>
           <sc-for list="{{ specPagesReviewed }}" as="sp" hint-placeholder-count="1">
@@ -2185,12 +2186,14 @@ class Component extends DCLogic {
     this._applyDoc(localDoc);
   }
 
-  exportPdf(){
-    this.setState({showReports:true, showExport:false}, ()=>{ setTimeout(()=>this.savePdf(), 500); });
+  exportPdf(sheetOnly){
+    this.setState({showReports:true, showExport:false}, ()=>{ setTimeout(()=>this.savePdf(sheetOnly), 500); });
   }
 
   // Collect the rendered report pages into an isolated, correctly-sized document.
   _collectReportPages(){ return [...document.querySelectorAll('.reports-panel .report-page, .reports-panel [data-screen-label^="SpecSheet"]')]; }
+  // 스펙시트만 (수정버전 2페이지) — 매핑/검수 리포트·원본 스펙시트 제외
+  _collectSheetPages(){ return [...document.querySelectorAll('.reports-panel [data-sheet-only] [data-screen-label^="SpecSheet"]')]; }
   _printCss(){
     return "@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');"
       +"*{box-sizing:border-box;}"
@@ -2339,9 +2342,9 @@ class Component extends DCLogic {
   // PDF로 저장: move each live page off-screen to (0,0) (preserving web-component render
   // + avoiding the panel's scroll/zoom crop), inject plain <img> for shadow-DOM image-slots
   // and hide editor-only (X) buttons via onclone, rasterize, then restore the node.
-  async savePdf(){
-    const pages=this._collectReportPages();
-    if(!pages.length){ this.printReport(); return; }
+  async savePdf(sheetOnly){
+    const pages=sheetOnly?this._collectSheetPages():this._collectReportPages();
+    if(!pages.length){ if(sheetOnly){ this.setState({savedToast:this.T('스펙시트 페이지를 찾지 못했습니다.','No spec-sheet pages found.')}); return; } this.printReport(); return; }
     if(!window.html2pdf){ this.printReport(); return; }
     this.setState({savedToast:'PDF 생성 중…'});
     const W=816, H=1056;
@@ -2379,7 +2382,7 @@ class Component extends DCLogic {
           if(next) parent.insertBefore(node, next); else parent.appendChild(node);
         }
       }
-      pdf.save((this.reportData().model||'AVYCON')+'_spec_report.pdf');
+      pdf.save((this.reportData().model||'AVYCON')+(sheetOnly?'_spec_sheet.pdf':'_spec_report.pdf'));
       this.setState({savedToast:'PDF로 저장했습니다.'});
     }catch(e){ console.error(e); restore(); this.setState({savedToast:'PDF 생성 실패 — 인쇄로 저장해 주세요.'}); this.printReport(); }
     finally{ restore(); host.remove(); }
@@ -2788,7 +2791,7 @@ class Component extends DCLogic {
     // share / export (header)
     out.canShare=st.loaded;
     out.showExport=st.showExport; out.onToggleExport=()=>this.toggleExport(); out.exportMsg=st.exportMsg; out.hasExportMsg=!!st.exportMsg;
-    out.onExportPdf=()=>this.exportPdf(); out.onExportXlsx=()=>this.exportXlsx(); out.onExportDocx=()=>this.exportDocx(); out.onExportPptx=()=>this.exportPptx();
+    out.onExportPdf=()=>this.exportPdf(); out.onExportPdfSheet=()=>this.exportPdf(true); out.onExportXlsx=()=>this.exportXlsx(); out.onExportDocx=()=>this.exportDocx(); out.onExportPptx=()=>this.exportPptx();
     out.onSave=()=>this.saveSession(); out.savedToast=st.savedToast; out.hasToast=!!st.savedToast;
     out.hasSession=st.hasSession; out.onContinue=()=>this.restoreSession();
 

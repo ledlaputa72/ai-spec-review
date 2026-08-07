@@ -78,16 +78,17 @@
     loadP = fetch(STATE_FILE)
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
-        // Merge: sidecar loses to any in-memory change that raced ahead of
-        // the fetch (drop or clear) so neither is clobbered by hydration.
-        if (j && typeof j === 'object') {
-          const merged = Object.assign({}, j, slots);
-          // A framing-only write that raced ahead of hydration must not
-          // drop a user image that's only on disk — inherit u from the
-          // sidecar for any in-memory entry that lacks one.
+        // Static deploy has no sidecar (j is null) — fall back to localStorage.
+        // Priority: in-memory (drop/clear that raced ahead) > sidecar > localStorage.
+        let ls = null; try { ls = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch (e) {}
+        const disk = Object.assign({}, ls && typeof ls === 'object' ? ls : {}, j && typeof j === 'object' ? j : {});
+        if (Object.keys(disk).length) {
+          const merged = Object.assign({}, disk, slots);
+          // A framing-only write that raced ahead of hydration must not drop a
+          // user image that's only on disk — inherit u for any entry lacking one.
           for (const k in slots) {
-            if (merged[k] && !merged[k].u && j[k]) {
-              merged[k].u = typeof j[k] === 'string' ? j[k] : j[k].u;
+            if (merged[k] && !merged[k].u && disk[k]) {
+              merged[k].u = typeof disk[k] === 'string' ? disk[k] : disk[k].u;
             }
           }
           for (const id of tombstones) delete merged[id];
@@ -106,7 +107,12 @@
   // completion with the then-current slots.
   let saving = false;
   let saveDirty = false;
+  const LS_KEY = 'omimg:slots';
+  // Static-deploy fallback: without window.omelette there is no sidecar, so
+  // mirror the slots to localStorage (like <vector-slot>) — images survive reload.
+  function saveLocal() { try { localStorage.setItem(LS_KEY, JSON.stringify(slots)); } catch (e) {} }
   function save() {
+    saveLocal();
     if (saving) { saveDirty = true; return; }
     const w = window.omelette && window.omelette.writeFile;
     if (!w) return;
@@ -598,7 +604,7 @@
       this._ring.style.display = mask ? 'none' : '';
 
       // Controls and reframe entry gate on this so share links stay read-only.
-      const editable = !!(window.omelette && window.omelette.writeFile);
+      const editable = !!(window.omelette && window.omelette.writeFile) || (typeof localStorage !== 'undefined');
       this.toggleAttribute('data-editable', editable);
       this._sub.style.display = editable ? '' : 'none';
 
