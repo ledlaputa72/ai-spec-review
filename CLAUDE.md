@@ -63,6 +63,23 @@ Claude Design에서 내보낸 **정적 웹사이트**. AVYCON CCTV 제품의 스
   (한계: 이미지가 제품별로 저장되진 않음 — 전환 시 비워짐. 제품별 이미지 기억은 Claude Design에서 슬롯 id를 제품별로 바꾸는 게 정석.)
 - **작업자 이름 = 히스토리 패널 입력 필드** (`editorName`/`setEditorName`, 2026-08): 기존 `window.prompt`(1회 차단형) 제거, 히스토리 패널 상단 입력 필드로 설정(`localStorage 'specstudio:editor'`).
 
+## 이미지 호스팅 (Vercel Blob) — 용량 해결
+- 사진(image-slot)·치수 도면(vector-slot)을 base64로 저장 문서에 통째로 넣으면
+  문서가 수 MB가 돼 **KV/localStorage 저장이 실패**함. → **Vercel Blob**에 올리고
+  문서엔 **짧은 https URL만** 저장.
+- 서버리스: `api/upload.js` — 원시 이미지 바이트 POST(`/api/upload?filename=`) →
+  Blob(public) 업로드 → `{url}` 반환. 의존성 `@vercel/blob`(`package.json`).
+- 프론트: `image-slot.js`/`vector-slot.js`가 드롭 시 `/api/upload`로 올려 URL 저장
+  (`image-slot`은 webp 리사이즈 후 업로드+`_render`가 https 허용, `vector-slot`은
+  PDF·이미지만 업로드하고 SVG는 인라인). 업로드 실패 시 **base64로 자동 폴백**.
+- 저장 문서: `_collectSlots`가 현재 제품 슬롯의 값(이제 URL)을 담고, `_applyDoc`의
+  `_restoreSlots`가 슬롯 localStorage에 복원 → 다른 기기에서도 동일 이미지.
+- PDF 내보내기는 `_dataUrl`(fetch→인라인)로 https Blob 이미지도 캡처됨(Blob public은 CORS 허용).
+- ⚠️ **Vercel 설정(1회)**: Storage → **Public** Blob 스토어 생성 → 프로젝트 Connect 시
+  **"Add a read-write token" 체크** → `BLOB_READ_WRITE_TOKEN` 주입 → **재배포**. 없으면
+  `/api/upload`가 503 → base64 폴백(용량 문제 그대로).
+- ⚠️ `image-slot.js`/`vector-slot.js`는 Claude Design 산출물 → **재export 시 재적용 필요**.
+
 ## 팀 공유 작업 저장 (Vercel KV / Upstash) — 백엔드
 - 목적: **누가 저장하든 마지막 저장 상태를 모든 사용자·기기가 공유**(localStorage는 브라우저별이라 불가).
 - 서버리스 API: `api/state.js` — 제품 model별 작업문서 저장/불러오기 + work-list 인덱스 + 히스토리 로그.
