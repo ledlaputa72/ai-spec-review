@@ -27,6 +27,8 @@
     .reports-toolbar{ display:none !important; }
     .report-page{ box-shadow:none !important; margin:0 auto !important; page-break-after:always; break-after:page; }
     .report-page:last-child{ page-break-after:auto; }
+    /* 편집 전용 오버레이(액세서리 ×, 슬롯 제거 버튼 등)는 인쇄물에 나오지 않게 */
+    button[title="제거"], [data-export-hide]{ display:none !important; }
     @page{ size:letter; margin:0; }
     html,body{ background:#fff !important; }
   }
