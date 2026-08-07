@@ -1500,17 +1500,26 @@ class Component extends DCLogic {
     const budget=856;           // usable table height above the footer line
     const headPx=11;            // gray category bar
     const rowPx=f=>6+13.2*Math.max(1, Math.ceil(String(f.value||'').length/70), Math.ceil(String(f.name||'').length/24));
+    const catH=cat=>{ let h=headPx; (cat.fields||[]).forEach(f=>h+=rowPx(f)); return h; };
     const pages=[]; let cur=[]; let u=0;
     const push=()=>{ if(cur.length){ pages.push(cur); cur=[]; u=0; } };
     (specCats||[]).forEach(cat=>{
-      const fields=cat.fields||[]; const n=fields.length; let ri=0;
-      if(n===0){ if(cur.length && u+headPx>budget) push(); cur.push({label:cat.label, fields:[]}); u+=headPx; return; }
-      while(ri<n){
-        if(cur.length && u+headPx+rowPx(fields[ri])>budget) push();
-        const grp={label:cat.label, fields:[]}; cur.push(grp); u+=headPx;
-        while(ri<n && u+rowPx(fields[ri])<=budget){ grp.fields.push(fields[ri]); u+=rowPx(fields[ri]); ri++; }
-        if(grp.fields.length===0){ grp.fields.push(fields[ri]); u+=rowPx(fields[ri]); ri++; }
-        if(ri<n) push();
+      const fields=cat.fields||[]; const total=catH(cat);
+      // 카테고리(회색바 + 하위 행)를 통째로 한 페이지에 유지 — 현재 페이지에 안 들어가면 다음 페이지로.
+      // 최대한 채우고(그리디), 통째로 안 들어갈 때만 넘긴다.
+      if(cur.length && u+total>budget) push();
+      if(total<=budget){
+        cur.push({label:cat.label, fields:fields.slice()}); u+=total;
+      } else {
+        // 카테고리 하나가 한 페이지보다 큰 경우에만 행 단위로 분할(회색바를 페이지마다 반복).
+        let ri=0, n=fields.length;
+        while(ri<n){
+          if(cur.length && u+headPx+rowPx(fields[ri])>budget) push();
+          const grp={label:cat.label, fields:[]}; cur.push(grp); u+=headPx;
+          while(ri<n && u+rowPx(fields[ri])<=budget){ grp.fields.push(fields[ri]); u+=rowPx(fields[ri]); ri++; }
+          if(grp.fields.length===0){ grp.fields.push(fields[ri]); u+=rowPx(fields[ri]); ri++; }
+          if(ri<n) push();
+        }
       }
     });
     push();
