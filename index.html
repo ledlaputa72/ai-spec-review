@@ -1555,7 +1555,9 @@ class Component extends DCLogic {
     // slot ids are per-product so each model remembers its own photo/drawings
     const key=String(model||this.state.activeSample||'default').replace(/[^\w.-]+/g,'_');
     const accessories=this.state.accessories.map((a,i)=>({...a, slotId:a.imgId+'__'+key, onRemove:()=>this.removeAcc(i)}));
-    return {model, title, subtitle2, certImgs, certTexts, aiBadge, aiOn, bullets:this.state.bullets, dims:this.state.dims, accessories, specCats, dim2, dimDir, dimSlotFlex,
+    // 불릿 표시 시 앞/뒤·내부 공백(줄바꿈·탭·nbsp 등) 정규화 — 들여쓰기처럼 보이는 문제 방지
+    const bullets=(this.state.bullets||[]).map(b=>String(b==null?'':b).replace(/\s+/g,' ').trim());
+    return {model, title, subtitle2, certImgs, certTexts, aiBadge, aiOn, bullets, dims:this.state.dims, accessories, specCats, dim2, dimDir, dimSlotFlex,
       photoSlotId:'ss_product_photo__'+key, dimSlot1Id:'ss_dims_1__'+key, dimSlot2Id:'ss_dims_2__'+key};
   }
 
@@ -1879,7 +1881,7 @@ class Component extends DCLogic {
   _loadProduct(s, id){
     this._touchHist(id||s.id, false);
     const qc=this.state.qc;
-    const bullets=(s.overview||'').split(/\n+/).map(l=>l.replace(/^[•\-\u2022\u00b7]\s*/,'').replace(/\s*OPTIONAL ACCESSORIES.*$/i,'').trim()).filter(Boolean).map(l=>qc.runQC(l,'Overview',[]).result);
+    const bullets=(s.overview||'').split(/\n+/).map(l=>l.replace(/^[•\-\u2022\u00b7]\s*/,'').replace(/\s*OPTIONAL ACCESSORIES.*$/i,'').trim()).filter(Boolean).map(l=>String(qc.runQC(l,'Overview',[]).result||'').replace(/\s+/g,' ').trim());
     const dimSpec=s.specs.find(x=>/dimension/i.test(x.name));
     const wSpec=s.specs.find(x=>/weight/i.test(x.name));
     const dims=[];
@@ -2265,7 +2267,7 @@ class Component extends DCLogic {
   _applyDoc(d){
     if(!d||!d.raw) return false;
     this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:d.assignments||{}, reviewAccept:d.reviewAccept||{},
-      overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:d.bullets||[], dims:d.dims||[],
+      overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:(d.bullets||[]).map(b=>String(b==null?'':b).replace(/\s+/g,' ').trim()), dims:d.dims||[],
       certs:d.certs||{}, accessories:d.accessories||[], customOrder:d.customOrder||{}, disabledRules:d.disabledRules||{},
       specBreaks:d.specBreaks||null, specBreaksSig:d.specBreaksSig||'',
       step:d.step||1, activeSample:d.activeSample, importError:'', savedToast:'✓ 저장된 작업을 불러왔습니다' });
