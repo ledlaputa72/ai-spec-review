@@ -94,7 +94,7 @@
       <div style="display:grid; grid-template-columns:repeat(8,1fr); gap:6px;">
         <sc-for list="{{ sheet.accessories }}" as="a" hint-placeholder-count="8">
           <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:5px; position:relative;">
-            <button onClick="{{ a.onRemove }}" title="제거" style="position:absolute; top:-6px; right:-2px; z-index:5; width:16px; height:16px; border:none; border-radius:50%; background:#931a33; color:#fff; font-size:10px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 3px rgba(0,0,0,.25);">×</button>
+            <button onClick="{{ a.onRemove }}" title="제거" data-export-hide="" style="position:absolute; top:-6px; right:-2px; z-index:5; width:16px; height:16px; border:none; border-radius:50%; background:#931a33; color:#fff; font-size:10px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 3px rgba(0,0,0,.25);">×</button>
             <image-slot id="{{ a.slotId }}" style="width:62px; height:62px; display:block;" shape="rect" fit="contain" placeholder="사진"></image-slot>
             <div style="font-size:8px; font-weight:800; color:#1a1a1a; line-height:1.1;">{{ a.code }}</div>
             <div style="font-size:7px; font-weight:600; color:#5a5a5a; line-height:1.2; text-transform:uppercase;">{{ a.desc }}</div>
