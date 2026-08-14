@@ -930,12 +930,13 @@
         <!-- order tab -->
         <sc-if value="{{ settingsOrder }}" hint-placeholder-val="{{ true }}">
           <div style="padding:18px 20px;">
-            <div style="font-size:12.5px; color:#5e636b; line-height:1.5; margin-bottom:14px;"><b style="color:#941A31;">{{ scope }}</b> 스펙시트의 카테고리 표시 순서입니다. 위/아래로 옮기면 레이아웃에 즉시 반영됩니다. (CMS Order number 기준이 기본값)</div>
+            <div style="font-size:12.5px; color:#5e636b; line-height:1.5; margin-bottom:14px;"><b style="color:#941A31;">{{ scope }}</b> 스펙시트의 카테고리 표시 순서입니다. 위/아래로 옮기면 레이아웃에 즉시 반영됩니다. 👁 아이콘으로 원치 않는 카테고리를 스펙시트에서 숨길 수 있습니다. (CMS Order number 기준이 기본값)</div>
             <div style="display:flex; flex-direction:column; gap:7px;">
               <sc-for list="{{ orderCats }}" as="c" hint-placeholder-count="8">
-                <div style="display:grid; grid-template-columns:auto 1fr auto auto; gap:9px; align-items:center; background:#f6f7f9; border:1px solid #e6e8ec; border-radius:8px; padding:9px 12px;">
+                <div style="display:grid; grid-template-columns:auto 1fr auto auto auto; gap:9px; align-items:center; background:{{ c.rowBg }}; border:1px solid #e6e8ec; border-radius:8px; padding:9px 12px; opacity:{{ c.rowOpacity }};">
                   <span style="font-size:11px; font-weight:800; color:#b7bbc1; width:18px;">{{ c.num }}</span>
-                  <span style="font-size:12.5px; font-weight:700; color:#941A31;">{{ c.name }}</span>
+                  <span style="font-size:12.5px; font-weight:700; color:{{ c.nameColor }}; text-decoration:{{ c.nameDecoration }};">{{ c.name }}</span>
+                  <button onClick="{{ c.onToggleHide }}" title="{{ c.eyeTitle }}" style="width:26px; height:26px; border:1px solid #d9dce1; background:{{ c.eyeBg }}; border-radius:6px; cursor:pointer; font-size:13px; line-height:1;">{{ c.eye }}</button>
                   <button onClick="{{ c.onUp }}" style="width:26px; height:26px; border:1px solid #d9dce1; background:#fff; border-radius:6px; cursor:pointer; color:#5b6068;">↑</button>
                   <button onClick="{{ c.onDown }}" style="width:26px; height:26px; border:1px solid #d9dce1; background:#fff; border-radius:6px; cursor:pointer; color:#5b6068;">↓</button>
                 </div>
@@ -1300,7 +1301,7 @@ class Component extends DCLogic {
     meta:{model:'', subtitle:''}, bullets:[], dims:[], certs:{}, accessories:[],
     pageView:'both', zoom:0.66, zoom4:0.5, fitMode:null, dimCount:1, dimLayout:'column', showSettings:false, settingsTab:'cms',
     cmsSource:'default', cmsBusy:false, cmsNote:'', cmsError:'', defaultCms:null,
-    customOrder:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false,
+    customOrder:{}, hiddenCats:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false,
     importing:false, importError:'', dragOver:false, importNote:'', importSource:'xlsx',
     showReports:false, reportFocus:'mapping', showExport:false, exportMsg:'', savedToast:'', hasSession:false,
     reviewFilter:null, expandedReviews:{}, sheetVersion:'reviewed', applyReview:true, applyCms:true,
@@ -1540,6 +1541,10 @@ class Component extends DCLogic {
       raw.specs.forEach((sp,i)=>{ const sec=sp.section||'—'; if(!secMap[sec]){secMap[sec]=[];secOrder.push(sec);} secMap[sec].push({name:sp.name, value:resolve('f'+i, sp.value, sp.name), key:'f'+i}); });
       specCats=secOrder.map(sec=>({label:sec.toUpperCase(), fields:secMap[sec]}));
     }
+    // 설정에서 숨긴 카테고리는 스펙시트에서 제외(표시 순서 탭의 눈 토글)
+    const _hid=(this.state.hiddenCats&&this.state.hiddenCats[this.state.scope])||{};
+    const _hidSet=new Set(Object.keys(_hid).filter(k=>_hid[k]).map(k=>String(k).toUpperCase()));
+    if(_hidSet.size) specCats=specCats.filter(c=>!_hidSet.has(String(c.label).toUpperCase()));
     const title=resolve('__title', raw.subtitle, 'Sub Title');
     const subtitle2=(ov.__subtitle2!=null)?ov.__subtitle2:(raw.subtitle2||'');
     const model=this.state.meta.model||raw.model;
@@ -1904,7 +1909,7 @@ class Component extends DCLogic {
   }
   resetCms(){
     if(!this.state.defaultCms) return;
-    this.setState({cms:this.state.defaultCms, cmsSource:'default', cmsNote:'기본 내장 CMS 테이블로 복원했습니다.', cmsError:'', customOrder:{}});
+    this.setState({cms:this.state.defaultCms, cmsSource:'default', cmsNote:'기본 내장 CMS 테이블로 복원했습니다.', cmsError:'', customOrder:{}, hiddenCats:{}});
   }
   _validateCms(o){
     if(!o||!Array.isArray(o.scopes)||!o.byScope) throw new Error('scopes / byScope 구조가 아닙니다.');
@@ -1997,7 +2002,7 @@ class Component extends DCLogic {
       } else { throw new Error('.xlsx 또는 .json 파일을 넣어주세요.'); }
       const fields=this._validateCms(cms);
       const scope=cms.scopes.includes(this.state.scope)?this.state.scope:cms.scopes[0];
-      this.setState({cms, cmsSource:'upload', scope, customOrder:{}, assignments:{}, cmsBusy:false,
+      this.setState({cms, cmsSource:'upload', scope, customOrder:{}, hiddenCats:{}, assignments:{}, cmsBusy:false,
         cmsNote:'✓ CMS 테이블 적용됨 — 제품군 '+cms.scopes.length+'개 · 필드 '+fields+'개. 이후 매핑·정렬이 이 테이블 기준으로 동작합니다.'});
     }catch(e){ console.error('cms import failed', e); this.setState({cmsBusy:false, cmsError:'CMS 테이블을 읽지 못했습니다: '+(e.message||e)}); }
   }
@@ -2263,14 +2268,14 @@ class Component extends DCLogic {
     const s=this.state;
     return { v:1, scope:s.scope, raw:s.raw, assignments:s.assignments, reviewAccept:s.reviewAccept, overrides:s.overrides,
       meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories,
-      customOrder:s.customOrder, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample,
+      customOrder:s.customOrder, hiddenCats:s.hiddenCats, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample,
       specBreaks:s.specBreaks, specBreaksSig:s.specBreaksSig, slots:this._collectSlots(), savedAt:Date.now() };
   }
   _applyDoc(d){
     if(!d||!d.raw) return false;
     this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:d.assignments||{}, reviewAccept:d.reviewAccept||{},
       overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:(d.bullets||[]).map(b=>String(b==null?'':b).replace(/\s+/g,' ').trim()), dims:d.dims||[],
-      certs:d.certs||{}, accessories:d.accessories||[], customOrder:d.customOrder||{}, disabledRules:d.disabledRules||{},
+      certs:d.certs||{}, accessories:d.accessories||[], customOrder:d.customOrder||{}, hiddenCats:d.hiddenCats||{}, disabledRules:d.disabledRules||{},
       specBreaks:d.specBreaks||null, specBreaksSig:d.specBreaksSig||'',
       step:d.step||1, activeSample:d.activeSample, importError:'', savedToast:'✓ 저장된 작업을 불러왔습니다' });
     this._restoreSlots(d.slots);   // 저장된 사진·치수 도면을 슬롯에 복원(제품별 id 유지)
@@ -2741,6 +2746,9 @@ class Component extends DCLogic {
     if(j<0||j>=cats.length) return; const arr=[...cats]; const t=arr[i]; arr[i]=arr[j]; arr[j]=t;
     this.setState(s=>({customOrder:{...s.customOrder,[this.state.scope]:arr}}));
   }
+  // 카테고리 스펙시트 표시 On/Off (per-scope). 숨기면 레이아웃·PDF에서 제외.
+  toggleCatHidden(cat){ this.setState(s=>{ const sc=this.state.scope; const cur={...((s.hiddenCats||{})[sc]||{})};
+    if(cur[cat]) delete cur[cat]; else cur[cat]=true; return {hiddenCats:{...(s.hiddenCats||{}),[sc]:cur}}; }); }
   toggleRule(id){ this.setState(s=>({disabledRules:{...s.disabledRules,[id]:!s.disabledRules[id]}})); }
 
   // ── AI 규칙 라이브러리 (누적 사용자 규칙) ────────────────────────────────
@@ -3421,7 +3429,12 @@ class Component extends DCLogic {
     out.onUploadCms=()=>this.pickCms();
     out.onResetCms=()=>this.resetCms();
     out.cmsBusy=st.cmsBusy; out.cmsNote=st.cmsNote; out.hasCmsNote=!!st.cmsNote; out.cmsError=st.cmsError; out.hasCmsError=!!st.cmsError;
-    out.orderCats=this.scopeCats().map((c,i)=>({name:c.category,num:i+1,onUp:()=>this.moveCat(c.category,-1),onDown:()=>this.moveCat(c.category,1)}));
+    const _hidMap=(st.hiddenCats&&st.hiddenCats[st.scope])||{};
+    out.orderCats=this.scopeCats().map((c,i)=>{ const hid=!!_hidMap[c.category]; return {name:c.category,num:i+1,
+      hidden:hid, rowOpacity:hid?'.5':'1', rowBg:hid?'#f0f1f3':'#f6f7f9',
+      nameColor:hid?'#9aa0aa':'#941A31', nameDecoration:hid?'line-through':'none',
+      eye:hid?'🙈':'👁', eyeBg:hid?'#eceef1':'#fff', eyeTitle:hid?this.T('스펙시트에 표시','Show on spec sheet'):this.T('스펙시트에서 숨김','Hide from spec sheet'),
+      onUp:()=>this.moveCat(c.category,-1),onDown:()=>this.moveCat(c.category,1),onToggleHide:()=>this.toggleCatHidden(c.category)}; });
     out.ruleCatalog=(st.qc?st.qc.RULE_CATALOG:[]).map(r=>{const off=!!st.disabledRules[r.id]; return {id:r.id,cat:r.cat,note:r.note,color:this.CAT_COLOR[r.cat]||'#666',
       toggleBg:off?'#c9ccd2':'#941A31', knobLeft:off?'2.5px':'21px', onToggle:()=>this.toggleRule(r.id)};});
     out.builtinCount=(st.qc?st.qc.RULE_CATALOG.length:0);
