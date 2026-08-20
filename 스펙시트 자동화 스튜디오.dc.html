@@ -145,8 +145,9 @@
   <!-- ============ STEPPER ============ -->
   <div style="flex-shrink:0; background:#fff; border-bottom:1px solid #dde0e5; display:flex; align-items:stretch; padding:0 16px; height:64px; z-index:20;">
     <button onClick="{{ onHome }}" title="홈" style="appearance:none; background:transparent; border:none; cursor:pointer; display:flex; align-items:center; gap:9px; padding:0 18px; margin-right:6px; position:relative; border-right:1px solid #eceef1;" style-hover="background:#f5f6f8;">
-      <span style="width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; background:#f6edef; color:#941A31; border:2px solid #e3c9cf;">🏠</span>
+      <span style="width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; background:{{ homeDotBg }}; color:{{ homeDotColor }}; border:2px solid {{ homeDotBorder }};">🏠</span>
       <span style="font-size:13.5px; font-weight:700; color:#941A31;">홈</span>
+      <span style="position:absolute; bottom:0; left:0; right:0; height:3px; background:{{ homeUnderline }};"></span>
     </button>
     <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
       <button onClick="{{ s.onClick }}" style="appearance:none; background:transparent; border:none; cursor:pointer; display:flex; align-items:center; gap:11px; padding:0 22px; position:relative; opacity:{{ s.opacity }};" style-hover="background:#f5f6f8;">
@@ -2932,7 +2933,8 @@ class Component extends DCLogic {
       {n:4,label:'편집기',sub:'Editor'},
     ];
     const steps=stepDefs.map(d=>{
-      const active=st.step===d.n; const done=st.loaded && d.n<st.step;
+      // 제품 미로드(홈 랜딩)에서는 어떤 스텝도 활성 아님 — Home 탭이 현재 위치
+      const active=st.loaded && st.step===d.n; const done=st.loaded && d.n<st.step;
       const clickable=d.n===1||st.loaded;
       return {n:d.n,label:d.label,sub:d.sub,badge:done?'✓':String(d.n),
         opacity:clickable?'1':'.45',
@@ -2951,6 +2953,9 @@ class Component extends DCLogic {
       scope:st.scope, scopeOptions, onScope:(e)=>this.onScope(e),
       showSettings:st.showSettings, onToggleSettings:()=>this.toggleSettings(), onCloseSettings:()=>this.setState({showSettings:false}),
       steps, onHome:()=>this.goHome(),
+      homeActive:!st.loaded,
+      homeDotBg:!st.loaded?'#941A31':'#f6edef', homeDotColor:!st.loaded?'#fff':'#941A31', homeDotBorder:!st.loaded?'#941A31':'#e3c9cf',
+      homeUnderline:!st.loaded?'#e23b52':'transparent',
       zoom:st.zoom, zoom4:st.zoom4, zoomPct:Math.round((st.step===4?st.zoom4:st.zoom)*100),
       canView:st.loaded && (st.step===3||st.step===4),
       showP1:st.pageView!=='2', showP2:st.pageView!=='1',
