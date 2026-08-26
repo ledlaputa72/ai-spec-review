@@ -1679,7 +1679,18 @@ class Component extends DCLogic {
   }
   // ── 스펙 표 페이지 나눔 — 카테고리 경계 인덱스 모델(수동 조정 지원) ──────────
   _specSig(cats){ cats=cats||[]; return cats.length+':'+cats.map(c=>c.label).join('|'); }
-  _specRowPx(f){ return 6+13.2*Math.max(1, Math.ceil(String(f.value||'').length/70), Math.ceil(String(f.name||'').length/24)); }
+  // 실측 보정(zoom 1 기준): 1줄 행 ≈ 14.2px, 2줄 ≈ 25.3px, 회색 카테고리바 ≈ 11px.
+  //   → 행 = 3.2 + 11.1·(줄수). 줄수는 명시적 개행(\n)마다 분리하고 각 세그먼트를
+  //     열 폭(값≈86자/줄, 필드명≈40자/줄)으로 래핑해 합산. (실측: 필드명 37자=1줄, 43자=2줄)
+  //     과거 6+13.2·줄 은 1줄을 19.2px·필드명 26자 임계로 과대추정해 짧은 표도 과분할됨.
+  _specRowPx(f){
+    const val=String(f&&f.value!=null?f.value:'');
+    const name=String(f&&f.name!=null?f.name:'');
+    const valLines=val.split('\n').reduce((s,seg)=>s+Math.max(1, Math.ceil(seg.length/86)), 0);
+    const nameLines=name.split('\n').reduce((s,seg)=>s+Math.max(1, Math.ceil(seg.length/40)), 0);
+    const lines=Math.max(1, valLines, nameLines);
+    return 3.2 + 11.1*lines;
+  }
   _specCatH(c){ let h=11; (c.fields||[]).forEach(f=>h+=this._specRowPx(f)); return h; }
   // 스펙 표를 1페이지 액세서리 자리에서 시작하는 옵션(액세서리 OFF일 때만 유효)
   _specOnP1(){ return !!(this.state.specStartP1 && this.state.showAccessories===false); }
