@@ -107,6 +107,27 @@
     </div>
     </sc-if>
 
+    <!-- SPECIFICATIONS on page 1 (액세서리 자리에서 시작 옵션) -->
+    <sc-if value="{{ sheet.specOnP1 }}" hint-placeholder-val="{{ true }}">
+    <div style="margin-top:34px;">
+      <div style="font-size:17px; font-weight:800; color:#1a1a1a;">SPECIFICATIONS <span style="font-size:10px; font-weight:600; color:#9aa0aa;">{{ sheet.specContP1 }}</span></div>
+      <div style="height:1.5px; background:#931a33; margin:4px 0 7px;"></div>
+      <div>
+        <sc-for list="{{ sheet.specCatsP1 }}" as="cat" hint-placeholder-count="6">
+          <div>
+            <div style="background:#6e6e6e; color:#fff; font-size:7.5px; font-weight:700; letter-spacing:.7px; text-align:center; padding:1px 0;">{{ cat.label }}</div>
+            <sc-for list="{{ cat.fields }}" as="f" hint-placeholder-count="4">
+              <div style="display:grid; grid-template-columns:29% 71%; border-bottom:1px solid #e6e6e6;">
+                <div style="font-size:9.3px; color:#6b6b6b; font-weight:500; text-align:right; padding:1px 9px 1px 4px; border-right:1px solid #d8d8d8; line-height:1.2;">{{ f.name }}</div>
+                <div style="font-size:9.3px; color:#1a1a1a; padding:1px 4px 1px 9px; line-height:1.2; text-wrap:pretty; white-space:pre-line;">{{ f.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
     <!-- footer -->
     <div style="position:absolute; left:40px; right:40px; bottom:24px; border-top:1px solid #d0d0d0; padding-top:9px; display:grid; grid-template-columns:230px 1fr; gap:18px; align-items:start;">
       <div style="border-left:3px solid #931a33; padding-left:9px;">

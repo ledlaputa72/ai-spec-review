@@ -710,6 +710,9 @@
             <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:11px;">섹션 표시</div>
             <label onClick="{{ onToggleAccessories }}" style="display:flex; align-items:center; gap:8px; cursor:pointer;"><span style="width:34px; height:18px; border-radius:10px; background:{{ accTrack }}; position:relative; display:inline-block; flex-shrink:0;"><span style="position:absolute; top:2px; left:{{ accKnob }}; width:14px; height:14px; border-radius:50%; background:#fff;"></span></span><span style="font-size:12px; font-weight:700; color:#44474e;">OPTIONAL ACCESSORIES</span></label>
             <div style="font-size:10.5px; color:#b7bbc1; margin-top:7px; line-height:1.4;">레코더 등 액세서리를 쓰지 않는 제품군에서 끄면 이 섹션이 스펙시트에서 사라집니다.</div>
+            <div style="height:1px; background:#eef0f2; margin:12px 0;"></div>
+            <label onClick="{{ onToggleSpecStartP1 }}" style="display:flex; align-items:center; gap:8px; cursor:{{ specStartCursor }}; opacity:{{ specStartOpacity }};"><span style="width:34px; height:18px; border-radius:10px; background:{{ specStartTrack }}; position:relative; display:inline-block; flex-shrink:0;"><span style="position:absolute; top:2px; left:{{ specStartKnob }}; width:14px; height:14px; border-radius:50%; background:#fff;"></span></span><span style="font-size:12px; font-weight:700; color:#44474e;">스펙 표 1페이지에서 시작</span></label>
+            <div style="font-size:10.5px; color:#b7bbc1; margin-top:7px; line-height:1.4;">{{ specStartHint }}</div>
           </div>
 
           <!-- 페이지 나눔 조정 (스펙 표 한정) -->
@@ -1313,7 +1316,7 @@ class Component extends DCLogic {
   state = {
     ready:false, loaded:false, step:1, scope:'Camera', activeSample:null,
     raw:null, assignments:{}, reviewAccept:{}, overrides:{},
-    meta:{model:'', subtitle:''}, bullets:[], dims:[], certs:{}, accessories:[], showDiversity:true, showAccessories:true,
+    meta:{model:'', subtitle:''}, bullets:[], dims:[], certs:{}, accessories:[], showDiversity:true, showAccessories:true, specStartP1:false,
     pageView:'both', zoom:0.66, zoom4:0.5, fitMode:null, dimCount:1, dimLayout:'column', showSettings:false, settingsTab:'cms',
     cmsSource:'default', cmsBusy:false, cmsNote:'', cmsError:'', defaultCms:null,
     customOrder:{}, hiddenCats:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false,
@@ -1621,9 +1624,19 @@ class Component extends DCLogic {
   _specSig(cats){ cats=cats||[]; return cats.length+':'+cats.map(c=>c.label).join('|'); }
   _specRowPx(f){ return 6+13.2*Math.max(1, Math.ceil(String(f.value||'').length/70), Math.ceil(String(f.name||'').length/24)); }
   _specCatH(c){ let h=11; (c.fields||[]).forEach(f=>h+=this._specRowPx(f)); return h; }
-  // 카테고리 단위 자동 경계(각 값 = 그 인덱스 앞에서 새 페이지 시작)
-  _autoSpecBreaks(cats){ cats=cats||[]; const budget=856; const breaks=[]; let u=0;
-    cats.forEach((c,i)=>{ const h=this._specCatH(c); if(i>0 && u+h>budget){ breaks.push(i); u=0; } u+=h; }); return breaks; }
+  // 스펙 표를 1페이지 액세서리 자리에서 시작하는 옵션(액세서리 OFF일 때만 유효)
+  _specOnP1(){ return !!(this.state.specStartP1 && this.state.showAccessories===false); }
+  // 1페이지 하단(액세서리 자리)의 스펙 표 예산 — OVERVIEW 불릿 수(오버뷰 높이)에 따라 가변.
+  // 오버뷰가 길수록 스펙 제목이 아래로 내려가 여유가 줄어든다. (측정 기반 보정)
+  _p1SpecBudget(){ const bullets=(this.state.bullets||[]).length;
+    const gridH=Math.max(bullets*22, 178);            // 오버뷰 불릿 vs 치수 도면 영역
+    const specTop=481+gridH;                          // 페이지 내 SPECIFICATIONS 제목 top 추정
+    return Math.max(70, 984 - specTop - 46 - 18); }   // 푸터 위까지 - (제목+divider) - 안전여백
+  // 카테고리 단위 자동 경계. 1페이지 시작 모드면 첫 페이지만 작은 예산, 이후는 전체(856).
+  _autoSpecBreaks(cats){ cats=cats||[]; const full=856; const onP1=this._specOnP1(); const p1b=onP1?this._p1SpecBudget():full;
+    const budgetAt=(p)=>(onP1 && p===0)?p1b:full;
+    const breaks=[]; let u=0; let page=0;
+    cats.forEach((c,i)=>{ const h=this._specCatH(c); if(i>0 && u+h>budgetAt(page)){ breaks.push(i); u=0; page++; } u+=h; }); return breaks; }
   // 경계 인덱스 배열 → 페이지(카테고리 배열)들
   _pagesFromBreaks(cats, breaks){ cats=cats||[]; const bs=[...(breaks||[])].filter(b=>b>0&&b<cats.length).sort((a,b)=>a-b);
     const pages=[]; let s=0; bs.forEach(b=>{ pages.push(cats.slice(s,b)); s=b; }); pages.push(cats.slice(s));
@@ -1634,6 +1647,10 @@ class Component extends DCLogic {
   // sheet → 분할된 스펙 페이지들(프리뷰·PDF 공용, WYSIWYG)
   _specPagesFor(sh){ const cats=sh.specCats||[]; const arr=this._pagesFromBreaks(cats, this._effectiveBreaks(cats));
     return arr.map((c,i,a)=>({sheet:{...sh, specCats:c}, cont: a.length>1?('('+(i+1)+' / '+a.length+')'):''})); }
+  // 1페이지 시작 모드면 첫 슬라이스를 sh(1페이지)에 붙이고 나머지(show-p2용)만 반환. 아니면 전체 반환.
+  _applySpecOnP1(sh){ const all=this._specPagesFor(sh);
+    if(this._specOnP1() && all.length){ sh.specOnP1=true; sh.specCatsP1=all[0].sheet.specCats; sh.specContP1=all[0].cont; return all.slice(1); }
+    sh.specOnP1=false; return all; }
   // 경계 bi를 delta(+1: 다음 페이지 첫 그룹을 위로 / -1: 이전 페이지 끝 그룹을 아래로)만큼 이동.
   // 위로 당겨 다음 페이지가 비면 그 페이지는 사라짐(경계값이 n에 닿아 필터로 제거).
   adjustBreak(bi, delta){ const st=this.state;
@@ -1914,7 +1931,7 @@ class Component extends DCLogic {
     const certs=(s.certs&&Object.keys(s.certs).length)?{...s.certs}:{ndaa:true,ce:true,fcc:true};
     const accessories=Array.from({length:4},(_,i)=>({imgId:'acc'+i, code:'', desc:''}));
     const nextScope=(s.scope && this.state.cms && this.state.cms.byScope[s.scope]) ? s.scope : this.state.scope;
-    this.setState({raw:s, activeSample:id||s.id, scope:nextScope, loaded:true, step:1, assignments:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories, showDiversity:true, showAccessories:true});
+    this.setState({raw:s, activeSample:id||s.id, scope:nextScope, loaded:true, step:1, assignments:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories, showDiversity:true, showAccessories:true, specStartP1:false});
   }
   // ── CMS field-table import (defines mapping/ordering taxonomy) ────────────
   pickCms(){
@@ -2285,7 +2302,7 @@ class Component extends DCLogic {
   _sessionDoc(){
     const s=this.state;
     return { v:1, scope:s.scope, raw:s.raw, assignments:s.assignments, reviewAccept:s.reviewAccept, overrides:s.overrides,
-      meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, showDiversity:s.showDiversity, showAccessories:s.showAccessories,
+      meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, showDiversity:s.showDiversity, showAccessories:s.showAccessories, specStartP1:s.specStartP1,
       customOrder:s.customOrder, hiddenCats:s.hiddenCats, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample,
       specBreaks:s.specBreaks, specBreaksSig:s.specBreaksSig, slots:this._collectSlots(), savedAt:Date.now() };
   }
@@ -2293,7 +2310,7 @@ class Component extends DCLogic {
     if(!d||!d.raw) return false;
     this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:d.assignments||{}, reviewAccept:d.reviewAccept||{},
       overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:(d.bullets||[]).map(b=>String(b==null?'':b).replace(/\s+/g,' ').trim()), dims:d.dims||[],
-      certs:d.certs||{}, accessories:d.accessories||[], showDiversity:d.showDiversity!==false, showAccessories:d.showAccessories!==false, customOrder:d.customOrder||{}, hiddenCats:d.hiddenCats||{}, disabledRules:d.disabledRules||{},
+      certs:d.certs||{}, accessories:d.accessories||[], showDiversity:d.showDiversity!==false, showAccessories:d.showAccessories!==false, specStartP1:d.specStartP1===true, customOrder:d.customOrder||{}, hiddenCats:d.hiddenCats||{}, disabledRules:d.disabledRules||{},
       specBreaks:d.specBreaks||null, specBreaksSig:d.specBreaksSig||'',
       step:d.step||1, activeSample:d.activeSample, importError:'', savedToast:'✓ 저장된 작업을 불러왔습니다' });
     this._restoreSlots(d.slots);   // 저장된 사진·치수 도면을 슬롯에 복원(제품별 id 유지)
@@ -2758,6 +2775,8 @@ class Component extends DCLogic {
   toggleCert(id){ this.setState(s=>({certs:{...s.certs,[id]:!s.certs[id]}})); }
   toggleDiversity(){ this.setState(s=>({showDiversity:s.showDiversity===false?true:false})); }
   toggleAccessories(){ this.setState(s=>({showAccessories:s.showAccessories===false?true:false})); }
+  // 스펙 표 1페이지 시작 토글 — 액세서리가 켜져 있으면(자리 충돌) 무시
+  toggleSpecStartP1(){ if(this.state.showAccessories!==false) return; this.setState(s=>({specStartP1:s.specStartP1===true?false:true})); }
   setDimCount(n){ this.setState({dimCount:n}); }
   setDimLayout(l){ this.setState({dimLayout:l}); }
   setOverride(field,val){ this.setState(s=>({overrides:{...s.overrides,[field]:val}})); }
@@ -3327,30 +3346,33 @@ class Component extends DCLogic {
       // sheet — 기존버전(raw) vs 수정버전(review±cms 선택)
       const rev=st.sheetVersion!=='raw';
       const sheet=this.computeSheet(rev?{review:st.applyReview, cms:st.applyCms}:{review:false, cms:false});
+      // 프리뷰(3·4단계)도 PDF와 동일하게 스펙 테이블을 페이지 분할 → WYSIWYG
+      const allSpecPages=this._specPagesFor(sheet);
+      const onP1=this._specOnP1();
+      if(onP1 && allSpecPages.length){
+        // 첫 슬라이스를 1페이지(액세서리 자리)에 렌더, 나머지는 2페이지 이후
+        sheet.specOnP1=true; sheet.specCatsP1=allSpecPages[0].sheet.specCats; sheet.specContP1=allSpecPages[0].cont;
+        out.specPages=allSpecPages.slice(1);
+      } else { sheet.specOnP1=false; out.specPages=allSpecPages; }
       out.sheet=sheet;
-      // 프리뷰(3·4단계)도 PDF와 동일하게 스펙 테이블을 페이지 분할 → 2페이지 잘림 없음 + 프리뷰=PDF(WYSIWYG)
-      out.specPages=this._specPagesFor(sheet);
-      // ── 페이지 나눔 조정 UI 데이터 (스펙 표 한정) ──
+      // ── 페이지 나눔 조정 UI 데이터 (전체 슬라이스 기준; 1페이지 시작 모드면 1페이지 포함) ──
       {
-        const sp=out.specPages;
-        // 현재 페이지 경계(카테고리 인덱스) 재구성
+        const sp=allSpecPages;                 // 전체 스펙 페이지([0]=1페이지 시작 모드의 1페이지)
+        const pageOff=onP1?1:2;                // 슬라이스 i의 문서 페이지 번호 = i+pageOff
         const breaks=[]; let cc=0; sp.forEach((pg,i)=>{ if(i>0) breaks.push(cc); cc+=pg.sheet.specCats.length; });
         const lastCats=sp[sp.length-1].sheet.specCats;
         const adjusted=!!(st.specBreaks && st.specBreaksSig===this._specSig(sheet.specCats));
         const panelShown=(sp.length>=2)||adjusted;
         const cards=[];
-        // 실제 페이지 경계: ▲ 다음 페이지 첫 그룹 위로(항상 가능, 빈 페이지는 사라짐)
-        //                    ▼ 이전 페이지 끝 그룹 아래로(이전 페이지에 ≥2그룹일 때만)
         breaks.forEach((b,bi)=>{
           const prevCats=sp[bi].sheet.specCats, nextCats=sp[bi+1].sheet.specCats;
-          cards.push({ pageA:bi+2, pageB:bi+3,
+          cards.push({ pageA:bi+pageOff, pageB:bi+pageOff+1,
             prevLabel:prevCats[prevCats.length-1].label, nextLabel:nextCats[0].label,
             upDisplay:'flex', downDisplay:(prevCats.length>=2)?'flex':'none',
             onUp:()=>this.adjustBreak(bi,1), onDown:()=>this.adjustBreak(bi,-1) });
         });
-        // 팬텀 경계: 마지막 페이지 끝 그룹을 새 페이지로(사라졌던 다음 장 재생성)
         if(panelShown && lastCats.length>=2){
-          cards.push({ pageA:sp.length+1, pageB:sp.length+2,
+          cards.push({ pageA:sp.length+pageOff-1, pageB:sp.length+pageOff,
             prevLabel:lastCats[lastCats.length-1].label, nextLabel:'',
             upDisplay:'none', downDisplay:'flex',
             onUp:()=>{}, onDown:()=>this.splitLastPage() });
@@ -3370,6 +3392,12 @@ class Component extends DCLogic {
       out.revTrackReview=st.applyReview?'#941A31':'#c9ccd2'; out.revKnobReview=st.applyReview?'19px':'3px';
       out.onToggleAccessories=()=>this.toggleAccessories();
       out.accTrack=st.showAccessories!==false?'#941A31':'#c9ccd2'; out.accKnob=st.showAccessories!==false?'19px':'3px';
+      // 스펙 표 1페이지 시작 토글(액세서리 OFF일 때만 활성)
+      const _p1En=st.showAccessories===false; const _p1On=_p1En && st.specStartP1===true;
+      out.specStartEnabled=_p1En; out.onToggleSpecStartP1=()=>this.toggleSpecStartP1();
+      out.specStartTrack=_p1On?'#941A31':'#c9ccd2'; out.specStartKnob=_p1On?'19px':'3px';
+      out.specStartOpacity=_p1En?'1':'.45'; out.specStartCursor=_p1En?'pointer':'not-allowed';
+      out.specStartHint=_p1En?this.T('스펙 표를 1페이지 하단(액세서리 자리)부터 시작. 넘치면 다음 페이지로 이어집니다.','Start the spec table on page 1 (accessories area); it flows to later pages if it overflows.'):this.T('OPTIONAL ACCESSORIES를 끄면 사용할 수 있습니다.','Available when OPTIONAL ACCESSORIES is off.');
       out.revTrackCms=st.applyCms?'#941A31':'#c9ccd2'; out.revKnobCms=st.applyCms?'19px':'3px';
 
       // editor VM
@@ -3440,8 +3468,8 @@ class Component extends DCLogic {
       out.repFocusMap=st.reportFocus==='mapping'||st.reportFocus==='all';
       out.sheetReviewed=this.computeSheet({review:st.applyReview, cms:st.applyCms});
       out.sheetRaw=this.computeSheet({review:false, cms:false});
-      out.specPagesReviewed=this._specPagesFor(out.sheetReviewed);
-      out.specPagesRaw=this._specPagesFor(out.sheetRaw);
+      out.specPagesReviewed=this._applySpecOnP1(out.sheetReviewed);
+      out.specPagesRaw=this._applySpecOnP1(out.sheetRaw);
     }
 
     // settings
