@@ -1358,7 +1358,19 @@ class Component extends DCLogic {
       const {lib, dismissed}=this._loadRuleLib(qc);
       this._sampleIds=(samples||[]).map(s=>s.id);
       this.setState({cms, defaultCms:cms, samples, qc, ready:true, hasSession, lang, customRules:lib, dismissedCands:dismissed, workHist:this._loadHist()});
+      this._loadSharedCms();   // 팀 서버에 공유 CMS 테이블이 있으면 그걸로 교체(모든 사용자·기기 동일)
     }catch(e){ console.error('load error', e); this.setState({ready:true}); }
+  }
+  // 서버(KV)에 저장된 공유 CMS 테이블을 불러와 적용 — 없거나 서버 불가면 기본 유지
+  async _loadSharedCms(){
+    try{
+      const r=await this._api({action:'cms-load'});
+      const cms=r&&r.cms;
+      if(cms && cms.byScope && Object.keys(cms.byScope).length && !this.state.raw){
+        const scope=(cms.scopes&&cms.scopes.includes(this.state.scope))?this.state.scope:((cms.scopes&&cms.scopes[0])||this.state.scope);
+        this.setState({cms, cmsSource:'upload', scope, cmsNote:this.T('팀 서버의 공유 CMS 테이블을 적용했습니다.','Applied the shared CMS table from the team server.')});
+      }
+    }catch(e){ /* 서버 없음 → 기본 CMS 유지 */ }
   }
   // 번역 대상 = document.body (설정 드로어 등 포털로 렌더되는 모달이 _rootEl 밖에 있어도 커버)
   _langRoot(){ return (typeof document!=='undefined' && document.body) ? document.body : this._rootEl; }
@@ -1942,7 +1954,11 @@ class Component extends DCLogic {
   }
   resetCms(){
     if(!this.state.defaultCms) return;
-    this.setState({cms:this.state.defaultCms, cmsSource:'default', cmsNote:'기본 내장 CMS 테이블로 복원했습니다.', cmsError:'', customOrder:{}, hiddenCats:{}});
+    this.setState({cms:this.state.defaultCms, cmsSource:'default', cmsNote:'기본 내장 CMS 테이블로 복원했습니다. 팀 서버 공유 CMS도 해제 중…', cmsError:'', customOrder:{}, hiddenCats:{}});
+    // 팀 서버의 공유 CMS도 해제 → 모든 사용자가 기본 테이블로 복귀
+    this._api(null, {action:'cms-delete'})
+      .then(()=>this.setState({cmsNote:'기본 내장 CMS 테이블로 복원 + 팀 서버 공유 CMS 해제됨(모든 사용자 기본으로 복귀).'}))
+      .catch(()=>{});
   }
   _validateCms(o){
     if(!o||!Array.isArray(o.scopes)||!o.byScope) throw new Error('scopes / byScope 구조가 아닙니다.');
@@ -2038,7 +2054,11 @@ class Component extends DCLogic {
       const fields=this._validateCms(cms);
       const scope=cms.scopes.includes(this.state.scope)?this.state.scope:cms.scopes[0];
       this.setState({cms, cmsSource:'upload', scope, customOrder:{}, hiddenCats:{}, assignments:{}, cmsBusy:false,
-        cmsNote:'✓ CMS 테이블 적용됨 — 제품군 '+cms.scopes.length+'개 · 필드 '+fields+'개. 이후 매핑·정렬이 이 테이블 기준으로 동작합니다.'});
+        cmsNote:'✓ CMS 테이블 적용됨 — 제품군 '+cms.scopes.length+'개 · 필드 '+fields+'개. 팀 서버에 저장 중…'});
+      // 팀 서버(KV)에 저장 → 모든 사용자·기기가 처음 로드부터 동일 적용
+      this._api(null, {action:'cms-save', cms, by:this.editorName()||'anonymous'})
+        .then(()=>this.setState({cmsNote:'✓ CMS 테이블 적용 + 팀 서버에 저장됨 — 이제 모든 사용자·기기에 동일하게 적용됩니다.'}))
+        .catch(e=>{ console.warn('cms server save failed', e); this.setState({cmsNote:'✓ CMS 테이블 적용됨(로컬) — ⚠ 팀 서버 저장 실패(용량·연결 확인). 이 브라우저에만 적용됩니다.'}); });
     }catch(e){ console.error('cms import failed', e); this.setState({cmsBusy:false, cmsError:'CMS 테이블을 읽지 못했습니다: '+(e.message||e)}); }
   }
   // ── Excel (.xlsx) import ──────────────────────────────────────────────

@@ -23,6 +23,7 @@ const DOC = (model) => `sss:doc:${model}`;
 const INDEX = 'sss:index';       // hash: model -> {model,title,step,at,by}
 const HISTORY = 'sss:history';   // list: JSON events, newest first, capped
 const HISTORY_MAX = 500;
+const CMS_KEY = 'sss:cms';       // shared CMS field table {cms, at, by} — same for all users
 
 const j = (res, code, body) => res.status(code).json(body);
 
@@ -53,6 +54,11 @@ export default async function handler(req, res) {
         const events = (raw || []).map((x) => (typeof x === 'string' ? safeParse(x) : x)).filter(Boolean);
         return j(res, 200, { events });
       }
+      if (action === 'cms-load') {
+        // Team-shared CMS field table — same for every user/PC on first load.
+        const rec = await redis.get(CMS_KEY);
+        return j(res, 200, { cms: (rec && rec.cms) || null, at: (rec && rec.at) || 0, by: (rec && rec.by) || '' });
+      }
       return j(res, 400, { error: 'unknown action' });
     }
 
@@ -79,6 +85,19 @@ export default async function handler(req, res) {
         await redis.hdel(INDEX, model);
         await redis.lpush(HISTORY, JSON.stringify({ at, model, by: String(b.by || '').slice(0, 60), action: 'delete' }));
         await redis.ltrim(HISTORY, 0, HISTORY_MAX - 1);
+        return j(res, 200, { ok: true });
+      }
+      if (action === 'cms-save') {
+        // Store the shared CMS field table for all users. b.cms = {scopes, byScope}.
+        if (!b.cms || !b.cms.byScope) return j(res, 400, { error: 'cms required' });
+        const at = Date.now();
+        const by = String(b.by || '').slice(0, 60);
+        await redis.set(CMS_KEY, { cms: b.cms, at, by });
+        return j(res, 200, { ok: true, at });
+      }
+      if (action === 'cms-delete') {
+        // Restore-to-default: remove the shared CMS so everyone falls back to the built-in table.
+        await redis.del(CMS_KEY);
         return j(res, 200, { ok: true });
       }
       return j(res, 400, { error: 'unknown action' });
