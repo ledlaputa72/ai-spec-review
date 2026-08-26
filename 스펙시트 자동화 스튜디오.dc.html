@@ -295,7 +295,7 @@
   </sc-if>
 
   <!-- ============ CONTENT ============ -->
-  <div class="scroll" style="flex:1; overflow:auto; position:relative;">
+  <div class="scroll" style="flex:{{ contentFlex }}; overflow:auto; position:relative; min-height:0;">
 
     <!-- loading -->
     <sc-if value="{{ notReady }}" hint-placeholder-val="{{ true }}">
@@ -2969,6 +2969,8 @@ class Component extends DCLogic {
     const out={
       ready:st.ready, notReady:!st.ready, loaded:st.loaded, notLoaded:st.ready&&!st.loaded,
       isStep1:st.step===1, isStep2:st.step===2, isStep3:st.step===3, isStep4:st.step===4,
+      // 스텝3/4는 별도 full-height row가 렌더되므로, 스텝1/2용 CONTENT 스크롤 래퍼는 collapse
+      contentFlex:(st.step===3||st.step===4)?'0':'1',
       scope:st.scope, scopeOptions, onScope:(e)=>this.onScope(e),
       showSettings:st.showSettings, onToggleSettings:()=>this.toggleSettings(), onCloseSettings:()=>this.setState({showSettings:false}),
       steps, onHome:()=>this.goHome(),
