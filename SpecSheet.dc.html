@@ -90,6 +90,7 @@
     </div>
 
     <!-- OPTIONAL ACCESSORIES -->
+    <sc-if value="{{ sheet.accessoriesOn }}" hint-placeholder-val="{{ true }}">
     <div style="margin-top:38px;">
       <div style="font-size:15px; font-weight:800; color:#1a1a1a; letter-spacing:.3px;">OPTIONAL ACCESSORIES</div>
       <div style="height:2px; background:#931a33; margin:5px 0 16px;"></div>
@@ -104,6 +105,7 @@
         </sc-for>
       </div>
     </div>
+    </sc-if>
 
     <!-- footer -->
     <div style="position:absolute; left:40px; right:40px; bottom:24px; border-top:1px solid #d0d0d0; padding-top:9px; display:grid; grid-template-columns:230px 1fr; gap:18px; align-items:start;">
