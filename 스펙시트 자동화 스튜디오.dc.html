@@ -1327,7 +1327,7 @@ class Component extends DCLogic {
     importing:false, importError:'', dragOver:false, importNote:'', importSource:'xlsx',
     showReports:false, reportFocus:'mapping', showExport:false, exportMsg:'', savedToast:'', hasSession:false,
     reviewFilter:null, expandedReviews:{}, sheetVersion:'reviewed', applyReview:true, applyCms:true,
-    specBreaks:null, specBreaksSig:'',
+    specBreaks:{},
     customRules:[], dismissedCands:{}, cands:[], showCands:false, candScanned:false, candSrc:0,
     newRule:{find:'',repl:'',cat:'표기',note:'',ci:false,regex:false,scope:''}, libMsg:'',
     cms:null, samples:null, qc:null, lang:'en'
@@ -1648,46 +1648,75 @@ class Component extends DCLogic {
     const gridH=Math.max(bullets*22, 178);            // 오버뷰 불릿 vs 치수 도면 영역
     const specTop=481+gridH;                          // 페이지 내 SPECIFICATIONS 제목 top 추정
     return Math.max(70, 984 - specTop - 46 - 18); }   // 푸터 위까지 - (제목+divider) - 안전여백
-  // 카테고리 단위 자동 경계. 1페이지 시작 모드면 첫 페이지만 작은 예산, 이후는 전체(856).
-  _autoSpecBreaks(cats){ cats=cats||[]; const full=856; const onP1=this._specOnP1(); const p1b=onP1?this._p1SpecBudget():full;
-    const budgetAt=(p)=>(onP1 && p===0)?p1b:full;
-    const breaks=[]; let u=0; let page=0;
-    cats.forEach((c,i)=>{ const h=this._specCatH(c); if(i>0 && u+h>budgetAt(page)){ breaks.push(i); u=0; page++; } u+=h; }); return breaks; }
-  // 경계 인덱스 배열 → 페이지(카테고리 배열)들
+  // 실제 렌더 페이지 패킹 — 카테고리 단위 + 한 카테고리가 한 페이지보다 크면 행 단위 분할(회색바 반복).
+  // forced(수동 경계) 앞에서 강제 개행. 1페이지 시작 모드면 첫 페이지만 작은 예산.
+  // 반환: {pages:[카테고리그룹 배열], starts:[각 페이지의 첫 원본 카테고리 인덱스]}
+  _packSpecPages(cats, forced){ cats=cats||[]; const F=new Set(forced||[]);
+    const full=856; const onP1=this._specOnP1(); const p1b=onP1?this._p1SpecBudget():full;
+    const bAt=(p)=>(onP1 && p===0)?p1b:full; const headPx=11;
+    const pages=[]; const starts=[]; let cur=[]; let u=0; let pi=0; let curStart=-1;
+    const flush=()=>{ if(cur.length){ pages.push(cur); starts.push(curStart<0?0:curStart); cur=[]; u=0; pi++; curStart=-1; } };
+    cats.forEach((cat, ci)=>{
+      const fields=cat.fields||[]; const total=this._specCatH(cat);
+      if(ci>0 && F.has(ci)) flush();                                 // 수동 강제 개행
+      if(total<=bAt(pi)){
+        if(cur.length && u+total>bAt(pi)) flush();                   // 예산 초과 개행
+        if(curStart<0) curStart=ci; cur.push({label:cat.label, fields:fields.slice()}); u+=total;
+      } else {
+        let ri=0, n=fields.length;                                   // 큰 카테고리 → 행 분할(페이지마다 회색바 반복)
+        while(ri<n){
+          if(cur.length && u+headPx+this._specRowPx(fields[ri])>bAt(pi)) flush();
+          if(curStart<0) curStart=ci;
+          const grp={label:cat.label, fields:[]}; cur.push(grp); u+=headPx;
+          while(ri<n && u+this._specRowPx(fields[ri])<=bAt(pi)){ grp.fields.push(fields[ri]); u+=this._specRowPx(fields[ri]); ri++; }
+          if(grp.fields.length===0){ grp.fields.push(fields[ri]); u+=this._specRowPx(fields[ri]); ri++; }
+          if(ri<n) flush();
+        }
+      }
+    });
+    flush();
+    if(!pages.length){ pages.push([]); starts.push(0); }
+    return {pages, starts};
+  }
+  // 카테고리 단위 자동 경계 — 패킹에서 "새 카테고리가 시작하는 페이지"만 경계(행 분할 연속은 제외)
+  _autoSpecBreaks(cats){ const {starts}=this._packSpecPages(cats||[], []); const breaks=[];
+    for(let p=1;p<starts.length;p++){ if(starts[p]!==starts[p-1] && starts[p]>0) breaks.push(starts[p]); }
+    return [...new Set(breaks)]; }
+  // 경계 인덱스 배열 → 페이지(카테고리 배열)들 (패널의 카테고리 경계·라벨 계산용)
   _pagesFromBreaks(cats, breaks){ cats=cats||[]; const bs=[...(breaks||[])].filter(b=>b>0&&b<cats.length).sort((a,b)=>a-b);
     const pages=[]; let s=0; bs.forEach(b=>{ pages.push(cats.slice(s,b)); s=b; }); pages.push(cats.slice(s));
     return pages.filter(p=>p.length).length?pages:[[]]; }
-  // 현재 유효 경계(수동 있으면 수동, 없으면 자동)
-  _effectiveBreaks(cats){ const sig=this._specSig(cats);
-    return (this.state.specBreaks && this.state.specBreaksSig===sig) ? this.state.specBreaks : this._autoSpecBreaks(cats); }
-  // sheet → 분할된 스펙 페이지들(프리뷰·PDF 공용, WYSIWYG)
-  _specPagesFor(sh){ const cats=sh.specCats||[]; const arr=this._pagesFromBreaks(cats, this._effectiveBreaks(cats));
-    return arr.map((c,i,a)=>({sheet:{...sh, specCats:c}, cont: a.length>1?('('+(i+1)+' / '+a.length+')'):''})); }
+  // 현재 버전(시그니처)의 수동 경계(없으면 null) — Revised/Original 각각 별도 저장
+  _manualBreaks(cats){ const sig=this._specSig(cats||[]); const m=this.state.specBreaks; return (m && m[sig]) ? m[sig] : null; }
+  // 유효 경계(수동 있으면 수동, 없으면 자동) — 패널·라벨용
+  _effectiveBreaks(cats){ return this._manualBreaks(cats) || this._autoSpecBreaks(cats); }
+  // sheet → 렌더용 스펙 페이지들(행 분할 포함, 프리뷰·PDF 공용, WYSIWYG)
+  _specPagesFor(sh){ const cats=sh.specCats||[]; const {pages}=this._packSpecPages(cats, this._manualBreaks(cats)||[]);
+    return pages.map((c,i,a)=>({sheet:{...sh, specCats:c}, cont: a.length>1?('('+(i+1)+' / '+a.length+')'):''})); }
   // 1페이지 시작 모드면 첫 슬라이스를 sh(1페이지)에 붙이고 나머지(show-p2용)만 반환. 아니면 전체 반환.
   _applySpecOnP1(sh){ const all=this._specPagesFor(sh);
     if(this._specOnP1() && all.length){ sh.specOnP1=true; sh.specCatsP1=all[0].sheet.specCats; sh.specContP1=all[0].cont; return all.slice(1); }
     sh.specOnP1=false; return all; }
-  // 경계 bi를 delta(+1: 다음 페이지 첫 그룹을 위로 / -1: 이전 페이지 끝 그룹을 아래로)만큼 이동.
-  // 위로 당겨 다음 페이지가 비면 그 페이지는 사라짐(경계값이 n에 닿아 필터로 제거).
-  adjustBreak(bi, delta){ const st=this.state;
-    const sheet=this.computeSheet(st.sheetVersion!=='raw'?{review:st.applyReview, cms:st.applyCms}:{review:false, cms:false});
-    const cats=sheet.specCats||[]; const n=cats.length; const sig=this._specSig(cats);
-    let breaks=(st.specBreaks && st.specBreaksSig===sig)?[...st.specBreaks]:this._autoSpecBreaks(cats);
+  _curSheetForBreaks(){ const st=this.state; return this.computeSheet(st.sheetVersion!=='raw'?{review:st.applyReview, cms:st.applyCms}:{review:false, cms:false}); }
+  // 경계 bi를 delta 만큼 이동 — 현재 버전 시그니처로 저장(Revised/Original 각각 유지)
+  adjustBreak(bi, delta){ const st=this.state; const sheet=this._curSheetForBreaks();
+    const cats=(sheet&&sheet.specCats)||[]; const n=cats.length; const sig=this._specSig(cats);
+    let breaks=[...(this._manualBreaks(cats)||this._autoSpecBreaks(cats))];
     if(bi<0||bi>=breaks.length) return;
     const nv=breaks[bi]+delta; const lo=(bi>0?breaks[bi-1]:0)+1; const hi=(bi+1<breaks.length)?breaks[bi+1]:n;
     if(nv<lo||nv>hi) return; breaks[bi]=nv;
-    breaks=[...new Set(breaks.filter(b=>b>0&&b<n))].sort((a,b)=>a-b); // 범위 밖(=0/n)은 페이지 병합·삭제
-    this.setState({specBreaks:breaks, specBreaksSig:sig});
+    breaks=[...new Set(breaks.filter(b=>b>0&&b<n))].sort((a,b)=>a-b);
+    this.setState({specBreaks:{...(st.specBreaks||{}), [sig]:breaks}});
   }
-  // 팬텀 경계 ▼: 마지막 페이지의 끝 카테고리를 새 페이지로 분리(사라졌던 페이지 재생성)
-  splitLastPage(){ const st=this.state;
-    const sheet=this.computeSheet(st.sheetVersion!=='raw'?{review:st.applyReview, cms:st.applyCms}:{review:false, cms:false});
-    const cats=sheet.specCats||[]; const n=cats.length; if(n<2) return; const sig=this._specSig(cats);
-    let breaks=(st.specBreaks && st.specBreaksSig===sig)?[...st.specBreaks]:this._autoSpecBreaks(cats);
+  // 팬텀 경계 ▼: 마지막 카테고리를 새 페이지로 분리
+  splitLastPage(){ const st=this.state; const sheet=this._curSheetForBreaks();
+    const cats=(sheet&&sheet.specCats)||[]; const n=cats.length; if(n<2) return; const sig=this._specSig(cats);
+    let breaks=[...(this._manualBreaks(cats)||this._autoSpecBreaks(cats))];
     breaks=[...new Set([...breaks, n-1].filter(b=>b>0&&b<n))].sort((a,b)=>a-b);
-    this.setState({specBreaks:breaks, specBreaksSig:sig});
+    this.setState({specBreaks:{...(st.specBreaks||{}), [sig]:breaks}});
   }
-  resetBreaks(){ this.setState({specBreaks:null, specBreaksSig:''}); }
+  resetBreaks(){ const st=this.state; const sheet=this._curSheetForBreaks(); const sig=this._specSig((sheet&&sheet.specCats)||[]);
+    const m={...(st.specBreaks||{})}; delete m[sig]; this.setState({specBreaks:m}); }
 
   // actions
   loadSample(id){
@@ -2338,14 +2367,14 @@ class Component extends DCLogic {
     return { v:1, scope:s.scope, raw:s.raw, assignments:s.assignments, reviewAccept:s.reviewAccept, overrides:s.overrides,
       meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, showDiversity:s.showDiversity, showAccessories:s.showAccessories, specStartP1:s.specStartP1,
       customOrder:s.customOrder, hiddenCats:s.hiddenCats, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample,
-      specBreaks:s.specBreaks, specBreaksSig:s.specBreaksSig, slots:this._collectSlots(), savedAt:Date.now() };
+      specBreaks:s.specBreaks, slots:this._collectSlots(), savedAt:Date.now() };
   }
   _applyDoc(d){
     if(!d||!d.raw) return false;
     this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:d.assignments||{}, reviewAccept:d.reviewAccept||{},
       overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:(d.bullets||[]).map(b=>String(b==null?'':b).replace(/\s+/g,' ').trim()), dims:d.dims||[],
       certs:d.certs||{}, accessories:d.accessories||[], showDiversity:d.showDiversity!==false, showAccessories:d.showAccessories!==false, specStartP1:d.specStartP1===true, customOrder:d.customOrder||{}, hiddenCats:d.hiddenCats||{}, disabledRules:d.disabledRules||{},
-      specBreaks:d.specBreaks||null, specBreaksSig:d.specBreaksSig||'',
+      specBreaks:(d.specBreaks&&typeof d.specBreaks==='object'&&!Array.isArray(d.specBreaks))?d.specBreaks:{},
       step:d.step||1, activeSample:d.activeSample, importError:'', savedToast:'✓ 저장된 작업을 불러왔습니다' });
     this._restoreSlots(d.slots);   // 저장된 사진·치수 도면을 슬롯에 복원(제품별 id 유지)
     clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
@@ -3389,24 +3418,24 @@ class Component extends DCLogic {
         out.specPages=allSpecPages.slice(1);
       } else { sheet.specOnP1=false; out.specPages=allSpecPages; }
       out.sheet=sheet;
-      // ── 페이지 나눔 조정 UI 데이터 (전체 슬라이스 기준; 1페이지 시작 모드면 1페이지 포함) ──
+      // ── 페이지 나눔 조정 UI 데이터 (카테고리 경계 기준; 행 분할은 자동이라 조정 대상 아님) ──
       {
-        const sp=allSpecPages;                 // 전체 스펙 페이지([0]=1페이지 시작 모드의 1페이지)
-        const pageOff=onP1?1:2;                // 슬라이스 i의 문서 페이지 번호 = i+pageOff
-        const breaks=[]; let cc=0; sp.forEach((pg,i)=>{ if(i>0) breaks.push(cc); cc+=pg.sheet.specCats.length; });
-        const lastCats=sp[sp.length-1].sheet.specCats;
-        const adjusted=!!(st.specBreaks && st.specBreaksSig===this._specSig(sheet.specCats));
-        const panelShown=(sp.length>=2)||adjusted;
+        const cats=sheet.specCats||[];
+        const catSlices=this._pagesFromBreaks(cats, this._effectiveBreaks(cats));  // 논리 카테고리 페이지
+        const pageOff=onP1?1:2;                // 카테고리 슬라이스 i의 문서 페이지 번호 = i+pageOff
+        const adjusted=!!this._manualBreaks(cats);
+        const panelShown=(catSlices.length>=2)||adjusted;
         const cards=[];
-        breaks.forEach((b,bi)=>{
-          const prevCats=sp[bi].sheet.specCats, nextCats=sp[bi+1].sheet.specCats;
+        for(let bi=0; bi<catSlices.length-1; bi++){
+          const prevCats=catSlices[bi], nextCats=catSlices[bi+1];
           cards.push({ pageA:bi+pageOff, pageB:bi+pageOff+1,
             prevLabel:prevCats[prevCats.length-1].label, nextLabel:nextCats[0].label,
             upDisplay:'flex', downDisplay:(prevCats.length>=2)?'flex':'none',
             onUp:()=>this.adjustBreak(bi,1), onDown:()=>this.adjustBreak(bi,-1) });
-        });
+        }
+        const lastCats=catSlices[catSlices.length-1];
         if(panelShown && lastCats.length>=2){
-          cards.push({ pageA:sp.length+pageOff-1, pageB:sp.length+pageOff,
+          cards.push({ pageA:catSlices.length+pageOff-1, pageB:catSlices.length+pageOff,
             prevLabel:lastCats[lastCats.length-1].label, nextLabel:'',
             upDisplay:'none', downDisplay:'flex',
             onUp:()=>{}, onDown:()=>this.splitLastPage() });
