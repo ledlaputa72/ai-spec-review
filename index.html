@@ -454,7 +454,8 @@
             <div style="display:flex; gap:9px; align-items:center;">
               <span style="font-size:12px; font-weight:700; color:#941A31; background:#f6edef; border:1px solid #e3c9cf; border-radius:20px; padding:6px 13px;">✓ {{ mapMatched }}개 매핑됨</span>
               <sc-if value="{{ hasUnmapped }}" hint-placeholder-val="{{ true }}"><button onClick="{{ onToggleUnmapped }}" style="font-size:12px; font-weight:700; color:#941A31; background:#f6edef; border:1px solid #e3c9cf; border-radius:20px; padding:6px 13px; cursor:pointer; display:flex; align-items:center; gap:6px;" style-hover="background:#efdfe2;">⚠ {{ mapUnmappedCount }}개 미매핑 · 연결하기</button></sc-if>
-              <sc-if value="{{ fromPdf }}" hint-placeholder-val="{{ true }}"><button onClick="{{ onExportRawXlsx }}" style="background:#941A31; border:none; color:#fff; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#a8243a;">▦ 엑셀로 내보내기</button></sc-if>
+              <button onClick="{{ onExportRawXlsx }}" style="background:#941A31; border:none; color:#fff; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#a8243a;">▦ 엑셀로 내보내기</button>
+              <button onClick="{{ onReimportRawXlsx }}" title="내보낸 엑셀을 수정한 뒤 다시 가져와 적용" style="background:#fff; border:1px solid #e3c9cf; color:#941A31; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#f6edef;">⬆ 엑셀 가져오기</button>
               <button onClick="{{ onScanRules }}" title="새 데이터에서 규칙 후보 검출" style="background:#fff; border:1px solid #e3c9cf; color:#941A31; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#f6edef;">🔍 새 규칙 후보 검사<sc-if value="{{ hasScanBadge }}" hint-placeholder-val="{{ true }}"><span style="margin-left:6px; background:#941A31; color:#fff; border-radius:10px; padding:1px 7px; font-size:10.5px;">{{ scanBadge }}</span></sc-if></button>
               <button onClick="{{ onReportMapping }}" style="background:#fff; border:1px solid #d9dce1; color:#941A31; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="border-color:#941A31;">📄 리포트 보기</button>
               <button onClick="{{ onResetImport }}" style="background:#fff; border:1px solid #d9dce1; color:#5e636b; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:600; cursor:pointer;">다른 파일</button>
@@ -2134,6 +2135,8 @@ class Component extends DCLogic {
       if(al==='sub title2'||al==='subtitle2'||al==='sub title 2'){ o.subtitle2=B; continue; }
       if(al==='overview'){ o.overview=B; continue; }
       if(al==='specification'||al==='specifications'){ continue; }
+      if(/^source\s*·|^source\b.*manufacturer|^sorted\s*&/i.test(A)){ continue; }  // export 시트 타이틀 행
+      if(al==='field'||al==='category'||al==='field (cms)'){ continue; }           // 헤더 행
       if(!B){ section=A; continue; }
       o.specs.push({section, name:A, value:B});
     }
@@ -2675,27 +2678,85 @@ class Component extends DCLogic {
     finally{ restore(); host.remove(); }
   }
 
+  // rows = [[{v,s}, ...], ...] → 스타일 워크시트(xlsx-js-style)
+  _styledSheet(XLSX, rows){
+    const aoa=rows.map(r=>r.map(c=>(c==null?'':c.v)));
+    const ws=XLSX.utils.aoa_to_sheet(aoa);
+    rows.forEach((r,ri)=>r.forEach((c,ci)=>{ if(c && c.s){ const ref=XLSX.utils.encode_cell({r:ri,c:ci}); if(!ws[ref]) ws[ref]={t:'s',v:(c.v==null?'':c.v)}; ws[ref].s=c.s; } }));
+    return ws;
+  }
+  // Export to Excel — 2시트: ① Source·manufacturer data(원본, 미매핑=빨강) ② Sorted&mapped·CMS order(정렬·매핑)
+  // 화면과 유사한 디자인(빨간 글씨·회색 카테고리 바). ① 시트는 그대로 다시 import 가능.
   async exportRawXlsx(){
     const raw=this.state.raw; if(!raw){ this.setState({savedToast:'먼저 데이터를 불러오세요.'}); return; }
     this.setState({savedToast:'엑셀 변환 중…'});
     try{
-      const XLSX=await import('https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs');
-      // manufacturer excel format: A=key/section, B=value
-      const aoa=[];
-      aoa.push(['AVYCON Model', raw.model||'']);
-      aoa.push(['Sub Title', raw.subtitle||'']);
-      if(raw.subtitle2) aoa.push(['Sub Title2', raw.subtitle2]);
-      aoa.push(['Overview', raw.overview||'']);
-      aoa.push(['Specification', '']);
+      const _XM=await import('https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/+esm'); const XLSX=_XM.default||_XM;
+      const m=this.buildMapping();
+      const unmapped=new Set((m.unmapped||[]).map(u=>u.name));
+      const HDR={font:{color:{rgb:'FFFFFF'},bold:true,sz:12},fill:{fgColor:{rgb:'941A31'}},alignment:{vertical:'center'}};
+      const BAR={font:{color:{rgb:'FFFFFF'},bold:true,sz:9},fill:{fgColor:{rgb:'6E6E6E'}},alignment:{horizontal:'center'}};
+      const CATBAR={font:{bold:true,color:{rgb:'1A1A1A'},sz:11},fill:{fgColor:{rgb:'ECEEF1'}}};
+      const META={font:{bold:true,color:{rgb:'5B6068'}}};
+      const NAME={font:{bold:true,color:{rgb:'1A1A1A'}}};
+      const NAMEMUT={font:{color:{rgb:'5B6068'}}};
+      const VAL={font:{color:{rgb:'1A1A1A'}}};
+      const RED={font:{bold:true,color:{rgb:'D02D43'}}};
+      const REDVAL={font:{color:{rgb:'D02D43'}}};
+      const FROM={font:{italic:true,sz:9,color:{rgb:'9AA0AA'}}};
+      // ── Sheet 1: Source · manufacturer data ──
+      const r1=[]; const p1=(a,b,sa,sb)=>r1.push([{v:a,s:sa},{v:(b==null?'':b),s:sb}]);
+      p1('Source · manufacturer data','', HDR, HDR);
+      p1('AVYCON Model', raw.model||'', META, META);
+      p1('Sub Title', raw.subtitle||'', META, META);
+      if(raw.subtitle2) p1('Sub Title2', raw.subtitle2, META, META);
+      p1('Overview', raw.overview||'', META, VAL);
+      p1('Specification','', BAR, BAR);
       let sec=null;
-      raw.specs.forEach(sp=>{ if(sp.section!==sec){ sec=sp.section; aoa.push([sec, '']); } aoa.push([sp.name, sp.value]); });
-      const ws=XLSX.utils.aoa_to_sheet(aoa); ws['!cols']=[{wch:32},{wch:80}];
+      (raw.specs||[]).forEach(sp=>{ if(sp.section!==sec){ sec=sp.section; p1(sec||'—','', BAR, BAR); }
+        const red=unmapped.has(sp.name);
+        p1(sp.name, sp.value, red?RED:NAMEMUT, red?REDVAL:VAL); });
+      const ws1=this._styledSheet(XLSX, r1); ws1['!cols']=[{wch:34},{wch:82}];
+      // ── Sheet 2: Sorted & mapped · CMS order ──
+      const r2=[];
+      r2.push([{v:'Sorted & mapped · CMS order',s:HDR},{v:'',s:HDR},{v:'',s:HDR},{v:'',s:HDR}]);
+      r2.push([{v:'Category',s:META},{v:'Field (CMS)',s:META},{v:'Value',s:META},{v:'Mapped from',s:META}]);
+      (m.orderedCats||[]).forEach(c=>{
+        r2.push([{v:c.category,s:CATBAR},{v:'',s:CATBAR},{v:'',s:CATBAR},{v:'',s:CATBAR}]);
+        (c.fields||[]).forEach(f=>{ const renamed=this.norm(f.name)!==this.norm(f.source||''); const red=!!f.guess||renamed;
+          r2.push([{v:'',s:VAL},{v:f.name,s:red?RED:NAME},{v:(f.value==null?'':f.value),s:red?REDVAL:VAL},{v:f.source?('← '+f.source):'',s:FROM}]); });
+      });
+      const ws2=this._styledSheet(XLSX, r2); ws2['!cols']=[{wch:22},{wch:30},{wch:60},{wch:26}];
       const wb=XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, (raw.model||'PRODUCT').replace(/[^\w\-]/g,'').slice(0,28)||'Sheet1');
+      XLSX.utils.book_append_sheet(wb, ws1, 'Source · manufacturer data');
+      XLSX.utils.book_append_sheet(wb, ws2, 'Sorted & mapped · CMS order');
       XLSX.writeFile(wb, (raw.model||'product')+'_변환데이터.xlsx');
-      this.setState({savedToast:'✓ 엑셀로 변환·다운로드됨'});
-      clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
+      this.setState({savedToast:'✓ 엑셀(2시트)로 변환·다운로드됨 — Source 시트를 수정 후 다시 가져올 수 있습니다.'});
+      clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 3200);
     }catch(e){ console.error(e); this.setState({savedToast:'엑셀 변환 실패: '+(e.message||e)}); }
+  }
+  pickReimport(){ const inp=document.createElement('input'); inp.type='file';
+    inp.accept='.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    inp.onchange=()=>{ if(inp.files&&inp.files[0]) this.reimportRawXlsx(inp.files[0]); }; inp.click(); }
+  // 내보낸(수정한) 엑셀을 다시 가져와 원본 데이터에 반영 — 'Source' 시트 우선, 없으면 스펙이 있는 첫 시트
+  async reimportRawXlsx(file){
+    if(!file) return;
+    this.setState({savedToast:'엑셀 가져오는 중…'});
+    try{
+      const XLSX=await import('https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs');
+      const wb=XLSX.read(await file.arrayBuffer(), {type:'array'});
+      const names=wb.SheetNames||[];
+      const pref=names.find(n=>/source|manufacturer|원본/i.test(n)) || names[0];
+      let prod=this._structifySheet(wb.Sheets[pref], pref, XLSX);
+      if(!prod.specs.length){ for(const n of names){ const p=this._structifySheet(wb.Sheets[n], n, XLSX); if(p.specs.length){ prod=p; break; } } }
+      if(!prod.specs.length) throw new Error('스펙 데이터를 찾지 못했습니다. (A열 항목명 / B열 값)');
+      const cur=this.state.raw;
+      if(cur){ prod.id=cur.id||prod.id; if(!prod.model&&cur.model) prod.model=cur.model; if(cur.scope) prod.scope=cur.scope; if(cur.fromPdf) prod.fromPdf=true; }
+      this._loadProduct(prod, prod.id);
+      this.setState(st=>({samples:[prod, ...(st.samples||[]).filter(s=>s.id!==prod.id)]}));
+      this.setState({savedToast:'✓ 수정한 엑셀을 가져왔습니다 — 매핑·정렬을 다시 적용했습니다.'});
+      clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 3000);
+    }catch(e){ console.error('reimport failed', e); this.setState({savedToast:'엑셀 가져오기 실패: '+(e.message||e)}); }
   }
   async exportXlsx(){
     this.setState({exportMsg:'엑셀 생성 중…'});
@@ -3384,7 +3445,7 @@ class Component extends DCLogic {
       });
       out.onResetImport=()=>this.resetImport();
       out.onToStep2=()=>this.goStep(2);
-      out.fromPdf=!!(st.raw&&st.raw.fromPdf); out.onExportRawXlsx=()=>this.exportRawXlsx();
+      out.fromPdf=!!(st.raw&&st.raw.fromPdf); out.onExportRawXlsx=()=>this.exportRawXlsx(); out.onReimportRawXlsx=()=>this.pickReimport();
       out.showUnmapped=st.showUnmapped; out.onToggleUnmapped=()=>this.toggleUnmapped(); out.onCloseUnmapped=()=>this.setState({showUnmapped:false});
       out.onOpenReport=(f)=>this.openReports(f);
       out.onReportMapping=()=>this.openReports('mapping'); out.onReportReview=()=>this.openReports('review'); out.onReportSheet=()=>this.openReports('sheet');
