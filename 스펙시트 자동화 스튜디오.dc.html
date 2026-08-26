@@ -663,7 +663,7 @@
 
     <!-- ===== STEP 3 : LAYOUT ===== -->
     <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ true }}">
-      <div style="display:flex; height:100%;">
+      <div style="display:flex; flex:1; min-height:0;">
         <!-- preview -->
         <div class="scroll" ref="{{ sheetHostRef }}" style="flex:1; overflow:auto; padding:30px 30px 120px; text-align:center; background:#e6e8ea;">
           <div style="zoom:{{ zoom }}; display:inline-flex; flex-direction:column; align-items:center; gap:20px; text-align:left;">
@@ -742,7 +742,7 @@
 
     <!-- ===== STEP 4 : EDITOR ===== -->
     <sc-if value="{{ isStep4 }}" hint-placeholder-val="{{ true }}">
-      <div style="display:flex; height:100%;">
+      <div style="display:flex; flex:1; min-height:0;">
         <!-- live preview -->
         <div class="scroll" ref="{{ sheetHostRef }}" style="flex:1; overflow:auto; padding:26px 26px 120px; text-align:center; background:#e6e8ea;">
           <div style="zoom:{{ zoom4 }}; display:inline-flex; flex-direction:column; align-items:center; gap:20px; text-align:left;">
@@ -871,7 +871,7 @@
           </div>
 
           <!-- 스펙 값 인라인 수정 -->
-          <div style="padding:16px 18px;">
+          <div style="padding:16px 18px 90px;">
             <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:10px;">스펙 값 인라인 수정</div>
             <input value="{{ overrideSearch }}" onInput="{{ onSearch }}" placeholder="필드 검색…" style="width:100%; border:1px solid #d9dce1; border-radius:7px; padding:8px 10px; font-size:12px; margin-bottom:11px;" />
             <div style="display:flex; flex-direction:column; gap:9px;">
