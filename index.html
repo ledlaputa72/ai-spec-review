@@ -922,12 +922,16 @@
                 <div><div style="font-size:20px; font-weight:800; color:#941A31;">{{ cmsFieldCount }}</div><div style="font-size:10.5px; color:#8b9099;">데이터 필드</div></div>
               </div>
               <div style="font-size:10.5px; color:#a2a7af; margin-top:9px; line-height:1.4;">{{ cmsScopesText }}</div>
+              <sc-if value="{{ cmsHasUpdated }}" hint-placeholder-val="{{ true }}">
+                <div style="font-size:10.5px; color:#8b9099; font-weight:600; margin-top:9px; border-top:1px dashed #e6e8ec; padding-top:8px;">🕒 {{ cmsUpdatedText }}</div>
+              </sc-if>
             </div>
 
-            <div style="display:flex; gap:8px;">
-              <button onClick="{{ onUploadCms }}" style="flex:1; display:flex; align-items:center; justify-content:center; gap:8px; background:#941A31; color:#fff; border:none; border-radius:9px; padding:11px 14px; font-size:12.5px; font-weight:800; cursor:pointer;" style-hover="background:#7c1329;">⬆ CMS 테이블 업로드</button>
+            <button onClick="{{ onUploadCms }}" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:#941A31; color:#fff; border:none; border-radius:9px; padding:11px 14px; font-size:12.5px; font-weight:800; cursor:pointer;" style-hover="background:#7c1329;">⬆ CMS 테이블 업로드</button>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <button onClick="{{ onSetCmsDefault }}" style="flex:1; background:#fff; color:#941A31; border:1px solid #e3c9cf; border-radius:9px; padding:11px 14px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#f6edef;">✓ 기본값으로 설정</button>
               <sc-if value="{{ cmsIsUpload }}" hint-placeholder-val="{{ false }}">
-                <button onClick="{{ onResetCms }}" style="background:#fff; color:#5e636b; border:1px solid #d9dce1; border-radius:9px; padding:11px 14px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#f5f6f8;">기본값 복원</button>
+                <button onClick="{{ onResetCms }}" style="flex:1; background:#fff; color:#5e636b; border:1px solid #d9dce1; border-radius:9px; padding:11px 14px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#f5f6f8;">기본값 복원</button>
               </sc-if>
             </div>
 
@@ -1368,7 +1372,7 @@ class Component extends DCLogic {
       const cms=r&&r.cms;
       if(cms && cms.byScope && Object.keys(cms.byScope).length && !this.state.raw){
         const scope=(cms.scopes&&cms.scopes.includes(this.state.scope))?this.state.scope:((cms.scopes&&cms.scopes[0])||this.state.scope);
-        this.setState({cms, cmsSource:'upload', scope, cmsNote:this.T('팀 서버의 공유 CMS 테이블을 적용했습니다.','Applied the shared CMS table from the team server.')});
+        this.setState({cms, cmsSource:'upload', scope, cmsAt:(r&&r.at)||0, cmsBy:(r&&r.by)||'', cmsNote:this.T('팀 서버의 공유 CMS 테이블을 적용했습니다.','Applied the shared CMS table from the team server.')});
       }
     }catch(e){ /* 서버 없음 → 기본 CMS 유지 */ }
   }
@@ -1957,8 +1961,17 @@ class Component extends DCLogic {
     this.setState({cms:this.state.defaultCms, cmsSource:'default', cmsNote:'기본 내장 CMS 테이블로 복원했습니다. 팀 서버 공유 CMS도 해제 중…', cmsError:'', customOrder:{}, hiddenCats:{}});
     // 팀 서버의 공유 CMS도 해제 → 모든 사용자가 기본 테이블로 복귀
     this._api(null, {action:'cms-delete'})
-      .then(()=>this.setState({cmsNote:'기본 내장 CMS 테이블로 복원 + 팀 서버 공유 CMS 해제됨(모든 사용자 기본으로 복귀).'}))
+      .then(()=>this.setState({cmsAt:0, cmsBy:'', cmsNote:'기본 내장 CMS 테이블로 복원 + 팀 서버 공유 CMS 해제됨(모든 사용자 기본으로 복귀).'}))
       .catch(()=>{});
+  }
+  // 현재 CMS 테이블을 팀 서버의 공유 기본값으로 설정(모든 사용자가 처음 로드부터 사용)
+  setCmsDefault(){
+    const cms=this.state.cms; if(!cms||!cms.byScope){ this.setState({cmsError:'설정할 CMS 테이블이 없습니다.'}); return; }
+    const by=this.editorName()||'anonymous';
+    this.setState({cmsError:'', cmsNote:'기본값으로 설정 중…'});
+    this._api(null, {action:'cms-save', cms, by})
+      .then(resp=>this.setState({cmsSource:'upload', cmsAt:(resp&&resp.at)||Date.now(), cmsBy:by, cmsNote:'✓ 현재 CMS 테이블을 기본값으로 설정했습니다 — 모든 사용자·기기가 처음 로드부터 이 테이블을 사용합니다.'}))
+      .catch(e=>{ console.warn('cms set default failed', e); this.setState({cmsNote:'⚠ 기본값 설정 실패 — 팀 서버 연결을 확인하세요.'}); });
   }
   _validateCms(o){
     if(!o||!Array.isArray(o.scopes)||!o.byScope) throw new Error('scopes / byScope 구조가 아닙니다.');
@@ -2056,8 +2069,9 @@ class Component extends DCLogic {
       this.setState({cms, cmsSource:'upload', scope, customOrder:{}, hiddenCats:{}, assignments:{}, cmsBusy:false,
         cmsNote:'✓ CMS 테이블 적용됨 — 제품군 '+cms.scopes.length+'개 · 필드 '+fields+'개. 팀 서버에 저장 중…'});
       // 팀 서버(KV)에 저장 → 모든 사용자·기기가 처음 로드부터 동일 적용
-      this._api(null, {action:'cms-save', cms, by:this.editorName()||'anonymous'})
-        .then(()=>this.setState({cmsNote:'✓ CMS 테이블 적용 + 팀 서버에 저장됨 — 이제 모든 사용자·기기에 동일하게 적용됩니다.'}))
+      const _by=this.editorName()||'anonymous';
+      this._api(null, {action:'cms-save', cms, by:_by})
+        .then(resp=>this.setState({cmsAt:(resp&&resp.at)||Date.now(), cmsBy:_by, cmsNote:'✓ CMS 테이블 적용 + 팀 서버에 저장됨 — 이제 모든 사용자·기기에 동일하게 적용됩니다.'}))
         .catch(e=>{ console.warn('cms server save failed', e); this.setState({cmsNote:'✓ CMS 테이블 적용됨(로컬) — ⚠ 팀 서버 저장 실패(용량·연결 확인). 이 브라우저에만 적용됩니다.'}); });
     }catch(e){ console.error('cms import failed', e); this.setState({cmsBusy:false, cmsError:'CMS 테이블을 읽지 못했습니다: '+(e.message||e)}); }
   }
@@ -3506,6 +3520,10 @@ class Component extends DCLogic {
     out.cmsScopesText=scopeList.join(', ');
     out.onUploadCms=()=>this.pickCms();
     out.onResetCms=()=>this.resetCms();
+    out.onSetCmsDefault=()=>this.setCmsDefault();
+    // 업데이트 날짜·시간 표시(팀 서버 저장 시각·작업자)
+    out.cmsHasUpdated=!!st.cmsAt;
+    out.cmsUpdatedText=st.cmsAt?(this.T('업데이트','Updated')+': '+this._shortDate(st.cmsAt)+(st.cmsBy?(' · '+st.cmsBy):'')):'';
     out.cmsBusy=st.cmsBusy; out.cmsNote=st.cmsNote; out.hasCmsNote=!!st.cmsNote; out.cmsError=st.cmsError; out.hasCmsError=!!st.cmsError;
     const _hidMap=(st.hiddenCats&&st.hiddenCats[st.scope])||{};
     out.orderCats=this.scopeCats().map((c,i)=>{ const hid=!!_hidMap[c.category]; return {name:c.category,num:i+1,

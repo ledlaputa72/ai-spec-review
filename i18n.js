@@ -18,6 +18,7 @@ export const DICT = {
   '작업자': 'Saved by', '정렬': 'Sort',
   '작업자 이름으로 저장': 'Save with your name', '등록된 작업자': 'Registered editors',
   '스펙 표 1페이지에서 시작': 'Start spec table on page 1',
+  '✓ 기본값으로 설정': '✓ Set default', '기본값으로 설정': 'Set default',
   '전체 단계 문서 내보내기': 'Export all-step documents',
   'PDF로 저장': 'Save as PDF',
   '스펙시트만 PDF': 'Spec sheet only (PDF)', '2페이지': '2 pages',
