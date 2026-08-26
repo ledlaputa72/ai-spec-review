@@ -846,6 +846,13 @@
             </div>
           </div>
 
+          <!-- 상단 로고 -->
+          <div style="padding:16px 18px; border-bottom:1px solid #eceef1;">
+            <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:11px;">상단 로고</div>
+            <button onClick="{{ onToggleDiversity }}" style="font-size:11px; font-weight:700; border-radius:6px; padding:6px 11px; cursor:pointer; border:1.4px solid {{ diversityBorder }}; background:{{ diversityBg }}; color:{{ diversityColor }};">DIVERSITY SERIES</button>
+            <div style="font-size:10.5px; color:#b7bbc1; margin-top:7px; line-height:1.4;">끄면 모델명이 로고 자리로 이동합니다.</div>
+          </div>
+
           <!-- 인증 아이콘 -->
           <div style="padding:16px 18px; border-bottom:1px solid #eceef1;">
             <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:11px;">인증 아이콘 <span style="font-weight:500; color:#b7bbc1;">· 등록 후 선택</span></div>
@@ -1299,7 +1306,7 @@ class Component extends DCLogic {
   state = {
     ready:false, loaded:false, step:1, scope:'Camera', activeSample:null,
     raw:null, assignments:{}, reviewAccept:{}, overrides:{},
-    meta:{model:'', subtitle:''}, bullets:[], dims:[], certs:{}, accessories:[],
+    meta:{model:'', subtitle:''}, bullets:[], dims:[], certs:{}, accessories:[], showDiversity:true,
     pageView:'both', zoom:0.66, zoom4:0.5, fitMode:null, dimCount:1, dimLayout:'column', showSettings:false, settingsTab:'cms',
     cmsSource:'default', cmsBusy:false, cmsNote:'', cmsError:'', defaultCms:null,
     customOrder:{}, hiddenCats:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false,
@@ -1566,6 +1573,7 @@ class Component extends DCLogic {
     // 불릿 표시 시 앞/뒤·내부 공백(줄바꿈·탭·nbsp 등) 정규화 — 들여쓰기처럼 보이는 문제 방지
     const bullets=(this.state.bullets||[]).map(b=>String(b==null?'':b).replace(/\s+/g,' ').trim());
     return {model, title, subtitle2, certImgs, certTexts, aiBadge, aiOn, bullets, dims:this.state.dims, accessories, specCats, dim2, dimDir, dimSlotFlex,
+      diversityOn:this.state.showDiversity!==false,
       photoSlotId:'ss_product_photo__'+key, dimSlot1Id:'ss_dims_1__'+key, dimSlot2Id:'ss_dims_2__'+key};
   }
 
@@ -1899,7 +1907,7 @@ class Component extends DCLogic {
     const certs=(s.certs&&Object.keys(s.certs).length)?{...s.certs}:{ndaa:true,ce:true,fcc:true};
     const accessories=Array.from({length:4},(_,i)=>({imgId:'acc'+i, code:'', desc:''}));
     const nextScope=(s.scope && this.state.cms && this.state.cms.byScope[s.scope]) ? s.scope : this.state.scope;
-    this.setState({raw:s, activeSample:id||s.id, scope:nextScope, loaded:true, step:1, assignments:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories});
+    this.setState({raw:s, activeSample:id||s.id, scope:nextScope, loaded:true, step:1, assignments:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories, showDiversity:true});
   }
   // ── CMS field-table import (defines mapping/ordering taxonomy) ────────────
   pickCms(){
@@ -1927,9 +1935,11 @@ class Component extends DCLogic {
     let hi=-1, col={};
     for(let i=0;i<Math.min(rows.length,15);i++){
       const r=rows[i].map(norm);
-      const find=(...keys)=>r.findIndex(c=>keys.some(k=>c===k||c.includes(k)));
-      const ci={scope:find('scope','productscope','productgroup'), category:find('category','cat','group','section'),
-        field:find('field','fieldkey','key','fieldid','columnname'), name:find('name','displayname','label','fieldname'),
+      // 정확일치 우선(부분일치 폴백) — 예: DB_Field_Name이 "name"을 포함해 Display_Name 대신
+      // 필드 컬럼으로 잡히던 문제 방지. 표시명은 Display_Name(=displayname)을 정확일치로 우선.
+      const find=(...keys)=>{ let idx=r.findIndex(c=>c && keys.some(k=>c===k)); if(idx<0) idx=r.findIndex(c=>c && keys.some(k=>c.includes(k))); return idx; };
+      const ci={scope:find('scope','productscope','productgroup'), category:find('displaycategory','category','cat','group','section'),
+        field:find('dbfieldname','field','fieldkey','key','fieldid','columnname'), name:find('displayname','name','label','fieldname'),
         order:find('order','ordernumber','seq','sort'), spec:find('specsheet','specsheetdisplay','onspecsheet','showonspec')};
       if(ci.category>=0 && (ci.field>=0||ci.name>=0)){ hi=i; col=ci; break; }
     }
@@ -2268,7 +2278,7 @@ class Component extends DCLogic {
   _sessionDoc(){
     const s=this.state;
     return { v:1, scope:s.scope, raw:s.raw, assignments:s.assignments, reviewAccept:s.reviewAccept, overrides:s.overrides,
-      meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories,
+      meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, showDiversity:s.showDiversity,
       customOrder:s.customOrder, hiddenCats:s.hiddenCats, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample,
       specBreaks:s.specBreaks, specBreaksSig:s.specBreaksSig, slots:this._collectSlots(), savedAt:Date.now() };
   }
@@ -2276,7 +2286,7 @@ class Component extends DCLogic {
     if(!d||!d.raw) return false;
     this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:d.assignments||{}, reviewAccept:d.reviewAccept||{},
       overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:(d.bullets||[]).map(b=>String(b==null?'':b).replace(/\s+/g,' ').trim()), dims:d.dims||[],
-      certs:d.certs||{}, accessories:d.accessories||[], customOrder:d.customOrder||{}, hiddenCats:d.hiddenCats||{}, disabledRules:d.disabledRules||{},
+      certs:d.certs||{}, accessories:d.accessories||[], showDiversity:d.showDiversity!==false, customOrder:d.customOrder||{}, hiddenCats:d.hiddenCats||{}, disabledRules:d.disabledRules||{},
       specBreaks:d.specBreaks||null, specBreaksSig:d.specBreaksSig||'',
       step:d.step||1, activeSample:d.activeSample, importError:'', savedToast:'✓ 저장된 작업을 불러왔습니다' });
     this._restoreSlots(d.slots);   // 저장된 사진·치수 도면을 슬롯에 복원(제품별 id 유지)
@@ -2739,6 +2749,7 @@ class Component extends DCLogic {
   addDim(){ this.setState(s=>({dims:[...s.dims,{label:'',value:''}]})); }
   removeDim(i){ this.setState(s=>({dims:s.dims.filter((_,j)=>j!==i)})); }
   toggleCert(id){ this.setState(s=>({certs:{...s.certs,[id]:!s.certs[id]}})); }
+  toggleDiversity(){ this.setState(s=>({showDiversity:s.showDiversity===false?true:false})); }
   setDimCount(n){ this.setState({dimCount:n}); }
   setDimLayout(l){ this.setState({dimLayout:l}); }
   setOverride(field,val){ this.setState(s=>({overrides:{...s.overrides,[field]:val}})); }
@@ -3372,6 +3383,8 @@ class Component extends DCLogic {
       out.rowBg=rowL?'#941A31':'#fff'; out.rowColor=rowL?'#fff':'#44474e';
       out.certsVM=this.CERTS.map(c=>{const on=!!st.certs[c.id]; return {label:c.label,img:c.img||'',hasImg:!!c.img,onToggle:()=>this.toggleCert(c.id),
         border:on?'#941A31':'#dcdfe4', bg:on?'#941A31':'#fff', color:on?'#fff':'#8b9099'};});
+      const _divOn=st.showDiversity!==false; out.onToggleDiversity=()=>this.toggleDiversity();
+      out.diversityBorder=_divOn?'#941A31':'#dcdfe4'; out.diversityBg=_divOn?'#941A31':'#fff'; out.diversityColor=_divOn?'#fff':'#8b9099';
       out.overrideSearch=st.search; out.onSearch=(e)=>this.setState({search:e.target.value});
       const term=st.search.toLowerCase();
       const flat=[]; sheet.specCats.forEach(c=>c.fields.forEach(f=>flat.push({name:f.name,value:f.value,field:f.key,category:c.label})));

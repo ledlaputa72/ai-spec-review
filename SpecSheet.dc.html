@@ -25,9 +25,11 @@
     <!-- header -->
     <div style="display:flex; align-items:center; justify-content:space-between;">
       <div style="display:flex; align-items:center; gap:11px;">
+        <sc-if value="{{ sheet.diversityOn }}" hint-placeholder-val="{{ true }}">
         <div style="line-height:0;">
           <img src="./assets/diversity_logo.png" alt="DIVERSITY SERIES" style="height:26px; width:auto; display:block;" />
         </div>
+        </sc-if>
         <span style="font-size:12px; font-weight:600; color:#1a1a1a; letter-spacing:.3px;">{{ sheet.model }}</span>
       </div>
       <div style="display:flex; align-items:center;">
@@ -123,9 +125,11 @@
     <!-- header -->
     <div style="display:flex; align-items:center; justify-content:space-between;">
       <div style="display:flex; align-items:center; gap:11px;">
+        <sc-if value="{{ sheet.diversityOn }}" hint-placeholder-val="{{ true }}">
         <div style="line-height:0;">
           <img src="./assets/diversity_logo.png" alt="DIVERSITY SERIES" style="height:26px; width:auto; display:block;" />
         </div>
+        </sc-if>
         <span style="font-size:12px; font-weight:600; color:#1a1a1a; letter-spacing:.3px;">{{ sheet.model }}</span>
       </div>
       <div style="display:flex; align-items:center;">
