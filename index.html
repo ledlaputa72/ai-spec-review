@@ -526,9 +526,14 @@
                 <div style="padding:16px 18px; display:flex; flex-direction:column; gap:10px;">
                   <sc-for list="{{ unmappedList }}" as="u" hint-placeholder-count="5">
                     <div style="background:{{ u.cardBg }}; border:1px solid {{ u.cardBorder }}; border-radius:9px; padding:11px 13px;">
-                      <div style="font-size:12.5px; font-weight:700; color:#44474e;">{{ u.source }}</div>
-                      <div style="font-size:10.5px; color:#979ca4; margin:3px 0 9px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ u.value }}</div>
-                      <select value="{{ u.current }}" onChange="{{ u.onAssign }}" style="width:100%; font-size:11.5px; border:1px solid #d9dce1; border-radius:7px; padding:7px 9px; color:#44474e; background:#fff; cursor:pointer;">
+                      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:8px;">
+                        <div style="min-width:0; flex:1;">
+                          <div style="font-size:12.5px; font-weight:700; color:#44474e;">{{ u.source }}</div>
+                          <div style="font-size:10.5px; color:#979ca4; margin:3px 0 9px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ u.value }}</div>
+                        </div>
+                        <button onClick="{{ u.onConfirm }}" style="flex:none; background:{{ u.confirmBg }}; color:{{ u.confirmFg }}; border:1px solid {{ u.confirmBorder }}; border-radius:7px; padding:6px 13px; font-size:11.5px; font-weight:800; cursor:pointer;">확인</button>
+                      </div>
+                      <select value="{{ u.pick }}" onChange="{{ u.onPick }}" style="width:100%; font-size:11.5px; border:1px solid #d9dce1; border-radius:7px; padding:7px 9px; color:#44474e; background:#fff; cursor:pointer;">
                         <sc-for list="{{ u.options }}" as="o" hint-placeholder-count="4">
                           <option value="{{ o.value }}">{{ o.label }}</option>
                         </sc-for>
@@ -563,6 +568,7 @@
                     <div style="font-size:13px; font-weight:700; color:#44474e; margin-top:3px;">{{ mapEditData.source }}</div>
                     <div style="font-size:11px; color:#7c828b; margin-top:4px; line-height:1.4; white-space:pre-line;">{{ mapEditData.value }}</div>
                   </div>
+                  <sc-if value="{{ mapEditData.stdMap }}" hint-placeholder-val="{{ true }}">
                   <div>
                     <div style="font-size:11px; font-weight:700; color:#5e636b; margin-bottom:6px;">연결 변경</div>
                     <select value="{{ mapEditData.current }}" onChange="{{ mapEditData.onRemap }}" style="width:100%; font-size:11.5px; border:1px solid #d9dce1; border-radius:7px; padding:8px 10px; color:#44474e; background:#fff; cursor:pointer;">
@@ -578,6 +584,25 @@
                       <button onClick="{{ mapEditData.onDisconnect }}" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:#fff; color:#c8102e; border:1.5px solid #edc6cc; border-radius:8px; padding:10px 12px; font-size:12px; font-weight:700; cursor:pointer;" style-hover="background:#fdeef0; border-color:#e0a4ac;">✕ 연결 해제 → 미매핑으로 이동</button>
                       <div style="font-size:10px; color:#a9b2c1; margin-top:6px; line-height:1.4;">이 CMS 항목의 연결을 끊고 해당 원본 필드를 미매핑 목록으로 되돌립니다.</div>
                     </div>
+                  </sc-if>
+                  </sc-if>
+                  <sc-if value="{{ mapEditData.isCustom }}" hint-placeholder-val="{{ true }}">
+                    <div style="background:#fffaf0; border:1px dashed #e3c98a; border-radius:10px; padding:8px 12px; font-size:10.5px; color:#9a7b2e; line-height:1.5;">CMS에 없는 사용자 정의 필드입니다. 상위 카테고리를 선택하고 필드명을 다듬어 주세요.</div>
+                    <div>
+                      <div style="font-size:11px; font-weight:700; color:#5e636b; margin-bottom:6px;">상위 카테고리 <span style="color:#c8102e;">*</span></div>
+                      <select value="{{ mapEditData.editCat }}" onChange="{{ mapEditData.onEditCat }}" style="width:100%; font-size:11.5px; border:1px solid #d9dce1; border-radius:7px; padding:8px 10px; color:#44474e; background:#fff; cursor:pointer;">
+                        <sc-for list="{{ mapEditData.catOptions }}" as="o" hint-placeholder-count="4">
+                          <option value="{{ o.value }}">{{ o.label }}</option>
+                        </sc-for>
+                      </select>
+                      <div style="font-size:10px; color:#a9b2c1; margin-top:6px; line-height:1.4;">이 필드가 표시될 CMS 상위 카테고리입니다. 선택해야 저장됩니다.</div>
+                    </div>
+                    <div>
+                      <div style="font-size:11px; font-weight:700; color:#5e636b; margin-bottom:6px;">필드명</div>
+                      <input value="{{ mapEditData.editName }}" onInput="{{ mapEditData.onEditName }}" placeholder="{{ mapEditData.srcField }}" style="width:100%; box-sizing:border-box; font-size:12px; border:1px solid #d9dce1; border-radius:7px; padding:9px 11px; color:#1a1a1a; background:#fff;"/>
+                      <div style="font-size:10px; color:#a9b2c1; margin-top:6px; line-height:1.4;">기본값은 원본 데이터 필드명이며 자유롭게 수정할 수 있습니다.</div>
+                    </div>
+                    <button onClick="{{ mapEditData.onSaveCustom }}" style="width:100%; background:{{ mapEditData.saveBg }}; color:{{ mapEditData.saveFg }}; border:none; border-radius:8px; padding:11px 12px; font-size:12.5px; font-weight:800; cursor:pointer;">저장</button>
                   </sc-if>
                 </div>
               </div>
@@ -1335,11 +1360,11 @@
 class Component extends DCLogic {
   state = {
     ready:false, loaded:false, step:1, scope:'Camera', activeSample:null,
-    raw:null, assignments:{}, reviewAccept:{}, overrides:{},
+    raw:null, assignments:{}, customMeta:{}, reviewAccept:{}, overrides:{},
     meta:{model:'', subtitle:''}, bullets:[], dims:[], certs:{}, accessories:[], showDiversity:true, showAccessories:true, specStartP1:false,
     pageView:'both', zoom:0.66, zoom4:0.5, fitMode:null, dimCount:1, dimLayout:'column', showSettings:false, settingsTab:'cms',
     cmsSource:'default', cmsBusy:false, cmsNote:'', cmsError:'', defaultCms:null,
-    customOrder:{}, hiddenCats:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false,
+    customOrder:{}, hiddenCats:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false, unmapPick:{},
     importing:false, importError:'', dragOver:false, importNote:'', importSource:'xlsx',
     showReports:false, reportFocus:'mapping', showExport:false, exportMsg:'', savedToast:'', hasSession:false,
     reviewFilter:null, expandedReviews:{}, sheetVersion:'reviewed', applyReview:true, applyCms:true,
@@ -1437,7 +1462,7 @@ class Component extends DCLogic {
     raw.specs.forEach(sp=>{
       const asn=A[sp.name];
       if(asn==='__skip__') return;
-      if(asn==='__custom__'){ customRows.push({name:sp.name,value:sp.value,category:sp.section}); return; }
+      if(asn==='__custom__'){ const cm=(this.state.customMeta||{})[sp.name]||{}; customRows.push({name:sp.name,value:sp.value,category:cm.cat||sp.section,label:(cm.name||sp.name)}); return; }
       if(asn && byKey[asn]){ explicitList.push(sp); return; }
       if(asn===''){ forcedUnmap.push(sp); return; }
       const h=byNorm[this.norm(sp.name)]||byKey[this.ALIAS[this.norm(sp.name)]||''];
@@ -1470,12 +1495,12 @@ class Component extends DCLogic {
     forcedUnmap.forEach(sp=>unmapped.push({name:sp.name,value:sp.value,section:sp.section,current:'',suggestionField:null,suggestionLabel:null,score:0,guess:false}));
     const orderedCats=cats.map(c=>{
       const fields=c.fields.map(f=>{const v=valueByField[f.field]; if(!v) return null; return {field:f.field,name:f.name,value:v.value,source:v.source,guess:!!v.guess};}).filter(Boolean);
-      customRows.filter(cr=>cr.category===c.category).forEach(cr=>fields.push({field:'__custom_'+cr.name,name:cr.name,value:cr.value,source:cr.name}));
+      customRows.filter(cr=>cr.category===c.category).forEach(cr=>fields.push({field:'__custom_'+cr.name,name:(cr.label||cr.name),value:cr.value,source:cr.name,custom:true}));
       return {category:c.category, fields};
     }).filter(c=>c.fields.length);
     const usedCats=new Set(cats.map(c=>c.category));
     const orphans=customRows.filter(cr=>!usedCats.has(cr.category));
-    if(orphans.length) orderedCats.push({category:'Custom', fields:orphans.map(cr=>({field:'__custom_'+cr.name,name:cr.name,value:cr.value,source:cr.name}))});
+    if(orphans.length) orderedCats.push({category:'Custom', fields:orphans.map(cr=>({field:'__custom_'+cr.name,name:(cr.label||cr.name),value:cr.value,source:cr.name,custom:true}))});
     const matched=orderedCats.reduce((n,c)=>n+c.fields.length,0);
     const review=[...pend, ...unmapped];
     return {orderedCats, unmapped:review, pending:pend, unmappedTrue:unmapped, guessCount:pend.length, allFields, matched, total:raw.specs.length, reviewCount:review.length};
@@ -1992,7 +2017,7 @@ class Component extends DCLogic {
     const certs=(s.certs&&Object.keys(s.certs).length)?{...s.certs}:{ndaa:true,ce:true,fcc:true};
     const accessories=Array.from({length:4},(_,i)=>({imgId:'acc'+i, code:'', desc:''}));
     const nextScope=(s.scope && this.state.cms && this.state.cms.byScope[s.scope]) ? s.scope : this.state.scope;
-    this.setState({raw:s, activeSample:id||s.id, scope:nextScope, loaded:true, step:1, assignments:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories, showDiversity:true, showAccessories:true, specStartP1:false});
+    this.setState({raw:s, activeSample:id||s.id, scope:nextScope, loaded:true, step:1, assignments:{}, customMeta:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories, showDiversity:true, showAccessories:true, specStartP1:false});
   }
   // ── CMS field-table import (defines mapping/ordering taxonomy) ────────────
   pickCms(){
@@ -2383,7 +2408,7 @@ class Component extends DCLogic {
   _sessionDoc(){
     const s=this.state;
     return { v:1, scope:s.scope, raw:s.raw, assignments:s.assignments, reviewAccept:s.reviewAccept, overrides:s.overrides,
-      meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, showDiversity:s.showDiversity, showAccessories:s.showAccessories, specStartP1:s.specStartP1,
+      meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, showDiversity:s.showDiversity, showAccessories:s.showAccessories, specStartP1:s.specStartP1, customMeta:s.customMeta,
       customOrder:s.customOrder, hiddenCats:s.hiddenCats, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample,
       specBreaks:s.specBreaks, slots:this._collectSlots(), savedAt:Date.now() };
   }
@@ -2391,7 +2416,7 @@ class Component extends DCLogic {
     if(!d||!d.raw) return false;
     this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:d.assignments||{}, reviewAccept:d.reviewAccept||{},
       overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:(d.bullets||[]).map(b=>String(b==null?'':b).replace(/\s+/g,' ').trim()), dims:d.dims||[],
-      certs:d.certs||{}, accessories:d.accessories||[], showDiversity:d.showDiversity!==false, showAccessories:d.showAccessories!==false, specStartP1:d.specStartP1===true, customOrder:d.customOrder||{}, hiddenCats:d.hiddenCats||{}, disabledRules:d.disabledRules||{},
+      certs:d.certs||{}, accessories:d.accessories||[], showDiversity:d.showDiversity!==false, showAccessories:d.showAccessories!==false, specStartP1:d.specStartP1===true, customMeta:d.customMeta||{}, customOrder:d.customOrder||{}, hiddenCats:d.hiddenCats||{}, disabledRules:d.disabledRules||{},
       specBreaks:(d.specBreaks&&typeof d.specBreaks==='object'&&!Array.isArray(d.specBreaks))?d.specBreaks:{},
       step:d.step||1, activeSample:d.activeSample, importError:'', savedToast:'✓ 저장된 작업을 불러왔습니다' });
     this._restoreSlots(d.slots);   // 저장된 사진·치수 도면을 슬롯에 복원(제품별 id 유지)
@@ -3423,25 +3448,47 @@ class Component extends DCLogic {
       const me=st.mapEdit;
       out.mapEditActive=!!me;
       if(me){
+        const isCustom=String(me.field).indexOf('__custom_')===0;
         const srcOpts=st.raw.specs.map(sp=>({value:sp.name,label:sp.name+' — '+String(sp.value).slice(0,44)}));
+        // custom-field editing: pick a parent CMS category + edit the field name (default = source field name)
+        const src=me.source||String(me.field).slice('__custom_'.length);
+        const cmeta=(st.customMeta||{})[src]||{};
+        const editCat=(me.editCat!==undefined)?me.editCat:(cmeta.cat||(me.category&&me.category!=='Custom'?me.category:''));
+        const editName=(me.editName!==undefined)?me.editName:(cmeta.name||me.name||src);
         out.mapEditData={ field:me.field, name:me.name, category:me.category, source:me.source||'(연결 안 됨)', value:me.value,
-          isCustom:String(me.field).indexOf('__custom_')===0,
+          isCustom:isCustom, stdMap:!isCustom,
           options:[...(me.source?[]:[{value:'',label:'— 연결할 원본 필드 선택 —'}]), ...srcOpts],
           current:me.source||'', canDisconnect:!!me.source,
           onRemap:(e)=>this.remapField(me.field, me.source, e.target.value),
-          onDisconnect:()=>this.remapField(me.field, me.source, '__disconnect__') };
+          onDisconnect:()=>this.remapField(me.field, me.source, '__disconnect__'),
+          // custom
+          srcField:src,
+          catOptions:[{value:'',label:'— 상위 카테고리 선택 —'}, ...this.scopeCats().map(c=>({value:c.category,label:c.category}))],
+          editCat:editCat, editName:editName, canSaveCustom:!!editCat,
+          saveBg:editCat?'#941A31':'#eceef1', saveFg:editCat?'#fff':'#a2a7af',
+          onEditCat:(e)=>this.setState(s=>({mapEdit:{...s.mapEdit, editCat:e.target.value}})),
+          onEditName:(e)=>this.setState(s=>({mapEdit:{...s.mapEdit, editName:e.target.value}})),
+          onSaveCustom:()=>{ const nm=String(editName||'').trim()||src; this.setState(s=>({customMeta:{...s.customMeta,[src]:{cat:editCat,name:nm}}, mapEdit:null})); } };
       }
       out.onCloseMapEdit=()=>this.setState({mapEdit:null});
       // unmapped list options
       const fieldOpts=m.allFields.map(f=>({value:f.field,label:f.category+' › '+f.name}));
+      const picks=st.unmapPick||{};
       out.unmappedList=m.unmapped.map(u=>{
         const sug=u.suggestionField?[{value:'__suggest__',label:'★ 추천: '+u.suggestionLabel+' ('+Math.round((u.score||0)*100)+'%)'}]:[];
         const hl=st.focusUnmapped===u.name;
-        return {source:u.name,value:u.value,section:u.section,current:u.current||'',
+        // Staged selection: the dropdown only stages a choice; the "확인" button applies it.
+        // Falls back to the current assignment so re-confirming an already-picked field still works.
+        const pick=(u.name in picks)?picks[u.name]:(u.current||'');
+        const changed=pick!==(u.current||'') && !(pick===''&&!u.current);
+        return {source:u.name,value:u.value,section:u.section,current:u.current||'', pick:pick,
           cardBg:hl?'#fff4d6':'#fbf4f5', cardBorder:hl?'#e6b84a':'#ecd8dc',
+          confirmBg:changed?'#941A31':'#eceef1', confirmFg:changed?'#fff':'#a2a7af', confirmBorder:changed?'#941A31':'#e3e5e9',
           badge:u.guess?'추정':(u.suggestionField?'추천':'미매핑'), badgeColor:u.guess?'#c2700a':(u.suggestionField?'#2f6fb0':'#9aa0aa'),
           options:[{value:'',label:'— 미지정 —'},...sug,{value:'__skip__',label:'사용 안 함'},{value:'__custom__',label:'사용자 정의로 추가'},...fieldOpts],
-          onAssign:(e)=>{ let v=e.target.value; if(v==='__suggest__') v=u.suggestionField; this.assign(u.name,v); }};
+          onPick:(e)=>this.setState(s=>({unmapPick:{...s.unmapPick,[u.name]:e.target.value}})),
+          onConfirm:()=>{ let v=pick; if(v==='__suggest__') v=u.suggestionField; this.assign(u.name,v);
+            this.setState(s=>{const p={...s.unmapPick}; delete p[u.name]; return {unmapPick:p};}); }};
       });
       out.onResetImport=()=>this.resetImport();
       out.onToStep2=()=>this.goStep(2);

@@ -208,6 +208,13 @@ export const DICT = {
   '— 미지정 —': '— unassigned —',
   '사용 안 함': 'Do not use',
   '사용자 정의로 추가': 'Add as custom',
+  '확인': 'Confirm',
+  'CMS에 없는 사용자 정의 필드입니다. 상위 카테고리를 선택하고 필드명을 다듬어 주세요.': 'A custom field not in the CMS. Choose a parent category and refine the field name.',
+  '상위 카테고리': 'Parent category',
+  '이 필드가 표시될 CMS 상위 카테고리입니다. 선택해야 저장됩니다.': 'The CMS parent category this field will appear under. Required to save.',
+  '필드명': 'Field name',
+  '기본값은 원본 데이터 필드명이며 자유롭게 수정할 수 있습니다.': 'Defaults to the source data field name; edit it freely.',
+  '— 상위 카테고리 선택 —': '— Select a parent category —',
 
   // ---- step 2: review ----
   'AI 검수 · 미국/UL 표기 정규화': 'AI review · US/UL notation normalization',
