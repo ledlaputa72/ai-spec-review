@@ -772,6 +772,21 @@
             </div>
           </div>
 
+          <!-- 출력 버전 (레이아웃과 동일) -->
+          <div style="padding:16px 18px; border-bottom:1px solid #eceef1;">
+            <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:11px;">출력 버전</div>
+            <div style="display:flex; background:#eceef1; border-radius:8px; padding:3px;">
+              <button onClick="{{ onVerReviewed }}" style="flex:1; border:none; cursor:pointer; font-size:12.5px; font-weight:700; padding:8px 0; border-radius:6px; background:{{ verRevBg }}; color:{{ verRevColor }};">수정버전</button>
+              <button onClick="{{ onVerRaw }}" style="flex:1; border:none; cursor:pointer; font-size:12.5px; font-weight:700; padding:8px 0; border-radius:6px; background:{{ verRawBg }}; color:{{ verRawColor }};">기존버전</button>
+            </div>
+            <sc-if value="{{ verReviewed }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex; flex-direction:column; gap:9px; margin-top:11px; background:#f6edef; border:1px solid #e3c9cf; border-radius:8px; padding:11px 13px;">
+                <label onClick="{{ onToggleReview }}" style="display:flex; align-items:center; gap:8px; cursor:pointer;"><span style="width:34px; height:18px; border-radius:10px; background:{{ revTrackReview }}; position:relative; display:inline-block; flex-shrink:0;"><span style="position:absolute; top:2px; left:{{ revKnobReview }}; width:14px; height:14px; border-radius:50%; background:#fff;"></span></span><span style="font-size:12px; font-weight:700; color:#44474e;">AI 검수 반영</span></label>
+                <label onClick="{{ onToggleCms }}" style="display:flex; align-items:center; gap:8px; cursor:pointer;"><span style="width:34px; height:18px; border-radius:10px; background:{{ revTrackCms }}; position:relative; display:inline-block; flex-shrink:0;"><span style="position:absolute; top:2px; left:{{ revKnobCms }}; width:14px; height:14px; border-radius:50%; background:#fff;"></span></span><span style="font-size:12px; font-weight:700; color:#44474e;">CMS 정렬·매핑</span></label>
+              </div>
+            </sc-if>
+          </div>
+
           <!-- 기본 정보 -->
           <div style="padding:16px 18px; border-bottom:1px solid #eceef1;">
             <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:11px;">기본 정보</div>
