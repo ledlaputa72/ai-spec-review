@@ -528,7 +528,7 @@
                     <div style="background:{{ u.cardBg }}; border:1px solid {{ u.cardBorder }}; border-radius:9px; padding:11px 13px;">
                       <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:8px;">
                         <div style="min-width:0; flex:1;">
-                          <div style="font-size:12.5px; font-weight:700; color:#44474e;">{{ u.source }} <sc-if value="{{ u.hasSection }}" hint-placeholder-val="{{ true }}"><span style="font-size:10px; font-weight:700; color:#9aa0aa; background:#f0f1f4; border-radius:4px; padding:1px 6px; margin-left:4px; vertical-align:1px;">{{ u.section }}</span></sc-if></div>
+                          <div style="font-size:12.5px; font-weight:700; color:#44474e;">{{ u.source }} <span style="font-size:10.5px; font-weight:600; color:#9aa0aa; margin-left:3px;">{{ u.sectionLabel }}</span></div>
                           <div style="font-size:10.5px; color:#979ca4; margin:3px 0 9px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ u.value }}</div>
                         </div>
                         <button onClick="{{ u.onConfirm }}" style="flex:none; background:{{ u.confirmBg }}; color:{{ u.confirmFg }}; border:1px solid {{ u.confirmBorder }}; border-radius:7px; padding:6px 13px; font-size:11.5px; font-weight:800; cursor:pointer;">확인</button>
@@ -3508,15 +3508,17 @@ class Component extends DCLogic {
         const hl=st.focusUnmapped===u.uid;
         // Staged selection: the dropdown only stages a choice; the "확인" button applies it.
         // 배정·스테이징 모두 원본 고유 uid 기준 — 같은 이름의 다른 필드끼리 충돌하지 않는다.
-        const pick=(u.uid in picks)?picks[u.uid]:(u.current||'');
-        const changed=pick!==(u.current||'') && !(pick===''&&!u.current);
-        return {source:u.name, value:u.value, section:u.section||'', hasSection:!!u.section, current:u.current||'', pick:pick,
+        // 추천이 있으면 ★ 추천 항목을 기본 선택으로 보여주고, 뭔가 선택돼 있으면 확인 버튼 활성화
+        // (미지정일 때만 비활성). 확인을 누르면 그 선택이 명시 배정으로 굳는다.
+        const pick=(u.uid in picks)?picks[u.uid]:(u.suggestionField?'__suggest__':(u.current||''));
+        const ready=pick!=='';
+        return {source:u.name, value:u.value, section:u.section||'', sectionLabel:(u.section?'· '+u.section:''), current:u.current||'', pick:pick,
           cardBg:hl?'#fff4d6':'#fbf4f5', cardBorder:hl?'#e6b84a':'#ecd8dc',
-          confirmBg:changed?'#941A31':'#eceef1', confirmFg:changed?'#fff':'#a2a7af', confirmBorder:changed?'#941A31':'#e3e5e9',
+          confirmBg:ready?'#941A31':'#eceef1', confirmFg:ready?'#fff':'#a2a7af', confirmBorder:ready?'#941A31':'#e3e5e9',
           badge:u.guess?'추정':(u.suggestionField?'추천':'미매핑'), badgeColor:u.guess?'#c2700a':(u.suggestionField?'#2f6fb0':'#9aa0aa'),
           options:[{value:'',label:'— 미지정 —'},...sug,{value:'__skip__',label:'사용 안 함'},{value:'__custom__',label:'사용자 정의로 추가'},...fieldOpts],
           onPick:(e)=>this.setState(s=>({unmapPick:{...s.unmapPick,[u.uid]:e.target.value}})),
-          onConfirm:()=>{ let v=pick; if(v==='__suggest__') v=u.suggestionField; this.assign(u.uid,v);
+          onConfirm:()=>{ if(pick==='') return; let v=pick; if(v==='__suggest__') v=u.suggestionField; this.assign(u.uid,v);
             this.setState(s=>{const p={...s.unmapPick}; delete p[u.uid]; return {unmapPick:p};}); }};
       });
       out.onResetImport=()=>this.resetImport();
