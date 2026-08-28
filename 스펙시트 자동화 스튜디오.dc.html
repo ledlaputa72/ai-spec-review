@@ -736,6 +736,17 @@
             <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:11px;">섹션 표시</div>
             <label onClick="{{ onToggleOverview }}" style="display:flex; align-items:center; gap:8px; cursor:pointer; margin-bottom:9px;"><span style="width:34px; height:18px; border-radius:10px; background:{{ ovTrack }}; position:relative; display:inline-block; flex-shrink:0;"><span style="position:absolute; top:2px; left:{{ ovKnob }}; width:14px; height:14px; border-radius:50%; background:#fff;"></span></span><span style="font-size:12px; font-weight:700; color:#44474e;">OVERVIEW</span></label>
             <label onClick="{{ onToggleDims }}" style="display:flex; align-items:center; gap:8px; cursor:pointer; margin-bottom:9px;"><span style="width:34px; height:18px; border-radius:10px; background:{{ dimsTrack }}; position:relative; display:inline-block; flex-shrink:0;"><span style="position:absolute; top:2px; left:{{ dimsKnob }}; width:14px; height:14px; border-radius:50%; background:#fff;"></span></span><span style="font-size:12px; font-weight:700; color:#44474e;">DIMENSIONS</span></label>
+            <sc-if value="{{ soloLayoutShown }}" hint-placeholder-val="{{ false }}">
+              <div style="margin:2px 0 11px; padding:9px 10px; background:#f7f8fa; border:1px solid #e6e8ec; border-radius:8px;">
+                <div style="font-size:10.5px; font-weight:700; color:#8b9099; margin-bottom:7px;">남은 {{ soloLayoutLabel }} 블록 위치</div>
+                <div style="display:flex; gap:5px;">
+                  <sc-for list="{{ soloOpts }}" as="o" hint-placeholder-count="3">
+                    <button onClick="{{ o.onPick }}" style="flex:1; background:{{ o.bg }}; color:{{ o.fg }}; border:1px solid {{ o.bd }}; border-radius:7px; padding:6px 4px; font-size:11px; font-weight:700; cursor:pointer;">{{ o.label }}</button>
+                  </sc-for>
+                </div>
+                <div style="font-size:10px; color:#a9b2c1; margin-top:6px; line-height:1.4;">상단 우측 이동은 모델명 아래(제품 사진 옆) 빈 공간에 블록을 배치합니다.</div>
+              </div>
+            </sc-if>
             <label onClick="{{ onToggleAccessories }}" style="display:flex; align-items:center; gap:8px; cursor:pointer;"><span style="width:34px; height:18px; border-radius:10px; background:{{ accTrack }}; position:relative; display:inline-block; flex-shrink:0;"><span style="position:absolute; top:2px; left:{{ accKnob }}; width:14px; height:14px; border-radius:50%; background:#fff;"></span></span><span style="font-size:12px; font-weight:700; color:#44474e;">OPTIONAL ACCESSORIES</span></label>
             <div style="font-size:10.5px; color:#b7bbc1; margin-top:7px; line-height:1.4;">레코더 등 액세서리를 쓰지 않는 제품군에서 끄면 이 섹션이 스펙시트에서 사라집니다.</div>
             <div style="height:1px; background:#eef0f2; margin:12px 0;"></div>
@@ -1363,7 +1374,7 @@ class Component extends DCLogic {
   state = {
     ready:false, loaded:false, step:1, scope:'Camera', activeSample:null,
     raw:null, assignments:{}, customMeta:{}, reviewAccept:{}, overrides:{},
-    meta:{model:'', subtitle:''}, bullets:[], dims:[], certs:{}, accessories:[], showDiversity:true, showAccessories:true, showOverview:true, showDims:true, specStartP1:false,
+    meta:{model:'', subtitle:''}, bullets:[], dims:[], certs:{}, accessories:[], showDiversity:true, showAccessories:true, showOverview:true, showDims:true, soloLayout:'left', specStartP1:false,
     pageView:'both', zoom:0.66, zoom4:0.5, fitMode:null, dimCount:1, dimLayout:'column', showSettings:false, settingsTab:'cms',
     cmsSource:'default', cmsBusy:false, cmsNote:'', cmsError:'', defaultCms:null,
     customOrder:{}, hiddenCats:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false, unmapPick:{},
@@ -1648,8 +1659,14 @@ class Component extends DCLogic {
     const bullets=(this.state.bullets||[]).map(b=>String(b==null?'':b).replace(/\s+/g,' ').trim());
     return {model, title, subtitle2, certImgs, certTexts, aiBadge, aiOn, bullets, dims:this.state.dims, accessories, specCats, dim2, dimDir, dimSlotFlex,
       diversityOn:this.state.showDiversity!==false, accessoriesOn:this.state.showAccessories!==false,
-      overviewOn:this.state.showOverview!==false, dimsOn:this.state.showDims!==false,
-      ovDimRowOn:(this.state.showOverview!==false)||(this.state.showDims!==false),
+      // OVERVIEW/DIMENSIONS 표시 + 하나만 남았을 때의 배치(soloLayout):
+      //   'left'(기본) 왼쪽 정렬 · 'full' 페이지 전체 너비 · 'top' 상단 우측(제품사진 옆) 공간으로 이동
+      ...(()=>{ const ovOn=this.state.showOverview!==false, dmOn=this.state.showDims!==false;
+        const solo=(ovOn?1:0)+(dmOn?1:0)===1; const sl=this.state.soloLayout||'left'; const soloTop=solo&&sl==='top';
+        return { overviewOn:ovOn, dimsOn:dmOn,
+          ovDimRowOn:(ovOn||dmOn)&&!soloTop,
+          ovDimCols:(ovOn&&dmOn)?'44% 56%':(solo&&sl==='full'?'100%':'56%'),
+          soloTopOverview:soloTop&&ovOn, soloTopDims:soloTop&&dmOn }; })(),
       photoSlotId:'ss_product_photo__'+key, dimSlot1Id:'ss_dims_1__'+key, dimSlot2Id:'ss_dims_2__'+key};
   }
 
@@ -1707,10 +1724,13 @@ class Component extends DCLogic {
   // 오버뷰가 길수록 스펙 제목이 아래로 내려가 여유가 줄어든다. (측정 기반 보정)
   _p1SpecBudget(){ const bullets=(this.state.bullets||[]).length;
     // 섹션 표시 토글 반영: OVERVIEW/DIMENSIONS 를 끄면 그 높이만큼 스펙 표 예산이 늘어난다.
-    const ovH=this.state.showOverview===false?0:bullets*22;
-    const dimH=this.state.showDims===false?0:178;
-    const gridH=Math.max(ovH, dimH);                  // 오버뷰 불릿 vs 치수 도면 영역
-    const specTop=gridH>0?481+gridH:441;              // 둘 다 끄면 그리드+상단여백(40px)도 사라짐
+    const ovOn=this.state.showOverview!==false, dmOn=this.state.showDims!==false;
+    const ovH=ovOn?bullets*22:0;
+    const dimH=dmOn?178:0;
+    let gridH=Math.max(ovH, dimH);                    // 오버뷰 불릿 vs 치수 도면 영역
+    // 하나만 남고 '상단 우측 이동'이면 행 자체가 사라져 스펙 표 공간이 최대가 된다.
+    if(((ovOn?1:0)+(dmOn?1:0))===1 && (this.state.soloLayout||'left')==='top') gridH=0;
+    const specTop=gridH>0?481+gridH:441;              // 행이 없으면 그리드+상단여백(40px)도 사라짐
     return Math.max(70, 984 - specTop - 46 - 18); }   // 푸터 위까지 - (제목+divider) - 안전여백
   // 실제 렌더 페이지 패킹 — 카테고리 단위 + 한 카테고리가 한 페이지보다 크면 행 단위 분할(회색바 반복).
   // forced(수동 경계) 앞에서 강제 개행. 1페이지 시작 모드면 첫 페이지만 작은 예산.
@@ -2042,7 +2062,7 @@ class Component extends DCLogic {
     const certs=(s.certs&&Object.keys(s.certs).length)?{...s.certs}:{ndaa:true,ce:true,fcc:true};
     const accessories=Array.from({length:4},(_,i)=>({imgId:'acc'+i, code:'', desc:''}));
     const nextScope=(s.scope && this.state.cms && this.state.cms.byScope[s.scope]) ? s.scope : this.state.scope;
-    this.setState({raw:s, activeSample:id||s.id, scope:nextScope, loaded:true, step:1, assignments:{}, customMeta:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories, showDiversity:true, showAccessories:true, showOverview:true, showDims:true, specStartP1:false});
+    this.setState({raw:s, activeSample:id||s.id, scope:nextScope, loaded:true, step:1, assignments:{}, customMeta:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories, showDiversity:true, showAccessories:true, showOverview:true, showDims:true, soloLayout:'left', specStartP1:false});
   }
   // ── CMS field-table import (defines mapping/ordering taxonomy) ────────────
   pickCms(){
@@ -2434,7 +2454,7 @@ class Component extends DCLogic {
   _sessionDoc(){
     const s=this.state;
     return { v:1, scope:s.scope, raw:s.raw, assignments:s.assignments, reviewAccept:s.reviewAccept, overrides:s.overrides,
-      meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, showDiversity:s.showDiversity, showAccessories:s.showAccessories, showOverview:s.showOverview, showDims:s.showDims, specStartP1:s.specStartP1, customMeta:s.customMeta,
+      meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, showDiversity:s.showDiversity, showAccessories:s.showAccessories, showOverview:s.showOverview, showDims:s.showDims, soloLayout:s.soloLayout, specStartP1:s.specStartP1, customMeta:s.customMeta,
       customOrder:s.customOrder, hiddenCats:s.hiddenCats, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample,
       specBreaks:s.specBreaks, slots:this._collectSlots(), savedAt:Date.now() };
   }
@@ -2442,7 +2462,7 @@ class Component extends DCLogic {
     if(!d||!d.raw) return false;
     this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:this._migrateKeys(d.raw, d.assignments||{}), reviewAccept:d.reviewAccept||{},
       overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:(d.bullets||[]).map(b=>String(b==null?'':b).replace(/\s+/g,' ').trim()), dims:d.dims||[],
-      certs:d.certs||{}, accessories:d.accessories||[], showDiversity:d.showDiversity!==false, showAccessories:d.showAccessories!==false, showOverview:d.showOverview!==false, showDims:d.showDims!==false, specStartP1:d.specStartP1===true, customMeta:this._migrateKeys(d.raw, d.customMeta||{}), customOrder:d.customOrder||{}, hiddenCats:d.hiddenCats||{}, disabledRules:d.disabledRules||{},
+      certs:d.certs||{}, accessories:d.accessories||[], showDiversity:d.showDiversity!==false, showAccessories:d.showAccessories!==false, showOverview:d.showOverview!==false, showDims:d.showDims!==false, soloLayout:(d.soloLayout==='full'||d.soloLayout==='top')?d.soloLayout:'left', specStartP1:d.specStartP1===true, customMeta:this._migrateKeys(d.raw, d.customMeta||{}), customOrder:d.customOrder||{}, hiddenCats:d.hiddenCats||{}, disabledRules:d.disabledRules||{},
       specBreaks:(d.specBreaks&&typeof d.specBreaks==='object'&&!Array.isArray(d.specBreaks))?d.specBreaks:{},
       step:d.step||1, activeSample:d.activeSample, importError:'', savedToast:'✓ 저장된 작업을 불러왔습니다' });
     this._restoreSlots(d.slots);   // 저장된 사진·치수 도면을 슬롯에 복원(제품별 id 유지)
@@ -2978,6 +2998,7 @@ class Component extends DCLogic {
   toggleAccessories(){ this.setState(s=>({showAccessories:s.showAccessories===false?true:false})); }
   toggleOverview(){ this.setState(s=>({showOverview:s.showOverview===false?true:false})); }
   toggleDims(){ this.setState(s=>({showDims:s.showDims===false?true:false})); }
+  setSoloLayout(v){ this.setState({soloLayout:(v==='full'||v==='top')?v:'left'}); }
   // 스펙 표 1페이지 시작 토글 — 액세서리가 켜져 있으면(자리 충돌) 무시
   toggleSpecStartP1(){ if(this.state.showAccessories!==false) return; this.setState(s=>({specStartP1:s.specStartP1===true?false:true})); }
   setDimCount(n){ this.setState({dimCount:n}); }
@@ -3636,6 +3657,16 @@ class Component extends DCLogic {
       out.ovTrack=st.showOverview!==false?'#941A31':'#c9ccd2'; out.ovKnob=st.showOverview!==false?'19px':'3px';
       out.onToggleDims=()=>this.toggleDims();
       out.dimsTrack=st.showDims!==false?'#941A31':'#c9ccd2'; out.dimsKnob=st.showDims!==false?'19px':'3px';
+      // 하나만 남았을 때의 배치 선택 (왼쪽 정렬 / 전체 너비 / 상단 우측 이동)
+      {
+        const _ovOn=st.showOverview!==false, _dmOn=st.showDims!==false;
+        out.soloLayoutShown=((_ovOn?1:0)+(_dmOn?1:0))===1;
+        out.soloLayoutLabel=_ovOn?'OVERVIEW':'DIMENSIONS';
+        const _sl=st.soloLayout||'left';
+        out.soloOpts=[{v:'left',label:'왼쪽 정렬'},{v:'full',label:'전체 너비'},{v:'top',label:'상단 우측 이동'}].map(o=>({
+          label:o.label, bg:_sl===o.v?'#941A31':'#fff', fg:_sl===o.v?'#fff':'#5e636b', bd:_sl===o.v?'#941A31':'#e0e3e7',
+          onPick:()=>this.setSoloLayout(o.v)}));
+      }
       // 스펙 표 1페이지 시작 토글(액세서리 OFF일 때만 활성)
       const _p1En=st.showAccessories===false; const _p1On=_p1En && st.specStartP1===true;
       out.specStartEnabled=_p1En; out.onToggleSpecStartP1=()=>this.toggleSpecStartP1();
