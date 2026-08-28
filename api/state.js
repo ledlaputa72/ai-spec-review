@@ -71,8 +71,9 @@ export default async function handler(req, res) {
         const title = String(b.title || '');
         const step = Number(b.step) || 1;
         const by = String(b.by || '').slice(0, 60);
+        const scope = String(b.scope || '').slice(0, 40);   // 제품군(Camera/Recorder …) — work list 표시용
         await redis.set(DOC(model), b.doc);
-        await redis.hset(INDEX, { [model]: { model, title, step, at, by } });
+        await redis.hset(INDEX, { [model]: { model, title, step, at, by, scope } });
         await redis.lpush(HISTORY, JSON.stringify({ at, model, title, step, by, action: 'save' }));
         await redis.ltrim(HISTORY, 0, HISTORY_MAX - 1);
         return j(res, 200, { ok: true, at });

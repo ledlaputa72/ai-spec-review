@@ -385,15 +385,16 @@
               </div>
             </div>
             <div style="background:#fff; border:1px solid #e0e3e7; border-radius:12px; overflow:hidden;">
-              <div style="display:grid; grid-template-columns:34px 1.1fr 1.7fr 0.6fr 0.55fr 0.9fr 0.8fr 0.55fr; gap:12px; padding:11px 16px; background:#f5f6f8; border-bottom:1px solid #e6e8ec; font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.4px; align-items:center;">
+              <div style="display:grid; grid-template-columns:34px 1.1fr 1.55fr 0.7fr 0.6fr 0.55fr 0.9fr 0.8fr 0.55fr; gap:12px; padding:11px 16px; background:#f5f6f8; border-bottom:1px solid #e6e8ec; font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.4px; align-items:center;">
                 <input type="checkbox" checked="{{ allSel }}" onChange="{{ onToggleAll }}" style="width:15px; height:15px; accent-color:#941A31; cursor:pointer;" />
-                <span>모델명</span><span>제품명</span><span style="text-align:right;">스펙 필드</span><span>소스</span><span>상태</span><span>작업자</span><span style="text-align:right;">작업</span>
+                <span>모델명</span><span>제품명</span><span>제품군</span><span style="text-align:right;">스펙 필드</span><span>소스</span><span>상태</span><span>작업자</span><span style="text-align:right;">작업</span>
               </div>
               <sc-for list="{{ workRows }}" as="r" hint-placeholder-count="2">
-                <div onClick="{{ r.onLoad }}" style="display:grid; grid-template-columns:34px 1.1fr 1.7fr 0.6fr 0.55fr 0.9fr 0.8fr 0.55fr; gap:12px; align-items:center; padding:12px 16px; border-bottom:1px solid #f0f1f4; cursor:pointer; transition:.12s; background:{{ r.rowBg }};" style-hover="background:#faf6f7;">
+                <div onClick="{{ r.onLoad }}" style="display:grid; grid-template-columns:34px 1.1fr 1.55fr 0.7fr 0.6fr 0.55fr 0.9fr 0.8fr 0.55fr; gap:12px; align-items:center; padding:12px 16px; border-bottom:1px solid #f0f1f4; cursor:pointer; transition:.12s; background:{{ r.rowBg }};" style-hover="background:#faf6f7;">
                   <input type="checkbox" checked="{{ r.sel }}" onChange="{{ r.onSel }}" onClick="{{ r.stop }}" style="width:15px; height:15px; accent-color:#941A31; cursor:pointer;" />
                   <span style="font-size:13.5px; font-weight:800; color:#941A31;">{{ r.model }}</span>
                   <span style="font-size:12.5px; color:#5e636b; line-height:1.35;">{{ r.title }}</span>
+                  <span style="font-size:11px; font-weight:700; color:{{ r.scopeColor }}; background:{{ r.scopeBg }}; border-radius:5px; padding:3px 8px; justify-self:start; white-space:nowrap;">{{ r.scope }}</span>
                   <span style="font-size:12.5px; color:#44474e; text-align:right; font-variant-numeric:tabular-nums;">{{ r.count }}</span>
                   <span style="font-size:10.5px; font-weight:700; color:{{ r.srcColor }}; background:{{ r.srcBg }}; border-radius:5px; padding:3px 7px; justify-self:start;">{{ r.src }}</span>
                   <span style="font-size:11.5px; color:{{ r.stColor }}; font-weight:600;">{{ r.status }}</span>
@@ -1415,6 +1416,7 @@ class Component extends DCLogic {
       setTimeout(()=>this.syncShared(), 0);
       const {lib, dismissed}=this._loadRuleLib(qc);
       this._sampleIds=(samples||[]).map(s=>s.id);
+      (samples||[]).forEach(s=>{ if(!s.scope) s.scope='Camera'; });   // 내장 샘플은 전부 카메라 — work list 제품군 표시용
       this.setState({cms, defaultCms:cms, samples, qc, ready:true, hasSession, lang, customRules:lib, dismissedCands:dismissed, workHist:this._loadHist()});
       this._loadSharedCms();   // 팀 서버에 공유 CMS 테이블이 있으면 그걸로 교체(모든 사용자·기기 동일)
     }catch(e){ console.error('load error', e); this.setState({ready:true}); }
@@ -2480,7 +2482,7 @@ class Component extends DCLogic {
     this.setState({savedToast: localOk?('✓ 저장됨 · '+t):'저장 실패 (용량 초과?)', hasSession:localOk});
     this._touchHist(s.activeSample||(s.raw&&s.raw.id), true);
     clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
-    this._api(null, {action:'save', model, doc, title:(s.meta&&s.meta.subtitle)||(s.raw&&s.raw.subtitle)||'', step:s.step, by:this.editorName()||'anonymous'})
+    this._api(null, {action:'save', model, doc, title:(s.meta&&s.meta.subtitle)||(s.raw&&s.raw.subtitle)||'', step:s.step, by:this.editorName()||'anonymous', scope:s.scope||''})
       .then(()=>{ this.setState({savedToast:'✓ 팀 서버에 저장됨 · '+t, serverOn:true});
         clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({savedToast:''}), 2600);
         this.loadHistory(); this.syncShared(); })
@@ -2498,9 +2500,9 @@ class Component extends DCLogic {
         list.forEach(it=>{
           const model=it.model||it.id; if(!model) return;
           const hit=cur.find(x=>x.model===model||x.id===model);
-          if(hit){ hit.shared=true; hit.sharedBy=it.by||''; hit.sharedAt=it.at||it.savedAt||0; }
+          if(hit){ hit.shared=true; hit.sharedBy=it.by||''; hit.sharedAt=it.at||it.savedAt||0; if(it.scope) hit.sharedScope=it.scope; }
           else cur.push({ id:model, model, subtitle:it.title||'', series:'DIVERSITY', overview:'', specs:[],
-            shared:true, serverOnly:true, sharedBy:it.by||'', sharedAt:it.at||it.savedAt||0 });
+            shared:true, serverOnly:true, sharedBy:it.by||'', sharedAt:it.at||it.savedAt||0, sharedScope:it.scope||'' });
         });
         return {samples:cur, serverOn:true};
       });
@@ -3401,8 +3403,13 @@ class Component extends DCLogic {
       const h=hist[s.id]||null;
       const isSample=(this._sampleIds||[]).includes(s.id);
       const src=s.serverOnly?'공유':(s.fromCms?'CMS':(s.fromPdf?'PDF':(isSample?'샘플':'엑셀')));
+      // 제품군(Product scope): 제품 데이터의 scope > 서버 저장본의 scope. 없으면 '—'.
+      const scope=s.scope||s.sharedScope||'';
+      const scopePal={Camera:['#2f6fb0','#e8f0f8'],Recorder:['#8a5a12','#fbf1de'],CameraRecorderKit:['#5a4a9a','#eeecf8'],Networking:['#3a6b46','#e9f3ec']};
+      const sp=scopePal[scope]||['#5e636b','#f0f1f4'];
       return {
         id:s.id, model:s.model, title:s.subtitle, count:s.specs.length, src,
+        scope:scope||'—', scopeColor:scope?sp[0]:'#b7bbc1', scopeBg:scope?sp[1]:'transparent',
         by: s.sharedBy||(h&&h.by)||'',                       // 작업자(저장 이름) — 서버 by 우선
         _ts: s.sharedAt||(h&&h.ts)||0,                        // 정렬용 최근작업 시각(서버 우선)
         srcColor: s.serverOnly?'#5a4a9a':(s.fromCms?'#2f6fb0':(s.fromPdf?'#8a5a12':(isSample?'#941A31':'#3a6b46'))),

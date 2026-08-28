@@ -209,6 +209,7 @@ export const DICT = {
   '사용 안 함': 'Do not use',
   '사용자 정의로 추가': 'Add as custom',
   '확인': 'Confirm',
+  '제품군': 'Scope',
   '왼쪽 정렬': 'Left align',
   '전체 너비': 'Full width',
   '상단 우측 이동': 'Move to top right',
