@@ -734,6 +734,8 @@
           <!-- 섹션 표시 On/Off -->
           <div style="padding:16px 18px; border-top:1px solid #edeef1;">
             <div style="font-size:11px; font-weight:800; color:#8b9099; letter-spacing:.6px; margin-bottom:11px;">섹션 표시</div>
+            <label onClick="{{ onToggleOverview }}" style="display:flex; align-items:center; gap:8px; cursor:pointer; margin-bottom:9px;"><span style="width:34px; height:18px; border-radius:10px; background:{{ ovTrack }}; position:relative; display:inline-block; flex-shrink:0;"><span style="position:absolute; top:2px; left:{{ ovKnob }}; width:14px; height:14px; border-radius:50%; background:#fff;"></span></span><span style="font-size:12px; font-weight:700; color:#44474e;">OVERVIEW</span></label>
+            <label onClick="{{ onToggleDims }}" style="display:flex; align-items:center; gap:8px; cursor:pointer; margin-bottom:9px;"><span style="width:34px; height:18px; border-radius:10px; background:{{ dimsTrack }}; position:relative; display:inline-block; flex-shrink:0;"><span style="position:absolute; top:2px; left:{{ dimsKnob }}; width:14px; height:14px; border-radius:50%; background:#fff;"></span></span><span style="font-size:12px; font-weight:700; color:#44474e;">DIMENSIONS</span></label>
             <label onClick="{{ onToggleAccessories }}" style="display:flex; align-items:center; gap:8px; cursor:pointer;"><span style="width:34px; height:18px; border-radius:10px; background:{{ accTrack }}; position:relative; display:inline-block; flex-shrink:0;"><span style="position:absolute; top:2px; left:{{ accKnob }}; width:14px; height:14px; border-radius:50%; background:#fff;"></span></span><span style="font-size:12px; font-weight:700; color:#44474e;">OPTIONAL ACCESSORIES</span></label>
             <div style="font-size:10.5px; color:#b7bbc1; margin-top:7px; line-height:1.4;">레코더 등 액세서리를 쓰지 않는 제품군에서 끄면 이 섹션이 스펙시트에서 사라집니다.</div>
             <div style="height:1px; background:#eef0f2; margin:12px 0;"></div>
@@ -1361,7 +1363,7 @@ class Component extends DCLogic {
   state = {
     ready:false, loaded:false, step:1, scope:'Camera', activeSample:null,
     raw:null, assignments:{}, customMeta:{}, reviewAccept:{}, overrides:{},
-    meta:{model:'', subtitle:''}, bullets:[], dims:[], certs:{}, accessories:[], showDiversity:true, showAccessories:true, specStartP1:false,
+    meta:{model:'', subtitle:''}, bullets:[], dims:[], certs:{}, accessories:[], showDiversity:true, showAccessories:true, showOverview:true, showDims:true, specStartP1:false,
     pageView:'both', zoom:0.66, zoom4:0.5, fitMode:null, dimCount:1, dimLayout:'column', showSettings:false, settingsTab:'cms',
     cmsSource:'default', cmsBusy:false, cmsNote:'', cmsError:'', defaultCms:null,
     customOrder:{}, hiddenCats:{}, disabledRules:{}, aiBusy:false, aiNote:'', search:'', showUnmapped:false, unmapPick:{},
@@ -1646,6 +1648,8 @@ class Component extends DCLogic {
     const bullets=(this.state.bullets||[]).map(b=>String(b==null?'':b).replace(/\s+/g,' ').trim());
     return {model, title, subtitle2, certImgs, certTexts, aiBadge, aiOn, bullets, dims:this.state.dims, accessories, specCats, dim2, dimDir, dimSlotFlex,
       diversityOn:this.state.showDiversity!==false, accessoriesOn:this.state.showAccessories!==false,
+      overviewOn:this.state.showOverview!==false, dimsOn:this.state.showDims!==false,
+      ovDimRowOn:(this.state.showOverview!==false)||(this.state.showDims!==false),
       photoSlotId:'ss_product_photo__'+key, dimSlot1Id:'ss_dims_1__'+key, dimSlot2Id:'ss_dims_2__'+key};
   }
 
@@ -1702,8 +1706,11 @@ class Component extends DCLogic {
   // 1페이지 하단(액세서리 자리)의 스펙 표 예산 — OVERVIEW 불릿 수(오버뷰 높이)에 따라 가변.
   // 오버뷰가 길수록 스펙 제목이 아래로 내려가 여유가 줄어든다. (측정 기반 보정)
   _p1SpecBudget(){ const bullets=(this.state.bullets||[]).length;
-    const gridH=Math.max(bullets*22, 178);            // 오버뷰 불릿 vs 치수 도면 영역
-    const specTop=481+gridH;                          // 페이지 내 SPECIFICATIONS 제목 top 추정
+    // 섹션 표시 토글 반영: OVERVIEW/DIMENSIONS 를 끄면 그 높이만큼 스펙 표 예산이 늘어난다.
+    const ovH=this.state.showOverview===false?0:bullets*22;
+    const dimH=this.state.showDims===false?0:178;
+    const gridH=Math.max(ovH, dimH);                  // 오버뷰 불릿 vs 치수 도면 영역
+    const specTop=gridH>0?481+gridH:441;              // 둘 다 끄면 그리드+상단여백(40px)도 사라짐
     return Math.max(70, 984 - specTop - 46 - 18); }   // 푸터 위까지 - (제목+divider) - 안전여백
   // 실제 렌더 페이지 패킹 — 카테고리 단위 + 한 카테고리가 한 페이지보다 크면 행 단위 분할(회색바 반복).
   // forced(수동 경계) 앞에서 강제 개행. 1페이지 시작 모드면 첫 페이지만 작은 예산.
@@ -2035,7 +2042,7 @@ class Component extends DCLogic {
     const certs=(s.certs&&Object.keys(s.certs).length)?{...s.certs}:{ndaa:true,ce:true,fcc:true};
     const accessories=Array.from({length:4},(_,i)=>({imgId:'acc'+i, code:'', desc:''}));
     const nextScope=(s.scope && this.state.cms && this.state.cms.byScope[s.scope]) ? s.scope : this.state.scope;
-    this.setState({raw:s, activeSample:id||s.id, scope:nextScope, loaded:true, step:1, assignments:{}, customMeta:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories, showDiversity:true, showAccessories:true, specStartP1:false});
+    this.setState({raw:s, activeSample:id||s.id, scope:nextScope, loaded:true, step:1, assignments:{}, customMeta:{}, reviewAccept:{}, overrides:{}, search:'', importError:'', dragOver:false, meta:{model:s.model, subtitle:s.subtitle}, bullets, dims, certs, accessories, showDiversity:true, showAccessories:true, showOverview:true, showDims:true, specStartP1:false});
   }
   // ── CMS field-table import (defines mapping/ordering taxonomy) ────────────
   pickCms(){
@@ -2427,7 +2434,7 @@ class Component extends DCLogic {
   _sessionDoc(){
     const s=this.state;
     return { v:1, scope:s.scope, raw:s.raw, assignments:s.assignments, reviewAccept:s.reviewAccept, overrides:s.overrides,
-      meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, showDiversity:s.showDiversity, showAccessories:s.showAccessories, specStartP1:s.specStartP1, customMeta:s.customMeta,
+      meta:s.meta, bullets:s.bullets, dims:s.dims, certs:s.certs, accessories:s.accessories, showDiversity:s.showDiversity, showAccessories:s.showAccessories, showOverview:s.showOverview, showDims:s.showDims, specStartP1:s.specStartP1, customMeta:s.customMeta,
       customOrder:s.customOrder, hiddenCats:s.hiddenCats, disabledRules:s.disabledRules, step:s.step, activeSample:s.activeSample,
       specBreaks:s.specBreaks, slots:this._collectSlots(), savedAt:Date.now() };
   }
@@ -2435,7 +2442,7 @@ class Component extends DCLogic {
     if(!d||!d.raw) return false;
     this.setState({ loaded:true, raw:d.raw, scope:d.scope||'Camera', assignments:this._migrateKeys(d.raw, d.assignments||{}), reviewAccept:d.reviewAccept||{},
       overrides:d.overrides||{}, meta:d.meta||{model:d.raw.model,subtitle:d.raw.subtitle}, bullets:(d.bullets||[]).map(b=>String(b==null?'':b).replace(/\s+/g,' ').trim()), dims:d.dims||[],
-      certs:d.certs||{}, accessories:d.accessories||[], showDiversity:d.showDiversity!==false, showAccessories:d.showAccessories!==false, specStartP1:d.specStartP1===true, customMeta:this._migrateKeys(d.raw, d.customMeta||{}), customOrder:d.customOrder||{}, hiddenCats:d.hiddenCats||{}, disabledRules:d.disabledRules||{},
+      certs:d.certs||{}, accessories:d.accessories||[], showDiversity:d.showDiversity!==false, showAccessories:d.showAccessories!==false, showOverview:d.showOverview!==false, showDims:d.showDims!==false, specStartP1:d.specStartP1===true, customMeta:this._migrateKeys(d.raw, d.customMeta||{}), customOrder:d.customOrder||{}, hiddenCats:d.hiddenCats||{}, disabledRules:d.disabledRules||{},
       specBreaks:(d.specBreaks&&typeof d.specBreaks==='object'&&!Array.isArray(d.specBreaks))?d.specBreaks:{},
       step:d.step||1, activeSample:d.activeSample, importError:'', savedToast:'✓ 저장된 작업을 불러왔습니다' });
     this._restoreSlots(d.slots);   // 저장된 사진·치수 도면을 슬롯에 복원(제품별 id 유지)
@@ -2969,6 +2976,8 @@ class Component extends DCLogic {
   toggleCert(id){ this.setState(s=>({certs:{...s.certs,[id]:!s.certs[id]}})); }
   toggleDiversity(){ this.setState(s=>({showDiversity:s.showDiversity===false?true:false})); }
   toggleAccessories(){ this.setState(s=>({showAccessories:s.showAccessories===false?true:false})); }
+  toggleOverview(){ this.setState(s=>({showOverview:s.showOverview===false?true:false})); }
+  toggleDims(){ this.setState(s=>({showDims:s.showDims===false?true:false})); }
   // 스펙 표 1페이지 시작 토글 — 액세서리가 켜져 있으면(자리 충돌) 무시
   toggleSpecStartP1(){ if(this.state.showAccessories!==false) return; this.setState(s=>({specStartP1:s.specStartP1===true?false:true})); }
   setDimCount(n){ this.setState({dimCount:n}); }
@@ -3623,6 +3632,10 @@ class Component extends DCLogic {
       out.revTrackReview=st.applyReview?'#941A31':'#c9ccd2'; out.revKnobReview=st.applyReview?'19px':'3px';
       out.onToggleAccessories=()=>this.toggleAccessories();
       out.accTrack=st.showAccessories!==false?'#941A31':'#c9ccd2'; out.accKnob=st.showAccessories!==false?'19px':'3px';
+      out.onToggleOverview=()=>this.toggleOverview();
+      out.ovTrack=st.showOverview!==false?'#941A31':'#c9ccd2'; out.ovKnob=st.showOverview!==false?'19px':'3px';
+      out.onToggleDims=()=>this.toggleDims();
+      out.dimsTrack=st.showDims!==false?'#941A31':'#c9ccd2'; out.dimsKnob=st.showDims!==false?'19px':'3px';
       // 스펙 표 1페이지 시작 토글(액세서리 OFF일 때만 활성)
       const _p1En=st.showAccessories===false; const _p1On=_p1En && st.specStartP1===true;
       out.specStartEnabled=_p1En; out.onToggleSpecStartP1=()=>this.toggleSpecStartP1();
