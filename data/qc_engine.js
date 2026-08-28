@@ -139,6 +139,49 @@ function dimRule(str) {
   return { out, hits };
 }
 
+// ── US-format unit pairing — 미국규격(국제규격) ───────────────────────────
+// 길이·무게·온도 필드의 값을 미국 단위 우선으로 병기한다:
+//   inch(mm/cm) · lb(kg/g) · °F(°C).
+// 이미 병기된 값(" / inch / lb / °F 포함)은 건너뛰어 재실행에도 안전(멱등).
+const _trim0 = (v, dp) => v.toFixed(dp).replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '');
+function usUnitsRule(str, fieldName) {
+  const isTemp = /temperat|온도/i.test(fieldName);
+  const isWeight = /weight|무게/i.test(fieldName);
+  const isLen = /dimension|치수|size|length|width|height|depth|diameter/i.test(fieldName) && !/focal/i.test(fieldName);
+  const hits = [];
+  let out = str;
+  // 온도: -10°C ~ +50°C → 14°F ~ 122°F (-10°C ~ +50°C)
+  if (isTemp && /(?:°|º|˚)\s*C\b/.test(out) && !/(?:°|º|˚)\s*F\b/.test(out)) {
+    const f = out.replace(/([-+–−]?\s?\d+(?:\.\d+)?)\s*(?:°|º|˚)\s*C\b/g, (m, n) => {
+      const c = parseFloat(String(n).replace(/[–−]/g, '-').replace(/\s+/g, ''));
+      if (isNaN(c)) return m;
+      return Math.round(c * 9 / 5 + 32) + '°F';
+    });
+    if (f !== out) { const res = f + ' (' + out + ')'; hits.push({ before: out, after: res }); out = res; }
+  }
+  // 무게: 0.95 kg → 2.09 lb (0.95 kg)
+  if (isWeight && /\d\s*(?:kg|g)\b/i.test(out) && !/\b(?:lbs?|oz)\b/i.test(out)) {
+    const f = out.replace(/(\d+(?:\.\d+)?)\s*(kg|g)\b(?!\/)/gi, (m, n, u) => {
+      const v = parseFloat(n); if (isNaN(v)) return m;
+      const lb = u.toLowerCase() === 'kg' ? v * 2.20462 : v * 0.00220462;
+      return _trim0(lb, 2) + ' lb';
+    });
+    if (f !== out) { const res = f + ' (' + out + ')'; hits.push({ before: out, after: res }); out = res; }
+  }
+  // 길이: 300 × 248.4 × 45 mm → 11.81" × 9.78" × 1.77" (300 × 248.4 × 45 mm)
+  // (× 로 묶인 숫자 그룹은 마지막에만 단위가 붙어도 전부 변환. 초점거리(focal)는 제외.)
+  if (isLen && /\d\s*(?:mm|cm)\b/i.test(out) && !/["″]|\binch(?:es)?\b|\bin\b/.test(out)) {
+    const f = out.replace(/((?:\d+(?:\.\d+)?\s*[×xX]\s*)*\d+(?:\.\d+)?)\s*(mm|cm)\b/gi, (m, nums, u) => {
+      const div = u.toLowerCase() === 'mm' ? 25.4 : 2.54;
+      const parts = nums.split(/\s*[×xX]\s*/).map(s => parseFloat(s));
+      if (parts.some(isNaN)) return m;
+      return parts.map(v => _trim0(v / div, 2) + '"').join(' × ');
+    });
+    if (f !== out) { const res = f + ' (' + out + ')'; hits.push({ before: out, after: res }); out = res; }
+  }
+  return { out, hits };
+}
+
 export function runQC(text, fieldName = '', disabled = []) {
   if (text == null) return { result: '', issues: [] };
   const off = new Set(disabled || []);
@@ -156,6 +199,12 @@ export function runQC(text, fieldName = '', disabled = []) {
     const { out, hits } = dimRule(current);
     current = out;
     for (const h of hits) issues.push({ ...h, cat: '단위', note: '치수 기호·단위 정리 (× / mm)', id: 'dim', field: fieldName });
+  }
+  // 미국규격(국제규격) 병기 — 길이·무게·온도 필드
+  if (!off.has('us-units')) {
+    const { out, hits } = usUnitsRule(current, fieldName);
+    current = out;
+    for (const h of hits) issues.push({ ...h, cat: '단위', note: '미국 규격 병기 — inch(mm) · lb(kg) · °F(°C)', id: 'us-units', field: fieldName });
   }
   // DORI context — verb forms to noun forms (US/IEC 62676-4)
   if (!off.has('dori') && /dori|detect|observe|recogni|identif/i.test(fieldName)) {
@@ -302,6 +351,7 @@ export function scanCandidates(items, opts = {}) {
 const BUILTIN_CATALOG = [
   ...[TYPO_RULE, ...RULES].map(r => ({ id: r.id, cat: r.cat, note: r.note })),
   { id: 'dim', cat: '단위', note: '치수 기호·단위 정리 (× / mm)' },
+  { id: 'us-units', cat: '단위', note: '미국 규격 병기 — inch(mm) · lb(kg) · °F(°C)' },
   { id: 'dori', cat: '표준', note: 'DORI 명사형 통일 (IEC 62676-4)' },
   { id: 'trim', cat: '표기', note: '앞뒤 공백·탭 제거' },
 ];
