@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 62" role="img" aria-label="FCC">
+  <!-- F -->
+  <g stroke="#111111" stroke-width="12" fill="none" stroke-linecap="round">
+    <path d="M 8 56 V 8 H 38"/>
+    <path d="M 8 31 H 32"/>
+  </g>
+  <!-- first C -->
+  <g stroke="#111111" stroke-width="12" fill="none">
+    <path d="M 76 14.5 A 21 21 0 1 0 76 47.5"/>
+  </g>
+  <!-- second C inside a ring -->
+  <circle cx="103" cy="35" r="25" fill="none" stroke="#111111" stroke-width="3.5"/>
+  <g stroke="#111111" stroke-width="9" fill="none">
+    <path d="M 113.5 24 A 14.5 14.5 0 1 0 113.5 46"/>
+  </g>
+</svg>

@@ -1333,19 +1333,19 @@
         </div>
         </sc-for>
 
-        <!-- REPORT 3 — SPEC SHEET (AI 검수본) -->
+        <!-- REPORT 3 — SPEC SHEET (현재 Output 버전 · '스펙시트만 PDF' 대상) -->
         <div data-sheet-only="" style="display:flex; flex-direction:column; gap:8px; align-items:center;">
-          <div style="width:816px; font-size:13px; font-weight:800; color:#941A31; padding:4px 0;">STEP 3 · 스펙시트 — 수정버전 (AI 검수 · CMS 정렬·매핑 반영)</div>
-          <dc-import name="SpecSheet" sheet="{{ sheetReviewed }}" show-p1="{{ true }}" show-p2="{{ false }}" hint-size="816px,1100px"></dc-import>
-          <sc-for list="{{ specPagesReviewed }}" as="sp" hint-placeholder-count="1">
+          <div style="width:816px; font-size:13px; font-weight:800; color:#941A31; padding:4px 0;">{{ sheetOutLabel }}</div>
+          <dc-import name="SpecSheet" sheet="{{ sheetOut }}" show-p1="{{ true }}" show-p2="{{ false }}" hint-size="816px,1100px"></dc-import>
+          <sc-for list="{{ specPagesOut }}" as="sp" hint-placeholder-count="1">
             <dc-import name="SpecSheet" sheet="{{ sp.sheet }}" show-p1="{{ false }}" show-p2="{{ true }}" spec-cont="{{ sp.cont }}" hint-size="816px,1100px"></dc-import>
           </sc-for>
         </div>
-        <!-- REPORT 3B — SPEC SHEET (원본) -->
+        <!-- REPORT 3B — SPEC SHEET (반대 버전 · 전체 리포트에만 포함) -->
         <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
-          <div style="width:816px; font-size:13px; font-weight:800; color:#6b6b6b; padding:4px 0;">STEP 3 · 스펙시트 — 기존버전 (중국/PDF 원본 데이터)</div>
-          <dc-import name="SpecSheet" sheet="{{ sheetRaw }}" show-p1="{{ true }}" show-p2="{{ false }}" hint-size="816px,1100px"></dc-import>
-          <sc-for list="{{ specPagesRaw }}" as="sp" hint-placeholder-count="1">
+          <div style="width:816px; font-size:13px; font-weight:800; color:#6b6b6b; padding:4px 0;">{{ sheetAltLabel }}</div>
+          <dc-import name="SpecSheet" sheet="{{ sheetAlt }}" show-p1="{{ true }}" show-p2="{{ false }}" hint-size="816px,1100px"></dc-import>
+          <sc-for list="{{ specPagesAlt }}" as="sp" hint-placeholder-count="1">
             <dc-import name="SpecSheet" sheet="{{ sp.sheet }}" show-p1="{{ false }}" show-p2="{{ true }}" spec-cont="{{ sp.cont }}" hint-size="816px,1100px"></dc-import>
           </sc-for>
         </div>
@@ -1375,9 +1375,9 @@ class Component extends DCLogic {
   };
 
   CERTS = [
-    {id:'ndaa',label:'NDAA',img:'./assets/certs/NDAA.png'},{id:'taa',label:'TAA',img:'./assets/certs/TAA.png'},
-    {id:'ce',label:'CE',img:'./assets/certs/CE.png'},{id:'fcc',label:'FCC',img:'./assets/certs/FCC.png'},
-    {id:'ai',label:'AI',img:'./assets/certs/AI.png'}
+    {id:'ndaa',label:'NDAA',img:'./assets/certs/NDAA.svg'},{id:'taa',label:'TAA',img:'./assets/certs/TAA.svg'},
+    {id:'ce',label:'CE',img:'./assets/certs/CE.svg'},{id:'fcc',label:'FCC',img:'./assets/certs/FCC.svg'},
+    {id:'ai',label:'AI',img:'./assets/certs/AI.svg'}
   ];
   ALIAS = {
     imagesensor:'imaging_device', electronicshutterspeed:'electric_shutter_speed',
@@ -1635,7 +1635,7 @@ class Component extends DCLogic {
     // Only the 4 image logos, fixed order NDAA · TAA · CE · FCC
     const certImgs=['ndaa','taa','ce','fcc'].filter(id=>this.state.certs[id]&&imgMap[id]).map((id,i)=>({id,label:CL[id],img:imgMap[id],divider:i>0}));
     const certTexts=[];
-    const aiBadge=aiOn?[{img:'./assets/certs/AI.png'}]:[];
+    const aiBadge=aiOn?[{img:'./assets/certs/AI.svg'}]:[];
     const dim2=this.state.dimCount>=2;
     const dimDir=this.state.dimLayout==='row'?'row':'column';
     const dimSlotFlex=this.state.dimLayout==='row'?'1 1 0':'0 0 auto';
@@ -2356,7 +2356,8 @@ class Component extends DCLogic {
     if(!this.state.raw) return null;
     const m=this.buildMapping();
     const reviews=this.buildReviews();
-    const sheet=this.computeSheet();
+    // Export(Word/PPT/리포트)는 현재 선택된 Output 버전(Revised/Original)을 따른다.
+    const sheet=this._curSheetForBreaks();
     const byCat={}; reviews.forEach(r=>r.issues.forEach(i=>byCat[i.cat]=(byCat[i.cat]||0)+1));
     const reviewRows=reviews.map(r=>({field:r.field, section:r.section, before:r.original, after:r.corrected,
       cats:[...new Set(r.issues.map(i=>i.cat))].join(', '), applied:this.accepted(r.key)}));
@@ -2715,7 +2716,7 @@ class Component extends DCLogic {
           if(next) parent.insertBefore(node, next); else parent.appendChild(node);
         }
       }
-      pdf.save((this.reportData().model||'AVYCON')+(sheetOnly?'_spec_sheet.pdf':'_spec_report.pdf'));
+      pdf.save((this.reportData().model||'AVYCON')+(sheetOnly?((this.state.sheetVersion==='raw'?'_spec_sheet_original':'_spec_sheet')+'.pdf'):'_spec_report.pdf'));
       this.setState({savedToast:'PDF로 저장했습니다.'});
     }catch(e){ console.error(e); restore(); this.setState({savedToast:'PDF 생성 실패 — 인쇄로 저장해 주세요.'}); this.printReport(); }
     finally{ restore(); host.remove(); }
@@ -2805,8 +2806,10 @@ class Component extends DCLogic {
     this.setState({exportMsg:'엑셀 생성 중…'});
     try{
       const XLSX=await import('https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs');
-      const sheet=this.computeSheet(); const reviews=this.buildReviews();
-      const aoa=[['Section','Field','Value (AI 검수 반영)']];
+      // 스펙 탭은 현재 Output 버전(Revised/Original)을 따른다.
+      const _rev=this.state.sheetVersion!=='raw';
+      const sheet=this._curSheetForBreaks(); const reviews=this.buildReviews();
+      const aoa=[['Section','Field', _rev?'Value (AI 검수 반영)':'Value (원본)']];
       sheet.specCats.forEach(c=>c.fields.forEach(f=>aoa.push([c.label, f.name, f.value])));
       const ws1=XLSX.utils.aoa_to_sheet(aoa); ws1['!cols']=[{wch:24},{wch:30},{wch:72}];
       const raoa=[['Field','Section','Before','After','Type','Applied']];
@@ -3698,6 +3701,16 @@ class Component extends DCLogic {
       out.sheetRaw=this.computeSheet({review:false, cms:false});
       out.specPagesReviewed=this._applySpecOnP1(out.sheetReviewed);
       out.specPagesRaw=this._applySpecOnP1(out.sheetRaw);
+      // '스펙시트만 PDF'([data-sheet-only])와 리포트의 첫 스펙시트 섹션은 현재 Output 버전을 따른다.
+      const _revOut=st.sheetVersion!=='raw';
+      const LBL_REV='STEP 3 · 스펙시트 — 수정버전 (AI 검수 · CMS 정렬·매핑 반영)';
+      const LBL_RAW='STEP 3 · 스펙시트 — 기존버전 (중국/PDF 원본 데이터)';
+      out.sheetOut=_revOut?out.sheetReviewed:out.sheetRaw;
+      out.specPagesOut=_revOut?out.specPagesReviewed:out.specPagesRaw;
+      out.sheetOutLabel=_revOut?LBL_REV:LBL_RAW;
+      out.sheetAlt=_revOut?out.sheetRaw:out.sheetReviewed;
+      out.specPagesAlt=_revOut?out.specPagesRaw:out.specPagesReviewed;
+      out.sheetAltLabel=_revOut?LBL_RAW:LBL_REV;
     }
 
     // settings

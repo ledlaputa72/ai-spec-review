@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 106 62" role="img" aria-label="CE">
+  <!-- Official-style CE mark: two arcs built from circles, E = arc + middle arm -->
+  <g stroke="#111111" stroke-width="12" fill="none">
+    <path d="M 41.5 13.5 A 21.5 21.5 0 1 0 41.5 48.5"/>
+    <path d="M 93.5 13.5 A 21.5 21.5 0 1 0 93.5 48.5"/>
+    <path d="M 58.5 31 H 88"/>
+  </g>
+</svg>
